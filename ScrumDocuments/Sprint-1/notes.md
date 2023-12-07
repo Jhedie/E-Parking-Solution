@@ -2,15 +2,15 @@
 
 ## Sprint Goal
 
-A brief statement of the goal of this sprint.
+The aim of this sprint is to achieve user authorization and authentication for users of the system.
 
 ## Sprint Backlog
 
-A list of the user stories and tasks that the team has committed to complete in this sprint.
+- Sign in  and Sign up
+- reset password
+- remove user account
 
 ## Sprint Deliverables
-
-A list of the tangible outputs that will be produced by the end of this sprint. This could include:
 
 - Completed features
 - Bug fixes

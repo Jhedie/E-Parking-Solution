@@ -2,10 +2,10 @@
 // compatible API routes.
 
 import express from 'express';
+import http from 'http';
 import { ParseServer } from 'parse-server';
 import path from 'path';
 const __dirname = path.resolve();
-import http from 'http';
 
 export const config = {
   databaseURI:

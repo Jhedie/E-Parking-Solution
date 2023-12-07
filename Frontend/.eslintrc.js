@@ -20,7 +20,7 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": ["warn"],
     "simple-import-sort/exports": "warn",
     "simple-import-sort/imports": [
-      "warn",
+      "off",
       {
         groups: [
           // Side effect imports.

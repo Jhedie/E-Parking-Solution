@@ -6,7 +6,7 @@ The aim of this sprint is to achieve user authorization and authentication for u
 
 ## Sprint Backlog
 
-- Sign in  and Sign up
+- Sign in and Sign up
 - reset password
 - remove user account
 
@@ -30,8 +30,20 @@ A list of the criteria that must be met for a user story or task to be considere
 
 ## Sprint Review
 
-A summary of what was completed during the sprint, what wasn't completed and why, and any lessons learned.
+Some progress was made on the authentication. The authentication had been initially implemented using supabase however, the authentication was changed to use parse server.This was due to high workload on other course work for other modules.
+
+- Screens for sign up and sign in were implemented and some functionality was added but not exhaustively.
+- The reset password functionality was not implemented.
+- The remove user account functionality was not implemented.
 
 ## Sprint Retrospective
 
-A discussion of what went well during the sprint, what didn't go well, and what changes the team will make for the next sprint.
+What went well:
+
+- Sprint planning was done well.
+- The tasks were well defined.
+- I aim to speed up the progress in the next sprint
+
+What didn't go well:
+- Despite the tasks being well defined, I did not manage to complete all the tasks.
+- I will try to complete all the tasks in the next sprint by spending more time on the project.

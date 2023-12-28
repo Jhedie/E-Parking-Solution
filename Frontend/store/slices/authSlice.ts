@@ -14,7 +14,7 @@ const initialState: CounterState = {
 };
 
 export const authSlice = createSlice({
-  name: "auther",
+  name: "auth",
   initialState,
   reducers: {}
 });

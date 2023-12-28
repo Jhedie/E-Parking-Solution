@@ -1,31 +1,22 @@
-import { useToastController } from "@tamagui/toast";
-import { useRouter } from "expo-router";
 import { YStack } from "tamagui";
-
-import { useSupabase } from "../../../utils/supabase/hooks/useSupabase";
+import { useAppDispatch } from "../../../store/hooks";
+import { signUp } from "../../../store/thunks/authThunk";
 import { SignInSignUpComponent } from "../SignInSignUpComponent";
 
 export default function SignInScreen() {
-  const toast = useToastController();
-  const supabase = useSupabase();
-  const { replace } = useRouter();
+  const dispatch = useAppDispatch();
 
   const handleEmailSignInOnPress = async (email: string, password: string) => {
     console.log("ATTEMPTING TO SIGN IN");
     console.log("email", email);
     console.log("password", password);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password
-    });
-    if (error) {
-      toast.show("Sign in failed", {
-        description: error.message
+    dispatch(signUp({ email, password }))
+      .then(() => {
+        console.log("SIGN IN SUCCESSFUL");
+      })
+      .catch((error) => {
+        console.log("SIGN IN FAILED");
       });
-      return;
-    }
-
-    replace("/main");
   };
 
   return (

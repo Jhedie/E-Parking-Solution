@@ -1,0 +1,63 @@
+{
+  "expo": {
+    "name": "Frontend",
+    "slug": "frontend",
+    "version": "1.0.0",
+    "owner": "jhedie",
+    "scheme": "tamagui-app",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#ddffe2",
+      "image": "./assets/splash.png",
+      "resizeMode": "contain"
+    },
+    "updates": {
+      "enabled": false
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jhedie.frontend"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "icon": "./assets/icon.png",
+    "plugins": [
+      "expo-router",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "13.0"
+          }
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Show current location on map."
+        }
+      ]
+    ],
+    "experiments": {
+      "tsconfigPaths": true,
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "848af63c-047f-4778-bbd8-4255a85296c2"
+      }
+    },
+    "android": {
+      "package": "com.jhedie.frontend",
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE"
+      ]
+    }
+  }
+}

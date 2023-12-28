@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { useState } from "react";
 import { Link } from "expo-router";
+import { useState } from "react";
 import { Button, Input, Paragraph, XStack, YStack } from "tamagui";
 
 interface Props {

@@ -1,19 +1,22 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import Parse from "parse/react-native";
+import Parse from "parse/react-native.js";
 
 type user = {
-  username: string;
+  email: string;
   password: string;
 };
 
-const signUp = createAsyncThunk("auth/signUp", async (user: user) => {
+export const signUp = createAsyncThunk("auth/signUp", async (user: user) => {
   const userCreate = new Parse.User();
-  userCreate.set("username", user.username);
-  userCreate.set("password", user.password);
 
-  const UserDetails = await userCreate.signUp();
-  console.log({
-    username: UserDetails.get("username"),
-    token: UserDetails.get("token")
-  });
+  const userObj = {
+    username: user.email,
+    password: user.password
+  };
+  try {
+    const userDetails = await userCreate.signUp(userObj);
+  } catch (err) {
+    console.log("error in signup thunk");
+    console.log(err);
+  }
 });

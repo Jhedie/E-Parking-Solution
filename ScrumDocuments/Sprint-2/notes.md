@@ -1,5 +1,7 @@
 # Scrum Sprint Document
 
+## Date From: 08/12/2023 - 1/01/2024
+
 ## Sprint Goal
 
 The aim of this sprint is to achieve user authorization and authentication for users of the system and begin parking management.

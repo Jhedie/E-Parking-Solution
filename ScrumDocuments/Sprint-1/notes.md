@@ -1,5 +1,7 @@
 # Scrum Sprint Document
 
+## Date From: 24/11/2023 - 07/12/2023
+
 ## Sprint Goal
 
 The aim of this sprint is to achieve user authorization and authentication for users of the system.

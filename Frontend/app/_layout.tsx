@@ -16,16 +16,8 @@ import { CustomToast } from "../components/CustomToast";
 import { store } from "../store/index";
 import config from "../tamagui.config";
 
-import { initializeParse } from "@parse/react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Parse from "parse/react-native";
 
-Parse.setAsyncStorage(AsyncStorage);
-initializeParse(
-  "n10iLv8r03O6kJtU6KRxT8vkg0PKeGDtnrwVtrnY",
-  "yxgUPFbj1syfSZFCijLXxmdxPCYpnPr9chiIX7wB"
-);
-Parse.serverURL = "https://parseapi.back4app.com";
+
 
 SplashScreen.preventAutoHideAsync();
 

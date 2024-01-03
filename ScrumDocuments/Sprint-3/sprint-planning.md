@@ -26,7 +26,8 @@ see: sprint2-02-Jan-2024.png
 
 see: sprint2-03-Jan-2024.png
 
-- Move all issues to the next sprint
+- Move all issues to the next sprint/milestone
+- Create new issues for booking management
 <!-- - Any decisions that were made during the meeting. This could include which backlog items to include in the sprint, any changes to the team's process, etc. -->
 
 ## Action Items

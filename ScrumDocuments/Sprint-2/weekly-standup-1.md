@@ -2,7 +2,7 @@
 
 This document is used to record the weekly standup notes for the project.
 
-## Date: 28/12/2023 - 01/01/2024
+## Date: 28/12/2023
 
 ## Last Week's Action Items:
 
@@ -10,7 +10,7 @@ This document is used to record the weekly standup notes for the project.
 
 ## Updates:
 
-## Issue:
+## Issues:
 
 1. Little progress as blockers have been encountered making authentication and authorization difficult to implement.
 

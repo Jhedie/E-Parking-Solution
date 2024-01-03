@@ -2,33 +2,24 @@
 
 ## Date From: 24/11/2023 - 07/12/2023
 
-## Sprint Goal
+## Sprint Planning
 
+### Sprint Goal
 The aim of this sprint is to achieve user authorization and authentication for users of the system.
 
-## Sprint Backlog
+### Sprint Backlog
 
 - Sign in and Sign up
 - reset password
 - remove user account
 
-## Sprint Deliverables
+### Sprint Deliverables
 
 - Completed features
 - Bug fixes
 - Documentation updates
 - Test cases
 - Design assets
-
-## Definition of Done
-
-A list of the criteria that must be met for a user story or task to be considered "done". This could include:
-
-- Code is written
-- Code is reviewed
-- Code is tested
-- Code is merged
-- Documentation is updated
 
 ## Sprint Review
 
@@ -40,12 +31,16 @@ Some progress was made on the authentication. The authentication had been initia
 
 ## Sprint Retrospective
 
-What went well:
+### What went well:
 
 - Sprint planning was done well.
 - The tasks were well defined.
-- I aim to speed up the progress in the next sprint
 
-What didn't go well:
+### What didn't go well:
+
 - Despite the tasks being well defined, I did not manage to complete all the tasks.
+
+## Action Items
+
 - I will try to complete all the tasks in the next sprint by spending more time on the project.
+- I aim to speed up the progress in the next sprint

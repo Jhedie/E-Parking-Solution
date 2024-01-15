@@ -32,4 +32,9 @@ expo-env.d.ts
 #to be removed later
 release.config.js
 .github
+
+google-services.json
+GoogleService-Info.plist
 app.json
+```
+

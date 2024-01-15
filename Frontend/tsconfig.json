@@ -14,6 +14,6 @@
     ".expo/types/**/*.ts",
     "**/*.d.ts", // Include .d.ts files in all directories
     "expo-env.d.ts"
-  ],
+, "babel.config.js"  ],
   "exclude": ["**/node_modules/*"]
 }

@@ -16,11 +16,19 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.jhedie.frontend"
+      "bundleIdentifier": "com.jhedie.frontend",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "android": {
+      "package": "com.jhedie.frontend",
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE"
+      ],
+      "googleServicesFile": "./google-services.json"
+    },
+    "assetBundlePatterns": ["**/*"],
     "icon": "./assets/icon.png",
     "plugins": [
       "expo-router",
@@ -28,7 +36,8 @@
         "expo-build-properties",
         {
           "ios": {
-            "deploymentTarget": "13.0"
+            "deploymentTarget": "13.0",
+            "useFrameworks": "static"
           }
         }
       ],
@@ -37,7 +46,11 @@
         {
           "locationWhenInUsePermission": "Show current location on map."
         }
-      ]
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/app",
+      "@react-native-firebase/perf",
+      "@react-native-firebase/crashlytics"
     ],
     "experiments": {
       "tsconfigPaths": true,
@@ -48,16 +61,8 @@
         "origin": false
       },
       "eas": {
-        "projectId": "848af63c-047f-4778-bbd8-4255a85296c2"
+        "projectId": ""
       }
-    },
-    "android": {
-      "package": "com.jhedie.frontend",
-      "permissions": [
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.FOREGROUND_SERVICE"
-      ]
     }
   }
 }

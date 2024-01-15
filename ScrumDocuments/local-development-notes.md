@@ -13,3 +13,13 @@ Below are the development notes for the project. It comprises of links and resou
 5. Setting up Firebase:
    - https://www.youtube.com/watch?v=mZlKwRV4MC8&t=551s
    - Add docs for firebase and expo
+
+## Temporary Notes:
+
+6. https://dev.to/absek/car-parking-finder-app-ui-clone-in-react-native-2-scrolling-swiping-transition-kc1
+
+7. Removing secret files from repo:
+   https://dev.to/isaacadams/git-bfg-installation-5ee1
+
+8. App.config.json:
+   https://stackoverflow.com/questions/72745990/how-to-use-eas-secret-variable-in-app-json

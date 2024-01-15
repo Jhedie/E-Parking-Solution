@@ -11,7 +11,7 @@
 
 ## Product Backlog Items Discussed
 
-see: sprint2-02-Jan-2024.png
+see: sprint3-02-Jan-2024.png
 
 - Change back end
 - Sign in and Sign up
@@ -24,7 +24,7 @@ see: sprint2-02-Jan-2024.png
 
 ## Decisions Made
 
-see: sprint2-03-Jan-2024.png
+see: sprint3-03-Jan-2024a.png
 
 - Move all issues to the next sprint/milestone
 - Create new issues for booking management

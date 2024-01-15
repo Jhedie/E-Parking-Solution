@@ -10,6 +10,8 @@ This document is used to record the weekly standup notes for the project.
 
 ## Updates:
 
+Added a firebase ticket and closed appwrite migration ticket.
+
 ## Issues:
 
 ## Action Item:

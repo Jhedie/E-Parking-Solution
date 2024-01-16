@@ -8,11 +8,11 @@ import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
+import "react-native-get-random-values";
 import { Provider } from "react-redux";
 import { TamaguiProvider, Theme } from "tamagui";
-
-import "react-native-get-random-values";
 import { CustomToast } from "../components/CustomToast";
+import { AuthProvider } from "../providers/AuthProvider";
 import { store } from "../store/index";
 import config from "../tamagui.config";
 
@@ -46,15 +46,13 @@ export default function Layout() {
               duration={6000}
               native={["mobile"]}
             >
-              <Stack>
-                <Stack.Screen
-                  name="index"
-                  options={{
-                    title: "Index",
-                    headerShown: true
+              <AuthProvider>
+                <Stack
+                  screenOptions={{
+                    headerShown: false
                   }}
-                />
-              </Stack>
+                ></Stack>
+              </AuthProvider>
               <CustomToast />
               <ToastViewport />
             </ToastProvider>

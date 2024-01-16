@@ -1,22 +1,13 @@
-import { YStack } from "tamagui";
+import { H1, YStack } from "tamagui";
 import { useAppDispatch } from "../../../store/hooks";
-import { signUp } from "../../../store/thunks/authThunk";
-import { SignInSignUpComponent } from "../SignInSignUpComponent";
 
 export default function SignInScreen() {
   const dispatch = useAppDispatch();
 
   const handleEmailSignInOnPress = async (email: string, password: string) => {
     console.log("ATTEMPTING TO SIGN IN");
-    console.log("email", email);
-    console.log("password", password);
-    dispatch(signUp({ email, password }))
-      .then(() => {
-        console.log("SIGN IN SUCCESSFUL");
-      })
-      .catch((error) => {
-        console.log("SIGN IN FAILED");
-      });
+
+    console.log(email, password);
   };
 
   return (
@@ -26,10 +17,7 @@ export default function SignInScreen() {
       alignItems="center"
       space
     >
-      <SignInSignUpComponent
-        type="sign-in"
-        handleEmailWithPress={handleEmailSignInOnPress}
-      />
+      <H1>Sign In Screen</H1>
     </YStack>
   );
 }

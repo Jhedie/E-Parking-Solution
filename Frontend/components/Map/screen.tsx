@@ -1,12 +1,12 @@
 import "expo-dev-client";
 
 import React from "react";
-import { YStack } from "tamagui";
+import { H1, YStack } from "tamagui";
 
 const App: React.FC = () => {
   return (
     <YStack>
-      <h1>Hello World</h1>
+      <H1>App</H1>
     </YStack>
   );
 };

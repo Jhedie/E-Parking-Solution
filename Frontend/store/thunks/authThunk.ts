@@ -11,10 +11,7 @@ export const signUp = createAsyncThunk("auth/signUp", async (user: user) => {
   console.log("user", user);
 
   auth()
-    .createUserWithEmailAndPassword(
-      "jane.doe@example.com",
-      "SuperSecretPassword!"
-    )
+    .createUserWithEmailAndPassword(user.email, user.password)
     .then(() => {
       console.log("User account created & signed in!");
     })

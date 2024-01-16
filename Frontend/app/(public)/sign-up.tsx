@@ -1,17 +1,17 @@
 import { Stack } from "expo-router";
-
-import SignInScreen from "../components/Authentication/SignIn/screen";
+import SignUpScreen from "../../components/Authentication/Register/screen";
 
 export default function Screen() {
   return (
     <>
       <Stack.Screen
         options={{
-          title: "Sign In"
+          title: "Sign Up",
+          headerShown: false
         }}
       />
 
-      <SignInScreen />
+      <SignUpScreen />
     </>
   );
 }

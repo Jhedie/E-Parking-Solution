@@ -23,3 +23,12 @@ Below are the development notes for the project. It comprises of links and resou
 
 8. App.config.json:
    https://stackoverflow.com/questions/72745990/how-to-use-eas-secret-variable-in-app-json
+
+9. Authentication state management using react native firebase
+   https://github.com/expo/router/issues/740#:~:text=aaronksaunders%20commented%20on%20Jul%2025%2C%202023
+
+   https://www.youtube.com/watch?v=zh6Sc1flK2g&t=7s
+
+   https://scientyficworld.org/how-to-integrate-firebase-auth-with-expo-app/
+   https://docs.expo.dev/router/reference/authentication/
+   

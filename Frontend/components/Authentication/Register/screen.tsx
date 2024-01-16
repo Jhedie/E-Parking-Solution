@@ -2,9 +2,7 @@ import auth from "@react-native-firebase/auth";
 import { useAppDispatch } from "../../../store/hooks";
 import { signUp } from "../../../store/thunks/authThunk";
 
-import { YStack } from "tamagui";
-
-import { SignInSignUpComponent } from "../SignInSignUpComponent";
+import { H1, YStack } from "tamagui";
 
 export default function SignUpScreen() {
   const dispatch = useAppDispatch();
@@ -14,27 +12,7 @@ export default function SignUpScreen() {
     password: string
   ) => {
     console.log("ATTEMPTING TO SIGN UP");
-    // dispatch(signUp({ email, password }));
-
-    auth()
-      .createUserWithEmailAndPassword(
-        "jeddiahawukku12@example.com",
-        "SuperSecretPassword!"
-      )
-      .then(() => {
-        console.log("User account created & signed in!");
-      })
-      .catch((error) => {
-        if (error.code === "auth/email-already-in-use") {
-          console.log("That email address is already in use!");
-        }
-
-        if (error.code === "auth/invalid-email") {
-          console.log("That email address is invalid!");
-        }
-
-        console.error(error);
-      });
+    dispatch(signUp({ email, password }));
   };
 
   return (
@@ -44,10 +22,7 @@ export default function SignUpScreen() {
       alignItems="center"
       space
     >
-      <SignInSignUpComponent
-        type="sign-up"
-        handleEmailWithPress={handleEmailSignUpWithPress}
-      />
+      <H1>Sign Up Screen</H1>
     </YStack>
   );
 }

@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-import MapScreen from "../components/Map/screen";
+import MapScreen from "../../components/Map/screen";
 
 export default function Screen() {
   return (

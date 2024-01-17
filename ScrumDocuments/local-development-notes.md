@@ -31,4 +31,6 @@ Below are the development notes for the project. It comprises of links and resou
 
    https://scientyficworld.org/how-to-integrate-firebase-auth-with-expo-app/
    https://docs.expo.dev/router/reference/authentication/
-   
+
+   Formik and Yup for forms:
+   https://www.youtube.com/watch?v=bttOjT0jfzs&list=PLG02JlJZbKbsrFy-sKyz0PJBkWCajj1i9

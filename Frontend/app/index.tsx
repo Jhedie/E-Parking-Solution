@@ -1,16 +1,11 @@
-import {
-  Stack,
-  useRootNavigationState,
-  useRouter,
-  useSegments
-} from "expo-router";
+import { useRootNavigationState, useRouter, useSegments } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
 
 import { useEffect } from "react";
-import { WelcomeScreen } from "../components/Welcome/screen";
 import { useAuth } from "../contexts/FirebaseAuthContext";
 export default function Screen() {
   const { user, initializing } = useAuth();
+
   const router = useRouter();
   const segments = useSegments();
   const rootNavigationState = useRootNavigationState();
@@ -19,10 +14,10 @@ export default function Screen() {
 
   useEffect(() => {
     //avoid navigating before the navigator is ready. It also avoids having to add a listener to the navigation state.
-    if (!rootNavigationState?.key) return;
 
     if (!initializing) return;
 
+    if (!rootNavigationState?.key) return;
     const inTabsGroup = segments[0] === "(app)";
     if (user && !inTabsGroup) {
       console.log("routing to main");

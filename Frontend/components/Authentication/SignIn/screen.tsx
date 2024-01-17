@@ -1,14 +1,30 @@
-import { H1, YStack } from "tamagui";
-import { useAppDispatch } from "../../../store/hooks";
+import auth from "@react-native-firebase/auth";
+import { useRouter } from "expo-router";
+import { Formik, FormikValues } from "formik";
+import { Button, H3, Input, Spinner, YStack } from "tamagui";
+import { User } from "../../../contexts/FirebaseAuthContext";
 
 export default function SignInScreen() {
-  const dispatch = useAppDispatch();
+  const router = useRouter();
+  function signInUser(email: string, password: string) {
+    auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        console.log("User account signed in!");
+        router.replace("/(auth)/home");
+      })
+      .catch((error) => {
+        if (error.code === "auth/email-already-in-use") {
+          console.log("That email address is already in use!");
+        }
 
-  const handleEmailSignInOnPress = async (email: string, password: string) => {
-    console.log("ATTEMPTING TO SIGN IN");
+        if (error.code === "auth/invalid-email") {
+          console.log("That email address is invalid!");
+        }
 
-    console.log(email, password);
-  };
+        console.error(error);
+      });
+  }
 
   return (
     <YStack
@@ -17,7 +33,51 @@ export default function SignInScreen() {
       alignItems="center"
       space
     >
-      <H1>Sign In Screen</H1>
+      <H3>Sign Up Screen</H3>
+      <Formik
+        initialValues={{ username: "", password: "" }}
+        onSubmit={function (
+          values: FormikValues,
+          actions
+        ): void | Promise<User> {
+          signInUser(values.username, values.password);
+          setTimeout(() => {
+            actions.setSubmitting(false);
+          }, 1000);
+        }}
+      >
+        {(formikProps) => (
+          <YStack
+            width={300}
+            space
+          >
+            <YStack space>
+              <Input
+                placeholder="Username"
+                onChangeText={formikProps.handleChange("username")}
+                value={formikProps.values.username}
+              />
+              <Input
+                size="$4"
+                placeholder="Password"
+                secureTextEntry
+                onChangeText={formikProps.handleChange("password")}
+                value={formikProps.values.password}
+              />
+            </YStack>
+            {formikProps.isSubmitting ? (
+              <Spinner />
+            ) : (
+              <Button
+                themeInverse
+                onPress={() => formikProps.handleSubmit()}
+              >
+                Sign In
+              </Button>
+            )}
+          </YStack>
+        )}
+      </Formik>
     </YStack>
   );
 }

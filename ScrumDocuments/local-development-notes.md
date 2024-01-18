@@ -34,3 +34,5 @@ Below are the development notes for the project. It comprises of links and resou
 
    Formik and Yup for forms:
    https://www.youtube.com/watch?v=bttOjT0jfzs&list=PLG02JlJZbKbsrFy-sKyz0PJBkWCajj1i9
+
+   https://youtu.be/BM72He8W3SE

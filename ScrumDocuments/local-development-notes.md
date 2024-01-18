@@ -11,28 +11,44 @@ Below are the development notes for the project. It comprises of links and resou
 4. https://bartlomiej-klocek.medium.com/how-to-integrate-react-native-firebase-into-expo-d34712eaf64d
 
 5. Setting up Firebase:
+
    - https://www.youtube.com/watch?v=mZlKwRV4MC8&t=551s
    - Add docs for firebase and expo
 
-## Temporary Notes:
+6. Removing secret files from repo:
 
-6. https://dev.to/absek/car-parking-finder-app-ui-clone-in-react-native-2-scrolling-swiping-transition-kc1
+   - https://dev.to/isaacadams/git-bfg-installation-5ee1
 
-7. Removing secret files from repo:
-   https://dev.to/isaacadams/git-bfg-installation-5ee1
+7. App.config.ts and dynamic fields:
 
-8. App.config.json:
-   https://stackoverflow.com/questions/72745990/how-to-use-eas-secret-variable-in-app-json
+   - https://stackoverflow.com/questions/72745990/how-to-use-eas-secret-variable-in-app-json
 
-9. Authentication state management using react native firebase
-   https://github.com/expo/router/issues/740#:~:text=aaronksaunders%20commented%20on%20Jul%2025%2C%202023
+8. Authentication state management using react native firebase
 
-   https://www.youtube.com/watch?v=zh6Sc1flK2g&t=7s
+   Resolving the error: Attempted to navigate before mounting the Root Layout component
 
-   https://scientyficworld.org/how-to-integrate-firebase-auth-with-expo-app/
-   https://docs.expo.dev/router/reference/authentication/
+   - https://github.com/expo/router/issues/740#:~:text=aaronksaunders%20commented%20on%20Jul%2025%2C%202023
+
+   Guide to implement auth and protected routes in expo router v2:
+
+   - https://docs.expo.dev/router/reference/authentication/
 
    Formik and Yup for forms:
-   https://www.youtube.com/watch?v=bttOjT0jfzs&list=PLG02JlJZbKbsrFy-sKyz0PJBkWCajj1i9
 
-   https://youtu.be/BM72He8W3SE
+   - https://www.youtube.com/watch?v=bttOjT0jfzs&list=PLG02JlJZbKbsrFy-sKyz0PJBkWCajj1i9
+
+   Auth context and provider
+
+   - https://youtu.be/BM72He8W3SE
+   - https://www.youtube.com/watch?v=zh6Sc1flK2g&t=7s
+
+9. An issue with react native maps:
+
+- I encountered an error message when performing an eas build to enable google maps on IOS. The problem was fixed by reading through the github issue below:
+  It indicated that there is an issue with building the module 'GoogleMapsUtils'. The provided code fixed this issue by modifying the Podfile in the iOS project. I had to create a plugin file called `react-native-maps-plugin.js`` in the root directory of the project and add this file to the app.json file.
+  https://github.com/react-native-maps/react-native-maps/issues/4793
+
+## Extra notes:
+
+Car Parking Finder App UI Clone in React Native #2: Scrolling/Swiping Transition:
+https://dev.to/absek/car-parking-finder-app-ui-clone-in-react-native-2-scrolling-swiping-transition-kc1

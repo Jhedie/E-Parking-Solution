@@ -2,7 +2,7 @@ import auth from "@react-native-firebase/auth";
 import { useRouter } from "expo-router";
 import { Formik, FormikValues } from "formik";
 import { Button, H3, Input, Spinner, YStack } from "tamagui";
-import { User, useAuth } from "../../../contexts/FirebaseAuthContext";
+import { User, useAuth } from "../../../providers/AuthProvider";
 
 export default function SignInScreen() {
   const router = useRouter();

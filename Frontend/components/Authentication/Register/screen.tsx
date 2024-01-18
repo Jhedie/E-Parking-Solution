@@ -2,7 +2,6 @@ import auth from "@react-native-firebase/auth";
 import { Formik, FormikValues } from "formik";
 import { Button, H3, Input, Spinner, YStack } from "tamagui";
 import { User } from "../../../contexts/FirebaseAuthContext";
-
 export default function SignUpScreen() {
   function createUser(email: string, password: string) {
     auth()

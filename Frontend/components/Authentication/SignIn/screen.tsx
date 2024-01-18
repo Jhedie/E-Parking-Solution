@@ -2,7 +2,7 @@ import auth from "@react-native-firebase/auth";
 import { useRouter } from "expo-router";
 import { Formik, FormikValues } from "formik";
 import { Button, H3, Input, Spinner, YStack } from "tamagui";
-import { User } from "../../../contexts/FirebaseAuthContext";
+import { User, useAuth } from "../../../contexts/FirebaseAuthContext";
 
 export default function SignInScreen() {
   const router = useRouter();
@@ -33,14 +33,14 @@ export default function SignInScreen() {
       alignItems="center"
       space
     >
-      <H3>Sign Up Screen</H3>
+      <H3>Sign In Screen</H3>
       <Formik
-        initialValues={{ username: "", password: "" }}
+        initialValues={{ email: "", password: "" }}
         onSubmit={function (
           values: FormikValues,
           actions
         ): void | Promise<User> {
-          signInUser(values.username, values.password);
+          signInUser(values.email, values.password);
           setTimeout(() => {
             actions.setSubmitting(false);
           }, 1000);
@@ -53,9 +53,11 @@ export default function SignInScreen() {
           >
             <YStack space>
               <Input
-                placeholder="Username"
-                onChangeText={formikProps.handleChange("username")}
-                value={formikProps.values.username}
+                placeholder="Email"
+                onChangeText={formikProps.handleChange("email")}
+                value={formikProps.values.email}
+                keyboardType="email-address"
+                autoCapitalize="none"
               />
               <Input
                 size="$4"
@@ -63,6 +65,7 @@ export default function SignInScreen() {
                 secureTextEntry
                 onChangeText={formikProps.handleChange("password")}
                 value={formikProps.values.password}
+                autoCapitalize="none"
               />
             </YStack>
             {formikProps.isSubmitting ? (

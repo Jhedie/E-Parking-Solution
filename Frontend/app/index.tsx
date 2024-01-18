@@ -5,12 +5,13 @@ import { useEffect } from "react";
 import { useAuth } from "../contexts/FirebaseAuthContext";
 export default function Screen() {
   const { user, initializing } = useAuth();
-
   const router = useRouter();
   const segments = useSegments();
   const rootNavigationState = useRootNavigationState();
 
   console.log("segments", segments);
+  console.log("user", user);
+  console.log("initializing", initializing);
 
   useEffect(() => {
     //avoid navigating before the navigator is ready. It also avoids having to add a listener to the navigation state.

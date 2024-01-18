@@ -2,7 +2,7 @@
   "expo": {
     "name": "Frontend",
     "slug": "frontend",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "owner": "jhedie",
     "scheme": "tamagui-app",
     "userInterfaceStyle": "automatic",
@@ -31,6 +31,7 @@
     "assetBundlePatterns": ["**/*"],
     "icon": "./assets/icon.png",
     "plugins": [
+      "./react-native-maps-plugin",
       "expo-router",
       [
         "expo-build-properties",

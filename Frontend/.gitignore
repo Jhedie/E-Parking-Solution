@@ -21,7 +21,6 @@ yarn-error.log
 expo-env.d.ts
 # @end expo-cli
 
-.env
 
 /ios
 /android
@@ -33,6 +32,8 @@ expo-env.d.ts
 release.config.js
 .github
 
+#Uncomment the below to start eas build
+.env
 google-services.json
 GoogleService-Info.plist
 app.json

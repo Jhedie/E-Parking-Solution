@@ -36,6 +36,13 @@ const PublicLayout = () => {
           headerShown: false
         }}
       ></Stack.Screen>
+      <Stack.Screen
+        name="verification"
+        options={{
+          headerTitle: "Verification",
+          headerShown: false
+        }}
+      ></Stack.Screen>
     </Stack>
   );
 };

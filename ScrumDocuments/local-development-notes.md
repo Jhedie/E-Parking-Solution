@@ -41,12 +41,23 @@ Below are the development notes for the project. It comprises of links and resou
 
    - https://youtu.be/BM72He8W3SE
    - https://www.youtube.com/watch?v=zh6Sc1flK2g&t=7s
+   - For the first time there is no current user
+   - When a user sign up, they are taken to a verification page
+   - Once the user verifies, they are taken to the welcome page to sign in
+   - Once signed in, they are taken to the home page
+   - when the user signs out, they are taken to the welcome page
+   - when the app is closed and reopened, the user is taken to the home page if they are signed in, otherwise they are taken to the welcome page
+   - when the app is closed and the is user but not verified, they are taken to the verification page
+   - when the app is closed after verification and reopened, the user is taken to the welcome page
 
 9. An issue with react native maps:
 
 - I encountered an error message when performing an eas build to enable google maps on IOS. The problem was fixed by reading through the github issue below:
   It indicated that there is an issue with building the module 'GoogleMapsUtils'. The provided code fixed this issue by modifying the Podfile in the iOS project. I had to create a plugin file called `react-native-maps-plugin.js`` in the root directory of the project and add this file to the app.json file.
   https://github.com/react-native-maps/react-native-maps/issues/4793
+
+  - video for maps:
+    https://www.youtube.com/watch?v=9xD4coXs6Ts&t=3739s
 
 ## Extra notes:
 

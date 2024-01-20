@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-import SignUpScreen from "../../components/Authentication/Register/screen";
+import SignUpScreen from "../../components/Authentication/SignUp/screen";
 
 export default function Screen() {
   return (

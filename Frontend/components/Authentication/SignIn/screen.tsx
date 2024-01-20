@@ -1,11 +1,14 @@
 import auth from "@react-native-firebase/auth";
+import { useToastController } from "@tamagui/toast";
 import { useRouter } from "expo-router";
 import { Formik, FormikValues } from "formik";
 import { Button, H3, Input, Spinner, YStack } from "tamagui";
-import { User, useAuth } from "../../../providers/AuthProvider";
+import { User } from "../../../providers/AuthProvider";
 
 export default function SignInScreen() {
   const router = useRouter();
+  const toaster = useToastController();
+
   function signInUser(email: string, password: string) {
     auth()
       .signInWithEmailAndPassword(email, password)
@@ -15,14 +18,14 @@ export default function SignInScreen() {
       })
       .catch((error) => {
         if (error.code === "auth/email-already-in-use") {
-          console.log("That email address is already in use!");
+          toaster.show("That email address is already in use!");
         }
 
         if (error.code === "auth/invalid-email") {
-          console.log("That email address is invalid!");
+          toaster.show("That email address is invalid!");
         }
 
-        console.error(error);
+        toaster.show(error);
       });
   }
 

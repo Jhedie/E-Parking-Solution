@@ -1,26 +1,12 @@
 import auth from "@react-native-firebase/auth";
+import { useToastController } from "@tamagui/toast";
 import { Formik, FormikValues } from "formik";
+import { useState } from "react";
 import { Button, H3, Input, Spinner, YStack } from "tamagui";
-import { User } from "../../../providers/AuthProvider";
+import { User, useAuth } from "../../../providers/AuthProvider";
+
 export default function SignUpScreen() {
-  function createUser(email: string, password: string) {
-    auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        console.log("User account created & signed in!");
-      })
-      .catch((error) => {
-        if (error.code === "auth/email-already-in-use") {
-          console.log("That email address is already in use!");
-        }
-
-        if (error.code === "auth/invalid-email") {
-          console.log("That email address is invalid!");
-        }
-
-        console.error(error);
-      });
-  }
+  const { signUp } = useAuth();
 
   return (
     <YStack
@@ -36,7 +22,7 @@ export default function SignUpScreen() {
           values: FormikValues,
           actions
         ): void | Promise<User> {
-          createUser(values.username, values.password);
+          signUp(values.username, values.password);
           setTimeout(() => {
             actions.setSubmitting(false);
           }, 1000);
@@ -52,6 +38,7 @@ export default function SignUpScreen() {
                 placeholder="Username"
                 onChangeText={formikProps.handleChange("username")}
                 value={formikProps.values.username}
+                autoCapitalize="none"
               />
               <Input
                 size="$4"

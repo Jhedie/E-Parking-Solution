@@ -5,14 +5,15 @@ import { StyleSheet, View } from "react-native";
 import MapView from "react-native-maps";
 
 import { Button, Text } from "tamagui";
+import { useAuth } from "../../providers/AuthProvider";
 const App: React.FC = () => {
-  const user = auth().currentUser;
+  const { user, signOut } = useAuth();
   return (
     <View style={styles.container}>
       <MapView style={styles.map} />
       <Button
         themeInverse
-        onPress={() => auth().signOut()}
+        onPress={signOut}
       >
         <Text>Logout</Text>
       </Button>

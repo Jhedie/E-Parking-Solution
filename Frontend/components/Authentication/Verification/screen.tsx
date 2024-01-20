@@ -3,15 +3,11 @@ import { useToastController } from "@tamagui/toast";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import { Button, H3, Spinner, Text, YStack } from "tamagui";
-import { useAuth } from "../../../providers/AuthProvider";
 export default function VerificationScreen() {
   const router = useRouter();
   const toaster = useToastController();
-  const { user, pendingVerification } = useAuth();
 
   useEffect(() => {
-    console.log("In am in the useEffect for pendingVerification");
-    router.replace("/(public)/verification");
     const checkEmailVerified = setInterval(async () => {
       await auth().currentUser?.reload();
       if (auth().currentUser?.emailVerified) {
@@ -42,7 +38,10 @@ export default function VerificationScreen() {
       space="$3"
     >
       <H3>Verify Your Account</H3>
-      <Text width={300}>
+      <Text
+        width={300}
+        textAlign="center"
+      >
         We have sent an email to your registered email address. Please verify
         your account by clicking the link in the email.
       </Text>

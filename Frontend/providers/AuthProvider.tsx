@@ -19,17 +19,15 @@ import {
 export type User = FirebaseAuthTypes.User | null;
 interface AuthContextInterface {
   user: User | null;
-  signIn: React.Dispatch<React.SetStateAction<User>>;
+  signIn: (email: string, password: string) => void;
   signOut: () => void;
   signUp: (email: string, password: string) => void;
-  pendingVerification: boolean;
 }
 const AuthContextInitialState: AuthContextInterface = {
   user: auth().currentUser,
   signIn: () => {},
   signOut: () => {},
-  signUp: () => {},
-  pendingVerification: false
+  signUp: () => {}
 };
 const AuthContext = createContext<AuthContextInterface>(
   AuthContextInitialState
@@ -66,7 +64,7 @@ function userProtectedRouter(user: User) {
       setHasNavigated(true);
       console.log("routing to main");
       router.replace("/(auth)/home");
-    }
+    } else return;
   }, [user?.uid, rootNavigationState?.key, segments]);
 }
 
@@ -77,7 +75,6 @@ export function AuthProvider({
 }: PropsWithChildren<AuthProviderProps>) {
   const toaster = useToastController();
   const [user, setUser] = useState<User>(null);
-  const [pendingVerification, setPendingVerification] = useState(false);
   userProtectedRouter(user); // this function will redirect the user to the correct route based on the user state. Every time the user state changes, this function will be called.
 
   useEffect(() => {
@@ -91,7 +88,6 @@ export function AuthProvider({
           router.replace("/(auth)/home");
         } else {
           toaster.show("Please verify your email!");
-          setPendingVerification(true);
           router.replace("/(public)/verification");
         }
       } else {
@@ -114,7 +110,6 @@ export function AuthProvider({
             .then(() => {
               toaster.show("Verification email sent!");
               console.log("Verification email sent!");
-              setPendingVerification(true);
               router.replace("/(public)/verification");
             })
             .catch((error) => {
@@ -136,17 +131,48 @@ export function AuthProvider({
     }
   }
 
+  function signInUserOnPress(email: string, password: string) {
+    try {
+      auth()
+        .signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          if (userCredential.user?.emailVerified) {
+            setUser(userCredential.user);
+            toaster.show("Welcome back!");
+            router.replace("/(auth)/home");
+          } else {
+            toaster.show("Please verify your email!");
+            router.replace("/(public)/verification");
+          }
+        })
+        .catch((error) => {
+          if (error.code === "auth/invalid-email") {
+            toaster.show("That email address is invalid!");
+          }
+
+          if (error.code === "auth/user-not-found") {
+            toaster.show("There is no user with that email address!");
+          }
+
+          if (error.code === "auth/wrong-password") {
+            toaster.show("That password is incorrect!");
+          }
+          console.log(error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <AuthContext.Provider
       value={{
         user,
-        signIn: setUser,
+        signIn: signInUserOnPress,
         signOut: () => {
           setUser(null);
           auth().signOut();
         },
-        signUp: signUpUserOnPress,
-        pendingVerification
+        signUp: signUpUserOnPress
       }}
     >
       {children}

@@ -3,32 +3,12 @@ import { useToastController } from "@tamagui/toast";
 import { useRouter } from "expo-router";
 import { Formik, FormikValues } from "formik";
 import { Button, H3, Input, Spinner, YStack } from "tamagui";
-import { User } from "../../../providers/AuthProvider";
+import { User, useAuth } from "../../../providers/AuthProvider";
 
 export default function SignInScreen() {
   const router = useRouter();
   const toaster = useToastController();
-
-  function signInUser(email: string, password: string) {
-    auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(() => {
-        console.log("User account signed in!");
-        router.replace("/(auth)/home");
-      })
-      .catch((error) => {
-        if (error.code === "auth/email-already-in-use") {
-          toaster.show("That email address is already in use!");
-        }
-
-        if (error.code === "auth/invalid-email") {
-          toaster.show("That email address is invalid!");
-        }
-
-        toaster.show(error);
-      });
-  }
-
+  const { signIn } = useAuth();
   return (
     <YStack
       flex={1}
@@ -43,7 +23,7 @@ export default function SignInScreen() {
           values: FormikValues,
           actions
         ): void | Promise<User> {
-          signInUser(values.email, values.password);
+          signIn(values.email, values.password);
           setTimeout(() => {
             actions.setSubmitting(false);
           }, 1000);

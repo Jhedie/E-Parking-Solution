@@ -3,7 +3,7 @@ import { useToastController } from "@tamagui/toast";
 import { useRouter } from "expo-router";
 import { Formik, FormikValues } from "formik";
 import { Button, H3, Input, Spinner, YStack } from "tamagui";
-import { User, useAuth } from "../../../providers/AuthProvider";
+import { User, useAuth } from "../../../providers/Authentication/AuthProvider";
 
 export default function SignInScreen() {
   const router = useRouter();

@@ -1,13 +1,5 @@
 import { Link, useRouter } from "expo-router";
-import {
-  Button,
-  H1,
-  Paragraph,
-  SizableText,
-  Spinner,
-  XStack,
-  YStack
-} from "tamagui";
+import { Button, H1, Paragraph, SizableText, XStack, YStack } from "tamagui";
 
 export const WelcomeScreen: React.FC = () => {
   const router = useRouter();

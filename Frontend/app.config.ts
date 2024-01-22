@@ -28,7 +28,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ...config.ios,
     config: {
       ...config.ios?.config,
-      googleMapsApiKey: process.env.GOOGLE_API_KEY
+      googleMapsApiKey: process.env.IOS_GOOGLE_API_KEY
     }
   }
 });

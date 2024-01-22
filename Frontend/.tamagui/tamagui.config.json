@@ -25,6 +25,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -174,6 +175,12 @@
                   "numberOfLines": 1,
                   "lineBreakMode": "clip"
                 }
+              },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
               }
             },
             "validStyles": {
@@ -194,6 +201,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -358,6 +366,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -512,6 +521,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -696,6 +706,12 @@
                   "lineBreakMode": "clip"
                 }
               },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
               "unstyled": {
                 "false": {
                   "size": "$true",
@@ -725,6 +741,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -897,6 +914,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -1057,6 +1075,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -1220,6 +1239,12 @@
                   "numberOfLines": 1,
                   "lineBreakMode": "clip"
                 }
+              },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
               }
             },
             "validStyles": {
@@ -1240,6 +1265,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -1410,6 +1436,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -1591,6 +1618,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -1752,6 +1780,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -1889,6 +1918,10 @@
         },
         "Input": {
           "staticConfig": {
+            "isText": true,
+            "acceptTokens": {
+              "placeholderTextColor": "color"
+            },
             "variants": {
               "unstyled": {
                 "false": {
@@ -1905,7 +1938,7 @@
                     "borderColor": "$borderColorHover"
                   },
                   "focusStyle": {
-                    "outlineColor": "$borderColorFocus",
+                    "outlineColor": "$outlineColor",
                     "outlineWidth": 2,
                     "outlineStyle": "solid",
                     "borderColor": "$borderColorFocus"
@@ -1914,6 +1947,9 @@
               },
               "size": {
                 "...size": "Function"
+              },
+              "disabled": {
+                "true": {}
               }
             },
             "defaultProps": {
@@ -1924,7 +1960,6 @@
             },
             "componentName": "Input",
             "isReactNative": true,
-            "isText": false,
             "acceptsClassName": true,
             "isStyledHOC": false,
             "neverFlatten": true,
@@ -1933,6 +1968,10 @@
         },
         "InputFrame": {
           "staticConfig": {
+            "isText": true,
+            "acceptTokens": {
+              "placeholderTextColor": "color"
+            },
             "variants": {
               "unstyled": {
                 "false": {
@@ -1949,7 +1988,7 @@
                     "borderColor": "$borderColorHover"
                   },
                   "focusStyle": {
-                    "outlineColor": "$borderColorFocus",
+                    "outlineColor": "$outlineColor",
                     "outlineWidth": 2,
                     "outlineStyle": "solid",
                     "borderColor": "$borderColorFocus"
@@ -1958,6 +1997,9 @@
               },
               "size": {
                 "...size": "Function"
+              },
+              "disabled": {
+                "true": {}
               }
             },
             "defaultProps": {
@@ -1968,7 +2010,6 @@
             },
             "componentName": "Input",
             "isReactNative": true,
-            "isText": false,
             "acceptsClassName": true,
             "isStyledHOC": false
           }
@@ -1998,6 +2039,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -2158,6 +2200,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -2319,6 +2362,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -2477,6 +2521,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -2658,6 +2703,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -2831,6 +2877,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -2982,6 +3029,12 @@
                   "lineBreakMode": "clip"
                 }
               },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
               "unstyled": {
                 "false": {
                   "color": "$color"
@@ -3006,6 +3059,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -3155,6 +3209,10 @@
         },
         "TextArea": {
           "staticConfig": {
+            "isText": true,
+            "acceptTokens": {
+              "placeholderTextColor": "color"
+            },
             "variants": {
               "unstyled": {
                 "false": {
@@ -3171,7 +3229,7 @@
                     "borderColor": "$borderColorHover"
                   },
                   "focusStyle": {
-                    "outlineColor": "$borderColorFocus",
+                    "outlineColor": "$outlineColor",
                     "outlineWidth": 2,
                     "outlineStyle": "solid",
                     "borderColor": "$borderColorFocus"
@@ -3181,6 +3239,9 @@
               },
               "size": {
                 "...size": "Function"
+              },
+              "disabled": {
+                "true": {}
               }
             },
             "defaultProps": {
@@ -3193,7 +3254,6 @@
             },
             "componentName": "TextArea",
             "isReactNative": true,
-            "isText": false,
             "acceptsClassName": true,
             "isStyledHOC": false,
             "neverFlatten": true,
@@ -3202,6 +3262,10 @@
         },
         "TextAreaFrame": {
           "staticConfig": {
+            "isText": true,
+            "acceptTokens": {
+              "placeholderTextColor": "color"
+            },
             "variants": {
               "unstyled": {
                 "false": {
@@ -3218,7 +3282,7 @@
                     "borderColor": "$borderColorHover"
                   },
                   "focusStyle": {
-                    "outlineColor": "$borderColorFocus",
+                    "outlineColor": "$outlineColor",
                     "outlineWidth": 2,
                     "outlineStyle": "solid",
                     "borderColor": "$borderColorFocus"
@@ -3228,6 +3292,9 @@
               },
               "size": {
                 "...size": "Function"
+              },
+              "disabled": {
+                "true": {}
               }
             },
             "defaultProps": {
@@ -3240,7 +3307,6 @@
             },
             "componentName": "TextArea",
             "isReactNative": true,
-            "isText": false,
             "acceptsClassName": true,
             "isStyledHOC": false
           }
@@ -3267,6 +3333,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -3423,6 +3490,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -3711,6 +3779,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -3890,6 +3959,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -4068,6 +4138,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -4319,8 +4390,8 @@
               "flexDirection": "column",
               "unstyled": false,
               "tag": "button",
-              "focusable": true,
-              "role": "button"
+              "role": "button",
+              "focusable": true
             },
             "validStyles": {
               "enterStyle": true,
@@ -4340,6 +4411,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -4587,7 +4659,7 @@
                   "borderWidth": 1,
                   "borderColor": "transparent",
                   "focusStyle": {
-                    "outlineColor": "$borderColorFocus",
+                    "outlineColor": "$outlineColor",
                     "outlineStyle": "solid",
                     "outlineWidth": 2
                   }
@@ -4640,8 +4712,8 @@
               "flexDirection": "column",
               "unstyled": false,
               "tag": "button",
-              "focusable": true,
-              "role": "button"
+              "role": "button",
+              "focusable": true
             },
             "validStyles": {
               "enterStyle": true,
@@ -4661,6 +4733,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -4908,7 +4981,7 @@
                   "borderWidth": 1,
                   "borderColor": "transparent",
                   "focusStyle": {
-                    "outlineColor": "$borderColorFocus",
+                    "outlineColor": "$outlineColor",
                     "outlineStyle": "solid",
                     "outlineWidth": 2
                   }
@@ -4973,6 +5046,12 @@
                   "lineBreakMode": "clip"
                 }
               },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
               "unstyled": {
                 "false": {
                   "size": "$true",
@@ -5007,6 +5086,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -5182,6 +5262,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -5462,6 +5543,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -5739,6 +5821,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -6020,6 +6103,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -6300,6 +6384,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -6581,6 +6666,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -6831,7 +6917,7 @@
                     "borderColor": "$borderColorFocus",
                     "outlineStyle": "solid",
                     "outlineWidth": 2,
-                    "outlineColor": "$borderColorFocus"
+                    "outlineColor": "$outlineColor"
                   }
                 }
               },
@@ -6895,6 +6981,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -7145,7 +7232,7 @@
                     "borderColor": "$borderColorFocus",
                     "outlineStyle": "solid",
                     "outlineWidth": 2,
-                    "outlineColor": "$borderColorFocus"
+                    "outlineColor": "$outlineColor"
                   }
                 }
               },
@@ -7206,6 +7293,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -7370,6 +7458,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -7629,6 +7718,213 @@
             "isHOC": true
           }
         },
+        "DialogDescription": {
+          "staticConfig": {
+            "acceptsClassName": true,
+            "isText": true,
+            "defaultProps": {
+              "fontFamily": "$body",
+              "suppressHighlighting": true,
+              "unstyled": false,
+              "tag": "p",
+              "userSelect": "auto",
+              "color": "$color",
+              "size": "$true"
+            },
+            "inlineWhenUnflattened": {},
+            "variants": {
+              "ellipsizeMode": {
+                "...": "Function"
+              },
+              "ellipse": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
+              "unstyled": {
+                "false": {
+                  "size": "$true",
+                  "color": "$color"
+                }
+              },
+              "size": "Function",
+              "fontFamily": {
+                "...": "Function"
+              }
+            },
+            "validStyles": {
+              "enterStyle": true,
+              "exitStyle": true,
+              "hoverStyle": true,
+              "pressStyle": true,
+              "focusStyle": true,
+              "backfaceVisibility": true,
+              "borderBottomEndRadius": true,
+              "borderBottomStartRadius": true,
+              "borderBottomWidth": true,
+              "borderLeftWidth": true,
+              "borderRightWidth": true,
+              "borderStyle": true,
+              "borderTopEndRadius": true,
+              "borderTopStartRadius": true,
+              "borderTopWidth": true,
+              "borderWidth": true,
+              "transform": true,
+              "transformOrigin": true,
+              "alignContent": true,
+              "alignItems": true,
+              "alignSelf": true,
+              "borderEndWidth": true,
+              "borderStartWidth": true,
+              "bottom": true,
+              "display": true,
+              "end": true,
+              "flexBasis": true,
+              "flexDirection": true,
+              "flexWrap": true,
+              "gap": true,
+              "columnGap": true,
+              "rowGap": true,
+              "justifyContent": true,
+              "left": true,
+              "margin": true,
+              "marginBlockEnd": true,
+              "marginBlockStart": true,
+              "marginInlineEnd": true,
+              "marginInline": true,
+              "marginInlineStart": true,
+              "marginBottom": true,
+              "marginEnd": true,
+              "marginHorizontal": true,
+              "marginLeft": true,
+              "marginRight": true,
+              "marginStart": true,
+              "marginTop": true,
+              "marginVertical": true,
+              "overflow": true,
+              "padding": true,
+              "paddingBottom": true,
+              "paddingInline": true,
+              "paddingBlock": true,
+              "paddingBlockStart": true,
+              "paddingInlineEnd": true,
+              "paddingInlineStart": true,
+              "paddingEnd": true,
+              "paddingHorizontal": true,
+              "paddingLeft": true,
+              "paddingRight": true,
+              "paddingStart": true,
+              "paddingTop": true,
+              "paddingVertical": true,
+              "position": true,
+              "right": true,
+              "start": true,
+              "top": true,
+              "direction": true,
+              "shadowOffset": true,
+              "shadowRadius": true,
+              "backgroundColor": true,
+              "borderColor": true,
+              "borderBlockStartColor": true,
+              "borderBlockEndColor": true,
+              "borderBlockColor": true,
+              "borderBottomColor": true,
+              "borderTopColor": true,
+              "borderLeftColor": true,
+              "borderRightColor": true,
+              "borderEndColor": true,
+              "borderStartColor": true,
+              "shadowColor": true,
+              "color": true,
+              "placeholderTextColor": true,
+              "textDecorationColor": true,
+              "textShadowColor": true,
+              "borderRadius": true,
+              "borderTopLeftRadius": true,
+              "borderTopRightRadius": true,
+              "borderBottomLeftRadius": true,
+              "borderBottomRightRadius": true,
+              "borderStartStartRadius": true,
+              "borderStartEndRadius": true,
+              "borderEndStartRadius": true,
+              "borderEndEndRadius": true,
+              "width": true,
+              "height": true,
+              "minWidth": true,
+              "minHeight": true,
+              "maxWidth": true,
+              "maxHeight": true,
+              "x": true,
+              "y": true,
+              "scale": true,
+              "perspective": true,
+              "scaleX": true,
+              "scaleY": true,
+              "skewX": true,
+              "skewY": true,
+              "matrix": true,
+              "rotate": true,
+              "rotateY": true,
+              "rotateX": true,
+              "rotateZ": true,
+              "WebkitLineClamp": true,
+              "animationIterationCount": true,
+              "aspectRatio": true,
+              "borderImageOutset": true,
+              "borderImageSlice": true,
+              "borderImageWidth": true,
+              "columnCount": true,
+              "flex": true,
+              "flexGrow": true,
+              "flexOrder": true,
+              "flexPositive": true,
+              "flexShrink": true,
+              "flexNegative": true,
+              "fontWeight": true,
+              "gridRow": true,
+              "gridRowEnd": true,
+              "gridRowGap": true,
+              "gridRowStart": true,
+              "gridColumn": true,
+              "gridColumnEnd": true,
+              "gridColumnGap": true,
+              "gridColumnStart": true,
+              "lineClamp": true,
+              "opacity": true,
+              "order": true,
+              "orphans": true,
+              "tabSize": true,
+              "widows": true,
+              "zIndex": true,
+              "zoom": true,
+              "scaleZ": true,
+              "shadowOpacity": true,
+              "fontFamily": true,
+              "fontSize": true,
+              "fontStyle": true,
+              "letterSpacing": true,
+              "lineHeight": true,
+              "textTransform": true,
+              "textAlign": true,
+              "textDecorationLine": true,
+              "textDecorationStyle": true,
+              "textShadowOffset": true,
+              "textShadowRadius": true
+            },
+            "componentName": "DialogDescription",
+            "isReactNative": false,
+            "isStyledHOC": false,
+            "neverFlatten": true,
+            "isHOC": true
+          }
+        },
         "DialogOverlay": {
           "staticConfig": {
             "acceptsClassName": true,
@@ -7654,6 +7950,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -7940,6 +8237,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -8224,6 +8522,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -8384,6 +8683,215 @@
             "isStyledHOC": false
           }
         },
+        "DialogTitle": {
+          "staticConfig": {
+            "acceptsClassName": true,
+            "isText": true,
+            "defaultProps": {
+              "fontFamily": "$heading",
+              "suppressHighlighting": true,
+              "unstyled": false,
+              "tag": "h2",
+              "userSelect": "auto",
+              "color": "$color",
+              "size": "$9",
+              "accessibilityRole": "header",
+              "margin": 0
+            },
+            "inlineWhenUnflattened": {},
+            "variants": {
+              "ellipsizeMode": {
+                "...": "Function"
+              },
+              "ellipse": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
+              "unstyled": {
+                "false": {
+                  "size": "$true",
+                  "color": "$color"
+                }
+              },
+              "size": "Function",
+              "fontFamily": {
+                "...": "Function"
+              }
+            },
+            "validStyles": {
+              "enterStyle": true,
+              "exitStyle": true,
+              "hoverStyle": true,
+              "pressStyle": true,
+              "focusStyle": true,
+              "backfaceVisibility": true,
+              "borderBottomEndRadius": true,
+              "borderBottomStartRadius": true,
+              "borderBottomWidth": true,
+              "borderLeftWidth": true,
+              "borderRightWidth": true,
+              "borderStyle": true,
+              "borderTopEndRadius": true,
+              "borderTopStartRadius": true,
+              "borderTopWidth": true,
+              "borderWidth": true,
+              "transform": true,
+              "transformOrigin": true,
+              "alignContent": true,
+              "alignItems": true,
+              "alignSelf": true,
+              "borderEndWidth": true,
+              "borderStartWidth": true,
+              "bottom": true,
+              "display": true,
+              "end": true,
+              "flexBasis": true,
+              "flexDirection": true,
+              "flexWrap": true,
+              "gap": true,
+              "columnGap": true,
+              "rowGap": true,
+              "justifyContent": true,
+              "left": true,
+              "margin": true,
+              "marginBlockEnd": true,
+              "marginBlockStart": true,
+              "marginInlineEnd": true,
+              "marginInline": true,
+              "marginInlineStart": true,
+              "marginBottom": true,
+              "marginEnd": true,
+              "marginHorizontal": true,
+              "marginLeft": true,
+              "marginRight": true,
+              "marginStart": true,
+              "marginTop": true,
+              "marginVertical": true,
+              "overflow": true,
+              "padding": true,
+              "paddingBottom": true,
+              "paddingInline": true,
+              "paddingBlock": true,
+              "paddingBlockStart": true,
+              "paddingInlineEnd": true,
+              "paddingInlineStart": true,
+              "paddingEnd": true,
+              "paddingHorizontal": true,
+              "paddingLeft": true,
+              "paddingRight": true,
+              "paddingStart": true,
+              "paddingTop": true,
+              "paddingVertical": true,
+              "position": true,
+              "right": true,
+              "start": true,
+              "top": true,
+              "direction": true,
+              "shadowOffset": true,
+              "shadowRadius": true,
+              "backgroundColor": true,
+              "borderColor": true,
+              "borderBlockStartColor": true,
+              "borderBlockEndColor": true,
+              "borderBlockColor": true,
+              "borderBottomColor": true,
+              "borderTopColor": true,
+              "borderLeftColor": true,
+              "borderRightColor": true,
+              "borderEndColor": true,
+              "borderStartColor": true,
+              "shadowColor": true,
+              "color": true,
+              "placeholderTextColor": true,
+              "textDecorationColor": true,
+              "textShadowColor": true,
+              "borderRadius": true,
+              "borderTopLeftRadius": true,
+              "borderTopRightRadius": true,
+              "borderBottomLeftRadius": true,
+              "borderBottomRightRadius": true,
+              "borderStartStartRadius": true,
+              "borderStartEndRadius": true,
+              "borderEndStartRadius": true,
+              "borderEndEndRadius": true,
+              "width": true,
+              "height": true,
+              "minWidth": true,
+              "minHeight": true,
+              "maxWidth": true,
+              "maxHeight": true,
+              "x": true,
+              "y": true,
+              "scale": true,
+              "perspective": true,
+              "scaleX": true,
+              "scaleY": true,
+              "skewX": true,
+              "skewY": true,
+              "matrix": true,
+              "rotate": true,
+              "rotateY": true,
+              "rotateX": true,
+              "rotateZ": true,
+              "WebkitLineClamp": true,
+              "animationIterationCount": true,
+              "aspectRatio": true,
+              "borderImageOutset": true,
+              "borderImageSlice": true,
+              "borderImageWidth": true,
+              "columnCount": true,
+              "flex": true,
+              "flexGrow": true,
+              "flexOrder": true,
+              "flexPositive": true,
+              "flexShrink": true,
+              "flexNegative": true,
+              "fontWeight": true,
+              "gridRow": true,
+              "gridRowEnd": true,
+              "gridRowGap": true,
+              "gridRowStart": true,
+              "gridColumn": true,
+              "gridColumnEnd": true,
+              "gridColumnGap": true,
+              "gridColumnStart": true,
+              "lineClamp": true,
+              "opacity": true,
+              "order": true,
+              "orphans": true,
+              "tabSize": true,
+              "widows": true,
+              "zIndex": true,
+              "zoom": true,
+              "scaleZ": true,
+              "shadowOpacity": true,
+              "fontFamily": true,
+              "fontSize": true,
+              "fontStyle": true,
+              "letterSpacing": true,
+              "lineHeight": true,
+              "textTransform": true,
+              "textAlign": true,
+              "textDecorationLine": true,
+              "textDecorationStyle": true,
+              "textShadowOffset": true,
+              "textShadowRadius": true
+            },
+            "componentName": "DialogTitle",
+            "isReactNative": false,
+            "isStyledHOC": false,
+            "neverFlatten": true,
+            "isHOC": true
+          }
+        },
         "DialogTrigger": {
           "staticConfig": {
             "acceptsClassName": true,
@@ -8406,6 +8914,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -8567,6 +9076,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -8728,6 +9238,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -8885,6 +9396,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -9047,6 +9559,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -9298,12 +9811,7 @@
         },
         "Image": {
           "staticConfig": {
-            "defaultProps": {
-              "position": "relative",
-              "source": {
-                "uri": ""
-              }
-            },
+            "defaultProps": {},
             "componentName": "Image",
             "isReactNative": true,
             "isText": false,
@@ -9329,6 +9837,12 @@
                 "...": "Function"
               },
               "ellipse": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
+              "ellipsis": {
                 "true": {
                   "numberOfLines": 1,
                   "lineBreakMode": "clip"
@@ -9373,6 +9887,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -9544,6 +10059,12 @@
                   "lineBreakMode": "clip"
                 }
               },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
               "unstyled": {
                 "false": {
                   "size": "$true",
@@ -9583,6 +10104,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -9757,6 +10279,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -10058,6 +10581,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -10351,6 +10875,12 @@
                   "lineBreakMode": "clip"
                 }
               },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
               "unstyled": {
                 "false": {
                   "size": "$true",
@@ -10388,6 +10918,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -10556,6 +11087,12 @@
                   "lineBreakMode": "clip"
                 }
               },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
               "unstyled": {
                 "false": {
                   "size": "$true",
@@ -10589,6 +11126,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -10757,6 +11295,12 @@
                   "lineBreakMode": "clip"
                 }
               },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
               "unstyled": {
                 "false": {
                   "size": "$true",
@@ -10790,6 +11334,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -10960,6 +11505,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -11147,6 +11693,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -11427,6 +11974,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -11603,6 +12151,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -11790,6 +12339,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -12069,6 +12619,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -12349,6 +12900,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -12627,6 +13179,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -12904,6 +13457,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -13178,6 +13732,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -13478,6 +14033,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -13654,6 +14210,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -13836,6 +14393,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -14016,6 +14574,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -14191,6 +14750,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -14462,6 +15022,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -14731,6 +15292,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -14920,6 +15482,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -15121,6 +15684,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -15408,6 +15972,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -15609,6 +16174,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -15896,6 +16462,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -16075,6 +16642,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -16358,6 +16926,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -16539,6 +17108,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -16731,6 +17301,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -16904,6 +17475,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -17078,6 +17650,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -17253,6 +17826,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -17474,6 +18048,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -17738,6 +18313,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -17889,7 +18465,7 @@
                   "borderWidth": 2,
                   "borderColor": "$background",
                   "focusStyle": {
-                    "outlineColor": "$borderColorFocus",
+                    "outlineColor": "$outlineColor",
                     "outlineStyle": "solid",
                     "outlineWidth": 2
                   }
@@ -17942,6 +18518,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -18093,7 +18670,7 @@
                   "borderWidth": 2,
                   "borderColor": "$background",
                   "focusStyle": {
-                    "outlineColor": "$borderColorFocus",
+                    "outlineColor": "$outlineColor",
                     "outlineStyle": "solid",
                     "outlineWidth": 2
                   }
@@ -18145,6 +18722,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -18427,6 +19005,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -18646,6 +19225,12 @@
                   "lineBreakMode": "clip"
                 }
               },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
               "unstyled": {
                 "false": {
                   "size": "$true",
@@ -18675,6 +19260,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -18847,6 +19433,12 @@
                   "lineBreakMode": "clip"
                 }
               },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
               "unstyled": {
                 "false": {
                   "size": "$true",
@@ -18876,6 +19468,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -19047,6 +19640,12 @@
                   "lineBreakMode": "clip"
                 }
               },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
               "unstyled": {
                 "false": {
                   "size": "$true",
@@ -19076,6 +19675,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -19247,6 +19847,12 @@
                   "lineBreakMode": "clip"
                 }
               },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
               "unstyled": {
                 "false": {
                   "size": "$true",
@@ -19276,6 +19882,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -19447,6 +20054,12 @@
                   "lineBreakMode": "clip"
                 }
               },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
               "unstyled": {
                 "false": {
                   "size": "$true",
@@ -19476,6 +20089,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -19647,6 +20261,12 @@
                   "lineBreakMode": "clip"
                 }
               },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
               "unstyled": {
                 "false": {
                   "size": "$true",
@@ -19676,6 +20296,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -19847,6 +20468,12 @@
                   "lineBreakMode": "clip"
                 }
               },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
               "unstyled": {
                 "false": {
                   "size": "$true",
@@ -19876,6 +20503,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -20047,6 +20675,12 @@
                   "lineBreakMode": "clip"
                 }
               },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
               "unstyled": {
                 "false": {
                   "size": "$true",
@@ -20076,6 +20710,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -20247,6 +20882,12 @@
                   "lineBreakMode": "clip"
                 }
               },
+              "ellipsis": {
+                "true": {
+                  "numberOfLines": 1,
+                  "lineBreakMode": "clip"
+                }
+              },
               "unstyled": {
                 "false": {
                   "size": "$true",
@@ -20276,6 +20917,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -20452,6 +21094,7 @@
               "borderTopWidth": true,
               "borderWidth": true,
               "transform": true,
+              "transformOrigin": true,
               "alignContent": true,
               "alignItems": true,
               "alignSelf": true,
@@ -47569,29 +48212,6 @@
           "val": 48,
           "variable": ""
         }
-      },
-      "icon": {
-        "sm": {
-          "isVar": true,
-          "key": "$sm",
-          "name": "icon-1",
-          "val": 16,
-          "variable": ""
-        },
-        "md": {
-          "isVar": true,
-          "key": "$md",
-          "name": "icon-2",
-          "val": 24,
-          "variable": ""
-        },
-        "lg": {
-          "isVar": true,
-          "key": "$lg",
-          "name": "icon-3",
-          "val": 32,
-          "variable": ""
-        }
       }
     },
     "unset": {},
@@ -49770,27 +50390,6 @@
         "key": "$4.5",
         "name": "size-13",
         "val": 48,
-        "variable": ""
-      },
-      "$icon.sm": {
-        "isVar": true,
-        "key": "$sm",
-        "name": "icon-1",
-        "val": 16,
-        "variable": ""
-      },
-      "$icon.md": {
-        "isVar": true,
-        "key": "$md",
-        "name": "icon-2",
-        "val": 24,
-        "variable": ""
-      },
-      "$icon.lg": {
-        "isVar": true,
-        "key": "$lg",
-        "name": "icon-3",
-        "val": 32,
         "variable": ""
       }
     }

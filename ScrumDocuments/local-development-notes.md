@@ -59,6 +59,9 @@ Below are the development notes for the project. It comprises of links and resou
   - video for maps:
     https://www.youtube.com/watch?v=9xD4coXs6Ts&t=3739s
 
+10. Error:WARN The redirect prop on <Screen /> is deprecated and will be removed. Please use router.redirect
+    Solution: https://github.com/expo/router/issues/834#:~:text=6-,branaust%20commented%20on%20Sep%2015%2C%202023,-%E2%80%A2
+
 ## Extra notes:
 
 Car Parking Finder App UI Clone in React Native #2: Scrolling/Swiping Transition:

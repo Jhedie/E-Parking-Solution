@@ -5,7 +5,8 @@ const PublicLayout = () => {
   return (
     <Tabs
       screenOptions={{
-        headerShown: false
+        headerShown: false,
+        tabBarActiveTintColor: "black"
       }}
     >
       <Tabs.Screen

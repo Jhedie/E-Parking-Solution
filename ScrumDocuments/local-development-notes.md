@@ -66,3 +66,7 @@ Below are the development notes for the project. It comprises of links and resou
 
 Car Parking Finder App UI Clone in React Native #2: Scrolling/Swiping Transition:
 https://dev.to/absek/car-parking-finder-app-ui-clone-in-react-native-2-scrolling-swiping-transition-kc1
+
+https://shopify.github.io/flash-list/
+
+https://github.com/wix/react-native-calendars

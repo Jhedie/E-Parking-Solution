@@ -12,8 +12,29 @@ import parkingLots from "../../assets/data/parkingLots.json";
 import { UserLocationContext } from "../../providers/UserLocation/UserLocationProvider";
 import MapViewStyle from "../../utils/MapViewStyle.json";
 import ParkingLotListItem from "./ParkingLotListItem/screen";
+
+type ParkingLot = {
+  LotId: string;
+  Location: {
+    Latitude: string;
+    Longitude: string;
+  };
+  Owner: {
+    OwnerId: string;
+    Name: string;
+  };
+  Capacity: number;
+  Occupancy: number;
+  LiveStatus: string;
+  Rate: string;
+  OperatingHours: string;
+  Facilities: string[];
+};
+
 const MapScreen: React.FC = () => {
   const userLocationContext = useContext(UserLocationContext);
+  const [selectedParkingLot, setSelectedParkingLot] =
+    React.useState<ParkingLot | null>(null);
 
   if (!userLocationContext) {
     throw new Error("MapScreen must be used within a UserLocationProvider");
@@ -43,6 +64,7 @@ const MapScreen: React.FC = () => {
         >
           {parkingLots.map((parkingLot, index) => (
             <Marker
+              onPress={() => setSelectedParkingLot(parkingLot)}
               coordinate={{
                 latitude: parseFloat(parkingLot.Location.Latitude),
                 longitude: parseFloat(parkingLot.Location.Longitude)
@@ -78,7 +100,9 @@ const MapScreen: React.FC = () => {
           </Marker>
         </MapView>
         {/* Display selected apartment */}
-        <ParkingLotListItem parkingLot={parkingLots[0]} />
+        {selectedParkingLot && (
+          <ParkingLotListItem parkingLot={selectedParkingLot} />
+        )}
       </YStack>
     )
   );

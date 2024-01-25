@@ -1,99 +1,57 @@
-import React from "react";
-import {
-  Button,
-  Card,
-  H2,
-  Image,
-  Paragraph,
-  Text,
-  XStack,
-  YStack
-} from "tamagui";
+import { StyleSheet, View } from "react-native";
+import { Button, Image, Text, YStack } from "tamagui";
 const ParkingLotListItem = ({ parkingLot }) => {
   return (
     <YStack
       position="absolute"
-      flex={1}
-      justifyContent="center"
-      bottom={0}
-      backgroundColor="white"
-      padding={10}
-      width={300}
+      bottom={10}
+      backgroundColor={"white"}
+      width="90%"
       height={200}
-      borderRadius={10}
+      padding={7}
       opacity={0.9}
     >
-      <XStack flex={1}>
-        <Button borderRadius="$10">X</Button>
-        <Text fontWeight={"bold"}>{parkingLot.LotId}</Text>
-      </XStack>
+      <View style={styles.cardContainer}>
+        <View style={styles.cardHeader}>
+          <Button padding={10}>X</Button>
+          <Text style={styles.cardHeaderTitle}>{parkingLot.LotId}</Text>
+        </View>
 
-      <XStack
-        flex={1}
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <YStack marginRight={20}>
+        <View style={styles.cardBody}>
           <Image
             resizeMode="contain"
             source={{
               width: 150,
-              height: 200,
-              uri: require("../../../assets/images/parking-lot-image.png")
-            }}
-            opacity={0.4}
-          />
-        </YStack>
-        <YStack>
-          <Text>Occupancy: {parkingLot.Occupancy}</Text>
-          <Text>Capacity: {parkingLot.Capacity}</Text>
-        </YStack>
-      </XStack>
+              height: 100,
 
-      <XStack>
-        <Button
-          borderRadius="$10"
-          flex={1}
-          alignSelf="flex-end"
-        >
-          Book
-        </Button>
-      </XStack>
-      {/* <Card
-        elevate
-        bordered
-        backgroundColor="white"
-        width={300}
-        opacity={0.9}
-      >
-        <Card.Header padded>
-          <H2>{parkingLot.LotId}</H2>
-          <Paragraph fontWeight="bold">
-            Occupancy: {parkingLot.Occupancy}
-          </Paragraph>
-          <Paragraph fontWeight="bold">
-            Capacity: {parkingLot.Capacity}
-          </Paragraph>
-        </Card.Header>
-        <Card.Footer padded>
-          <XStack flex={1} />
-          <Button borderRadius="$10">Book</Button>
-        </Card.Footer>
-        <Card.Background>
-          <Image
-            resizeMode="contain"
-            alignSelf="center"
-            source={{
-              width: 300,
-              height: 300,
               uri: require("../../../assets/images/parking-lot-image.png")
             }}
-            opacity={0.4}
           />
-        </Card.Background>
-      </Card> */}
+
+          <View style={styles.cardBodyDetails}>
+            <Text>Capacity: {parkingLot.Capacity}</Text>
+            <Text>Occupancy: {parkingLot.Occupancy}</Text>
+            <Text>Rate: {parkingLot.Rate}</Text>
+          </View>
+        </View>
+        <View style={styles.cardFooter}>
+          <Button>Book</Button>
+        </View>
+      </View>
     </YStack>
   );
 };
+
+const styles = StyleSheet.create({
+  cardContainer: {
+    width: "100%"
+  },
+  cardHeader: { display: "flex", flexDirection: "row", alignItems: "center" },
+  cardHeaderTitle: { fontSize: 15, fontWeight: "bold", marginLeft: 16 },
+  cardBody: { display: "flex", flexDirection: "row", alignItems: "flex-start" },
+  cardBodyImage: {},
+  cardBodyDetails: { marginLeft: 16 },
+  cardFooter: {}
+});
 
 export default ParkingLotListItem;

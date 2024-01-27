@@ -9,15 +9,16 @@ This document is used to record the weekly standup notes for the project.
 - Continue working on issues in the In Progress column
 
 ## Updates:
+
 - No board updates
 - Successfully implemented a basic Map display for issue #14
 - Displayed the current location of the user on the map
 - Displayed the parking spots on the map using sample data
 - Simple parking spot icons were used to represent the parking spots
 
-## Problems/Blockages:
+## Problems/Blockers:
 
-- No blockages
+- No blockers
 
 ## Action Item:
 

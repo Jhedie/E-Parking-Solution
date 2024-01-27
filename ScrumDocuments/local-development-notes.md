@@ -61,5 +61,22 @@ Below are the development notes for the project. It comprises of links and resou
 
 ## Extra notes:
 
+UI  -
+https://www.figma.com/file/mklroFLA8ElqjLEyaWVW6O/Parking-App-Design-UI-%7C-Figma-(Community)?type=design&node-id=201-1100&mode=design&t=4n7ERUDiK9cpHxmx-0
+
+https://www.figma.com/file/oRAtKh02FgKw5FhUfwuY3q/Parkir---Parking-App-UI-Kit-(Preview)?type=design&node-id=1127-9957&mode=design&t=33UDqdHsnBSBsVvz-0
+
+https://www.figma.com/file/6B1CUowi8YAh3ncWdx993F/Parking-app-UI-UX-Kit-%7C-Case-Study-(Community)?type=design&mode=design&t=UcEZ3RiDWEH4CqyZ-0
+
+https://www.figma.com/files/recents-and-sharing/recently-viewed?fuid=1111328759623863677
+
+
+Stacks and Navigation:
+https://youtu.be/QpfAyQgphgw?t=1957
+
+https://expo.github.io/router/docs/migration/react-navigation/navigation-container/
+
+
+
 Car Parking Finder App UI Clone in React Native #2: Scrolling/Swiping Transition:
 https://dev.to/absek/car-parking-finder-app-ui-clone-in-react-native-2-scrolling-swiping-transition-kc1

@@ -1,6 +1,16 @@
 import { StyleSheet, View } from "react-native";
 import { Button, Image, Text, YStack } from "tamagui";
-const ParkingLotListItem = ({ parkingLot }) => {
+import { StackNavigation } from "../../../app/(auth)/home";
+import { ParkingLot } from "../screen";
+
+interface ParkingLotListItemProps {
+  parkingLot: ParkingLot;
+  navigation: StackNavigation;
+}
+const ParkingLotListItem: React.FC<ParkingLotListItemProps> = ({
+  parkingLot,
+  navigation
+}) => {
   return (
     <YStack
       position="absolute"
@@ -35,7 +45,11 @@ const ParkingLotListItem = ({ parkingLot }) => {
           </View>
         </View>
         <View style={styles.cardFooter}>
-          <Button>Book</Button>
+          <Button
+            onPress={() => navigation.navigate("BookingScreen", { parkingLot })}
+          >
+            Book
+          </Button>
         </View>
       </View>
     </YStack>

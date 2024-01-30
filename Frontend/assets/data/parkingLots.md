@@ -1,2 +1,3 @@
 - parkinglot address
+- formatted Address
 - parkinglot unique name

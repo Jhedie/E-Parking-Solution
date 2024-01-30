@@ -8,13 +8,14 @@ import MapView, {
   enableLatestRenderer
 } from "react-native-maps";
 
-import { Image, Text, XStack, YStack } from "tamagui";
+import { Image, YStack } from "tamagui";
+import { StackNavigation } from "../../app/(auth)/home";
 import parkingLots from "../../assets/data/parkingLots.json";
 import { UserLocationContext } from "../../providers/UserLocation/UserLocationProvider";
-import MapViewStyle from "../../utils/MapViewStyle.json";
+import ParkingLotMarker from "./Markers/ParkingLotMarker/screen";
 import ParkingLotListItem from "./ParkingLotListItem/screen";
 
-type ParkingLot = {
+export type ParkingLot = {
   LotId: string;
   Location: {
     Latitude: string;
@@ -32,7 +33,11 @@ type ParkingLot = {
   Facilities: string[];
 };
 
-const MapScreen: React.FC = () => {
+interface MapScreenProps {
+  navigation: StackNavigation;
+}
+
+const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
   const userLocationContext = useContext(UserLocationContext);
   const [selectedParkingLot, setSelectedParkingLot] =
     React.useState<ParkingLot | null>(null);
@@ -56,7 +61,6 @@ const MapScreen: React.FC = () => {
           provider={
             Platform.OS === "android" ? PROVIDER_GOOGLE : PROVIDER_DEFAULT
           }
-          customMapStyle={MapViewStyle}
           region={{
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
@@ -66,29 +70,11 @@ const MapScreen: React.FC = () => {
           onPress={() => setSelectedParkingLot(null)}
         >
           {parkingLots.map((parkingLot, index) => (
-            <Marker
+            <ParkingLotMarker
+              key={parkingLot.LotId}
+              parkingLot={parkingLot}
               onPress={() => setSelectedParkingLot(parkingLot)}
-              coordinate={{
-                latitude: parseFloat(parkingLot.Location.Latitude),
-                longitude: parseFloat(parkingLot.Location.Longitude)
-              }}
-              title={parkingLot.LotId}
-              description="Parking Lot"
-              key={index}
-            >
-              <Image
-                source={require("../../assets/images/parking-lot-marker.png")}
-                style={{ width: 35, height: 35 }}
-              />
-              {/* <YStack
-                flex={1}
-                alignItems="center"
-                justifyContent="center"
-                backgroundColor={"white"}
-                padding={10}
-                borderRadius={10}
-              ></YStack> */}
-            </Marker>
+            />
           ))}
           <Marker
             coordinate={{
@@ -104,7 +90,10 @@ const MapScreen: React.FC = () => {
         </MapView>
         {/* Display selected apartment */}
         {selectedParkingLot && (
-          <ParkingLotListItem parkingLot={selectedParkingLot} />
+          <ParkingLotListItem
+            parkingLot={selectedParkingLot}
+            navigation={navigation}
+          />
         )}
       </YStack>
     )
@@ -115,6 +104,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   map: {
+    flex: 1,
     width: "100%",
     height: "100%"
   }

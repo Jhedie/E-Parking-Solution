@@ -26,7 +26,6 @@ const ProfileScreen = () => {
       justifyContent="center"
       gap="$6"
     >
-      <H3>Profile</H3>
       <XStack
         alignItems="center"
         gap="$6"

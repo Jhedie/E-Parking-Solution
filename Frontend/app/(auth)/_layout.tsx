@@ -5,7 +5,7 @@ const PublicLayout = () => {
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
         tabBarActiveTintColor: "black"
       }}
     >
@@ -13,6 +13,7 @@ const PublicLayout = () => {
         name="home"
         options={{
           headerTitle: "Home",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons
               name="home-outline"
@@ -25,24 +26,24 @@ const PublicLayout = () => {
       />
 
       <Tabs.Screen
-        name="booking"
+        name="sessions"
         options={{
-          headerTitle: "Booking",
+          headerTitle: "Session",
           tabBarIcon: ({ color, size }) => (
             <Ionicons
-              name="calendar-outline"
+              name="stopwatch-outline"
               size={size}
               color={color}
             />
           ),
-          tabBarLabel: "Booking"
+          tabBarLabel: "Session"
         }}
       />
 
       <Tabs.Screen
         name="profile"
         options={{
-          headerTitle: "My Profile",
+          headerTitle: "Profile",
           tabBarIcon: ({ color, size }) => (
             <Ionicons
               name="person-outline"
@@ -50,7 +51,7 @@ const PublicLayout = () => {
               color={color}
             />
           ),
-          tabBarLabel: "My Profile"
+          tabBarLabel: "Profile"
         }}
       />
     </Tabs>

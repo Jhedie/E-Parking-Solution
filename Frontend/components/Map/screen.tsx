@@ -4,7 +4,8 @@ import { Platform, StyleSheet } from "react-native";
 import MapView, {
   Marker,
   PROVIDER_DEFAULT,
-  PROVIDER_GOOGLE
+  PROVIDER_GOOGLE,
+  enableLatestRenderer
 } from "react-native-maps";
 
 import { Image, Text, XStack, YStack } from "tamagui";
@@ -40,6 +41,7 @@ const MapScreen: React.FC = () => {
     throw new Error("MapScreen must be used within a UserLocationProvider");
   }
   const { location } = userLocationContext;
+  enableLatestRenderer();
   console.log("parking", parkingLots);
   return (
     location?.coords.latitude && (
@@ -61,6 +63,7 @@ const MapScreen: React.FC = () => {
             latitudeDelta: 0.02,
             longitudeDelta: 0.02
           }}
+          onPress={() => setSelectedParkingLot(null)}
         >
           {parkingLots.map((parkingLot, index) => (
             <Marker

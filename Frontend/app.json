@@ -53,7 +53,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Show current location on map."
+          "locationAlwaysAndWhenInUsePermission": "Allow Frontend to use your location."
         }
       ],
       "@react-native-firebase/app",

@@ -47,7 +47,6 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
   }
   const { location } = userLocationContext;
   enableLatestRenderer();
-  console.log("parking", parkingLots);
   return (
     location?.coords.latitude && (
       <YStack
@@ -67,13 +66,14 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
             latitudeDelta: 0.02,
             longitudeDelta: 0.02
           }}
-          onPress={() => setSelectedParkingLot(null)}
         >
-          {parkingLots.map((parkingLot, index) => (
+          {parkingLots.map((parkingLot) => (
             <ParkingLotMarker
               key={parkingLot.LotId}
               parkingLot={parkingLot}
-              onPress={() => setSelectedParkingLot(parkingLot)}
+              onPress={() => {
+                setSelectedParkingLot(parkingLot);
+              }}
             />
           ))}
           <Marker
@@ -93,6 +93,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
           <ParkingLotListItem
             parkingLot={selectedParkingLot}
             navigation={navigation}
+            setSelectedParkingLot={setSelectedParkingLot}
           />
         )}
       </YStack>

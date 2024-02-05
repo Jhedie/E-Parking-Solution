@@ -2,6 +2,7 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 
 import React from "react";
 import { Button, H3, Paragraph, YStack } from "tamagui";
+import { StackNavigation } from "../../app/(auth)/home";
 import { ParkingLot } from "../Map/screen";
 
 type RouteParams = {
@@ -9,17 +10,20 @@ type RouteParams = {
     parkingLot: ParkingLot;
   };
 };
-export const BookingScreen: React.FC = () => {
+
+interface BookingScreenProps {
+  navigation: StackNavigation;
+}
+
+export const BookingScreen: React.FC<BookingScreenProps> = ({ navigation }) => {
   const route = useRoute<RouteProp<RouteParams, "BookingScreen">>();
   const { parkingLot } = route.params;
   return (
-    <YStack>
-      <YStack
-        flex={1}
-        alignItems="center"
-        justifyContent="center"
-      ></YStack>
-      <H3>Booking</H3>
+    <YStack
+      flex={1}
+      alignItems="center"
+      justifyContent="center"
+    >
       {
         <Paragraph>
           {/* Print all parking details */}
@@ -27,7 +31,12 @@ export const BookingScreen: React.FC = () => {
         </Paragraph>
       }
 
-      <Button themeInverse>Book</Button>
+      <Button
+        themeInverse
+        onPress={() => navigation.navigate("VehicleScreen")}
+      >
+        Proceed to Booking
+      </Button>
     </YStack>
   );
 };

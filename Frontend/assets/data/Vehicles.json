@@ -1,0 +1,35 @@
+[
+  {
+    "VehicleID": "1",
+    "RegistrationNumber": "ABC123",
+    "image": "/Frontend/assets/images/vehicleSelectCar.png",
+    "Make": "Mercedes",
+    "Model": "C-Class",
+    "Year": "2024",
+    "Type": "Car",
+    "Colour": "Black",
+    "DefaultVehicle": true
+  },
+  {
+    "VehicleID": "2",
+    "RegistrationNumber": "DEF456",
+    "image": "/Frontend/assets/images/vehicleSelectCar.png",
+    "Make": "BMW",
+    "Model": "3 Series",
+    "Year": "2020",
+    "Type": "Car",
+    "Colour": "White",
+    "DefaultVehicle": false
+  },
+  {
+    "VehicleID": "3",
+    "RegistrationNumber": "GHI789",
+    "image": "/Frontend/assets/images/vehicleSelectCar.png",
+    "Make": "Audi",
+    "Model": "A4",
+    "Year": "2019",
+    "Type": "Car",
+    "Colour": "Red",
+    "DefaultVehicle": false
+  }
+]

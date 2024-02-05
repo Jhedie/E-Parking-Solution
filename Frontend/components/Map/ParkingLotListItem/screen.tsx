@@ -6,10 +6,14 @@ import { ParkingLot } from "../screen";
 interface ParkingLotListItemProps {
   parkingLot: ParkingLot;
   navigation: StackNavigation;
+  setSelectedParkingLot: React.Dispatch<
+    React.SetStateAction<ParkingLot | null>
+  >;
 }
 const ParkingLotListItem: React.FC<ParkingLotListItemProps> = ({
   parkingLot,
-  navigation
+  navigation,
+  setSelectedParkingLot
 }) => {
   return (
     <YStack
@@ -23,7 +27,12 @@ const ParkingLotListItem: React.FC<ParkingLotListItemProps> = ({
     >
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
-          <Button padding={10}>X</Button>
+          <Button
+            padding={10}
+            onPress={() => setSelectedParkingLot(null)}
+          >
+            X
+          </Button>
           <Text style={styles.cardHeaderTitle}>{parkingLot.LotId}</Text>
         </View>
 

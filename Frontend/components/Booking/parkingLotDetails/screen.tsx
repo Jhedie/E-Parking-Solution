@@ -2,21 +2,23 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 
 import React from "react";
 import { Button, H3, Paragraph, YStack } from "tamagui";
-import { StackNavigation } from "../../app/(auth)/home";
-import { ParkingLot } from "../Map/screen";
+import { StackNavigation } from "../../../app/(auth)/home";
+import { ParkingLot } from "../../Map/screen";
 
 type RouteParams = {
-  BookingScreen: {
+  ParkingLotDetailsScreen: {
     parkingLot: ParkingLot;
   };
 };
 
-interface BookingScreenProps {
+interface ParkingLotDetailsScreenProps {
   navigation: StackNavigation;
 }
 
-export const BookingScreen: React.FC<BookingScreenProps> = ({ navigation }) => {
-  const route = useRoute<RouteProp<RouteParams, "BookingScreen">>();
+export const ParkingLotDetailsScreen: React.FC<
+  ParkingLotDetailsScreenProps
+> = ({ navigation }) => {
+  const route = useRoute<RouteProp<RouteParams, "ParkingLotDetailsScreen">>();
   const { parkingLot } = route.params;
   return (
     <YStack

@@ -1,18 +1,20 @@
 import { NavigationProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { BookingScreen } from "../../components/Booking/screen";
+import { BookParkingDetailsScreen } from "../../components/Booking/BookingDetails/screen";
+import { SelectSlotScreen } from "../../components/Booking/SelectSlot/screen";
+import { AddVehicleScreen } from "../../components/Booking/Vehicle/AddVehicle/screen";
+import { VehicleScreen } from "../../components/Booking/Vehicle/SelectVehicle/screen";
+import { ParkingLotDetailsScreen } from "../../components/Booking/parkingLotDetails/screen";
 import MapScreen, { ParkingLot } from "../../components/Map/screen";
-import { BookParkingDetailsScreen } from "../../components/Parking/ParkingDetails/screen";
-import { AddVehicleScreen } from "../../components/Vehicle/AddVehicle/screen";
-import { VehicleScreen } from "../../components/Vehicle/screen";
 
 export type ScreenNames = ["Home", "BookingScreen"];
 export type HomeStackParamList = {
   Home: undefined;
-  BookingScreen: { parkingLot: ParkingLot }; // Define a parameter for the BookingScreen route
+  ParkingLotDetailsScreen: { parkingLot: ParkingLot }; // Define a parameter for the BookingScreen route
   VehicleScreen: undefined;
   AddVehicleScreen: undefined;
   BookParkingDetailsScreen: undefined;
+  SelectSlotScreen: undefined;
 };
 export type StackNavigation = NavigationProp<HomeStackParamList>;
 
@@ -27,8 +29,8 @@ export default function Screen() {
           options={{ headerShown: false }}
         />
         <HomeScreenStack.Screen
-          name="BookingScreen"
-          component={BookingScreen}
+          name="ParkingLotDetailsScreen"
+          component={ParkingLotDetailsScreen}
           options={{ headerTitle: "Booking" }}
         />
         <HomeScreenStack.Screen
@@ -48,6 +50,11 @@ export default function Screen() {
           name="BookParkingDetailsScreen"
           component={BookParkingDetailsScreen}
           options={{ headerTitle: "Booking Details" }}
+        />
+        <HomeScreenStack.Screen
+          name="SelectSlotScreen"
+          component={SelectSlotScreen}
+          options={{ headerTitle: "Select Slot" }}
         />
       </HomeScreenStack.Navigator>
     </>

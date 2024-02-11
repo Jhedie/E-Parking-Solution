@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import AwesomeButton from "react-native-really-awesome-button";
 import { Image, ScrollView, Text, YStack } from "tamagui";
-import { StackNavigation } from "../../app/(auth)/home";
-import Vehicles from "../../assets/data/Vehicles.json";
+import { StackNavigation } from "../../../../app/(auth)/home";
+import Vehicles from "../../../../assets/data/Vehicles.json";
 
 interface VehicleScreenProps {
   navigation: StackNavigation;
@@ -47,7 +47,6 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
                   alignItems: "center",
                   padding: 10 * 1.2,
                   marginHorizontal: 10 * 2,
-                  marginBottom: 10 * 2,
                   marginTop: 10 * 2.4,
                   borderRadius: 10,
                   backgroundColor: "white"
@@ -61,7 +60,7 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
                   }}
                 >
                   <Image
-                    source={require("../../assets/images/vehicleSelectCar.png")}
+                    source={require("../../../../assets/images/vehicleSelectCar.png")}
                     resizeMode="contain"
                     style={{
                       width: 50,

@@ -50,6 +50,8 @@ Below are the development notes for the project. It comprises of links and resou
    - when the app is closed and the is user but not verified, they are taken to the verification page
    - when the app is closed after verification and reopened, the user is taken to the welcome page
 
+   https://jscrambler.com/blog/how-to-integrate-firebase-authentication-with-an-expo-app
+
 9. An issue with react native maps:
 
 - I encountered an error message when performing an eas build to enable google maps on IOS. The problem was fixed by reading through the github issue below:
@@ -90,4 +92,57 @@ https://dev.to/absek/car-parking-finder-app-ui-clone-in-react-native-2-scrolling
 
 https://shopify.github.io/flash-list/
 
-https://github.com/wix/react-native-calendars
+https://wix.github.io/react-native-calendars/docs/Components/Calendar
+
+Sliders:
+https://youtu.be/jlSWxkITOW8
+https://www.npmjs.com/package/@react-native-community/slider
+
+Fast 2kB alternative to Moment.js with the same modern API
+https://day.js.org/
+
+Icons:
+https://icons.expo.fyi/Index/Feather/check-circle
+
+Icons and Photos For Everything
+https://thenounproject.com/
+
+DateTime picker
+https://docs.expo.dev/versions/latest/sdk/date-time-picker/
+How to use date time picker:
+https://youtu.be/UEfFjfW7Zes
+
+Buttons:
+https://github.com/rcaferati/react-native-really-awesome-button?tab=readme-ov-file
+
+Approach to development:
+https://www.linkedin.com/pulse/12-frontend-first-development-key-fast-scalable-e-commerce/
+
+https://www.quora.com/Which-approach-do-you-consider-better-backend-first-then-frontend-or-vice-versa
+
+https://www.reddit.com/r/reactjs/comments/11ejggq/frontend_or_backend_first/
+
+https://en.wikipedia.org/wiki/Vertical_slice
+
+Firebase Environment Configuration:
+https://firebase.google.com/docs/functions/config-env?gen=2nd
+
+Admin Panel:
+https://apexcharts.com/
+
+https://refine.dev/docs/getting-started/quickstart/
+
+RBAC with firebase:
+
+https://jscrambler.com/blog/how-to-integrate-firebase-authentication-with-an-expo-app
+https://www.toptal.com/firebase/role-based-firebase-authentication#:~:text=up%20and%20running.-,Role%2Dbased%20Auth,a%20user%20to%20execute%20it.
+
+REST:
+https://github.com/ebenezerdon/journal-rest-api/blob/main/functions/src/index.ts
+
+React native Animations:
+Interpolation:
+https://youtu.be/ybcL8e6ImSo
+
+Custom Animated Markers and Region Focus when Content is Scrolled in React Native:
+https://youtu.be/sueqYRRarso

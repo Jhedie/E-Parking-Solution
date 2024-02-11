@@ -1,7 +1,6 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { SessionScreen } from "../../components/Booking/Session/screen";
 import { HistoryScreen } from "../../components/History/screen";
-import { SessionScreen } from "../../components/Session/screen";
 export default function Screen() {
   const SessionTopTabs = createMaterialTopTabNavigator();
   return (

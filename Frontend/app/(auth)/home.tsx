@@ -11,7 +11,7 @@ export type ScreenNames = ["Home", "BookingScreen"];
 export type HomeStackParamList = {
   Home: undefined;
   ParkingLotDetailsScreen: { parkingLot: ParkingLot }; // Define a parameter for the BookingScreen route
-  VehicleScreen: undefined;
+  VehicleScreen: { parkingLot: ParkingLot };
   AddVehicleScreen: undefined;
   BookParkingDetailsScreen: undefined;
   SelectSlotScreen: undefined;
@@ -22,7 +22,12 @@ export default function Screen() {
   const HomeScreenStack = createNativeStackNavigator<HomeStackParamList>();
   return (
     <>
-      <HomeScreenStack.Navigator initialRouteName="Home">
+      <HomeScreenStack.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          headerTitleStyle: { fontSize: 15 }
+        }}
+      >
         <HomeScreenStack.Screen
           name="Home"
           component={MapScreen}
@@ -31,7 +36,9 @@ export default function Screen() {
         <HomeScreenStack.Screen
           name="ParkingLotDetailsScreen"
           component={ParkingLotDetailsScreen}
-          options={{ headerTitle: "Booking" }}
+          options={{
+            headerTitle: "Parking Details"
+          }}
         />
         <HomeScreenStack.Screen
           name="VehicleScreen"

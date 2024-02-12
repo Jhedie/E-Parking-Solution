@@ -1,3 +1,4 @@
+import { RouteProp, useRoute } from "@react-navigation/native";
 import { CheckCircle, Circle } from "@tamagui/lucide-icons";
 import React, { useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
@@ -5,10 +6,17 @@ import AwesomeButton from "react-native-really-awesome-button";
 import { Image, ScrollView, Text, YStack } from "tamagui";
 import { StackNavigation } from "../../../../app/(auth)/home";
 import Vehicles from "../../../../assets/data/Vehicles.json";
-
+import { ParkingLot } from "../../../Map/screen";
 interface VehicleScreenProps {
   navigation: StackNavigation;
 }
+
+type RouteParams = {
+  VehicleScreen: {
+    parkingLot: ParkingLot;
+  };
+};
+
 interface Vehicle {
   VehicleID: string;
   RegistrationNumber: string;
@@ -22,6 +30,13 @@ interface Vehicle {
 }
 export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
   const [selectedId, setSelectedId] = useState<string>("");
+  //get parkinglot selected
+  const route = useRoute<RouteProp<RouteParams, "VehicleScreen">>();
+  const { parkingLot } = route.params;
+
+  useEffect(() => {
+    console.log(parkingLot.LotId, "\n-------");
+  }, [parkingLot]);
 
   useEffect(() => {
     Vehicles.map((vehicle: Vehicle) => {
@@ -29,7 +44,7 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
         setSelectedId(vehicle.VehicleID);
       }
     });
-  }, []);
+  }, [Vehicles]);
 
   return (
     <YStack flex={1}>

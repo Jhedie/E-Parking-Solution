@@ -379,7 +379,9 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                       }}
                     >
                       <TouchableOpacity
-                        onPress={() => console.log("Book now")}
+                        onPress={() => {
+                          navigation.navigate("VehicleScreen", { parkingLot });
+                        }}
                         style={{
                           flex: 5.0,
                           justifyContent: "center",

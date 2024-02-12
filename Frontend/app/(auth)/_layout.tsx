@@ -26,9 +26,9 @@ const PublicLayout = () => {
       />
 
       <Tabs.Screen
-        name="sessions"
+        name="parking"
         options={{
-          headerTitle: "Session",
+          headerTitle: "Parking",
           tabBarIcon: ({ color, size }) => (
             <Ionicons
               name="stopwatch-outline"
@@ -36,7 +36,7 @@ const PublicLayout = () => {
               color={color}
             />
           ),
-          tabBarLabel: "Session"
+          tabBarLabel: "Parking"
         }}
       />
 

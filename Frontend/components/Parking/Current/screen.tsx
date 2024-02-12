@@ -1,7 +1,7 @@
 import React from "react";
 import { H3, YStack } from "tamagui";
 
-export const SessionScreen: React.FC = () => {
+export const CurrentParkingScreen: React.FC = () => {
   return (
     <YStack
       flex={1}
@@ -9,7 +9,7 @@ export const SessionScreen: React.FC = () => {
       justifyContent="center"
       bottom={0}
     >
-      <H3>Session Screen</H3>
+      <H3>Current Parking</H3>
     </YStack>
   );
 };

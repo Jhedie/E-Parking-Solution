@@ -2,7 +2,7 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { H3, YStack } from "tamagui";
 
-export const HistoryScreen: React.FC = () => {
+export const ParkingHistoryScreen: React.FC = () => {
   return (
     <SafeAreaView>
       <YStack

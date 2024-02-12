@@ -1,5 +1,20 @@
 # E - Parking Solution
 
+### Current Mockups:
+
+#### 1st:
+
+<img src="Frontend/currentDesigns/Map.png" alt="alt text" width="200"/>
+<img src="Frontend/currentDesigns/parkingDetails.png" alt="alt text" width="200"/>
+<img src="Frontend/currentDesigns/BookingDetails.png" alt="alt text" width="200"/>
+<img src="Frontend/currentDesigns/VehicleSelect.png" alt="alt text" width="200"/>
+<img src="Frontend/currentDesigns/Profile.png" alt="alt text" width="200"/>
+<img src="Frontend/currentDesigns/Parking.png" alt="alt text" width="200"/>
+
+#### 2nd:
+
+- To be added
+
 ## Information about this repository
 
 This is the repository that you are going to use **individually** for developing your project. Please use the resources provided in the module to learn about **plagiarism** and how plagiarism awareness can foster your learning.

@@ -1,10 +1,10 @@
 import React from "react";
 import { Text, View } from "react-native";
 
-export const SelectSlotScreen: React.FC = () => {
+export const ParkingTicketScreen: React.FC = () => {
   return (
     <View>
-      <Text>Select Slot here</Text>
+      <Text>Parking Ticket</Text>
     </View>
   );
 };

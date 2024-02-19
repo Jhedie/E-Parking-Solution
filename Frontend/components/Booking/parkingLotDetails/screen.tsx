@@ -40,7 +40,6 @@ export const ParkingLotDetailsScreen: React.FC<
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
         headerMaxHeight={150}
-        
       >
         <View
           style={{
@@ -118,41 +117,42 @@ export const ParkingLotDetailsScreen: React.FC<
                 })}
               </View>
             </View>
-          </View>
-          <View style={styles.container}>
-            <MapView
-              style={styles.map}
-              initialRegion={{
-                latitude: parseFloat(parkingLot.Location.Latitude),
-                longitude: parseFloat(parkingLot.Location.Longitude),
-                latitudeDelta: 0.0015, // Try smaller values
-                longitudeDelta: 0.0015 // Try smaller values
-              }}
-              scrollEnabled={false}
-              zoomEnabled={false}
-              rotateEnabled={false}
-              pitchEnabled={false}
-            >
-              <Marker
-                coordinate={{
+            <View style={styles.container}>
+              <Text style={{ fontWeight: "bold", fontSize: 16 }}>Location</Text>
+              <MapView
+                style={styles.map}
+                initialRegion={{
                   latitude: parseFloat(parkingLot.Location.Latitude),
-                  longitude: parseFloat(parkingLot.Location.Longitude)
+                  longitude: parseFloat(parkingLot.Location.Longitude),
+                  latitudeDelta: 0.0015, // Try smaller values
+                  longitudeDelta: 0.0015 // Try smaller values
                 }}
-                title={parkingLot.LotId}
+                scrollEnabled={false}
+                zoomEnabled={false}
+                rotateEnabled={false}
+                pitchEnabled={false}
               >
-                <Image
-                  resizeMode="contain"
-                  source={require("../../../assets/images/parking-lot-marker.png")}
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: 32,
-                    height: 32,
-                    borderRadius: 16
+                <Marker
+                  coordinate={{
+                    latitude: parseFloat(parkingLot.Location.Latitude),
+                    longitude: parseFloat(parkingLot.Location.Longitude)
                   }}
-                />
-              </Marker>
-            </MapView>
+                  title={parkingLot.LotId}
+                >
+                  <Image
+                    resizeMode="contain"
+                    source={require("../../../assets/images/parking-lot-marker.png")}
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: 32,
+                      height: 32,
+                      borderRadius: 16
+                    }}
+                  />
+                </Marker>
+              </MapView>
+            </View>
           </View>
         </View>
       </AnimatedScrollView>
@@ -163,9 +163,9 @@ export const ParkingLotDetailsScreen: React.FC<
       >
         <AwesomeButton
           height={50}
+          raiseLevel={1}
           width={200}
           onPress={() => navigation.navigate("VehicleScreen", { parkingLot })}
-          raiseLevel={1}
           borderRadius={10}
           backgroundShadow="#fff"
           backgroundDarker="#fff"
@@ -181,12 +181,14 @@ export const ParkingLotDetailsScreen: React.FC<
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: 200
+    height: 200,
+    marginTop: 10
   },
   map: {
     flex: 1,
     width: "100%",
     height: "100%",
-    borderRadius: 30
+    borderRadius: 30,
+    marginTop: 10
   }
 });

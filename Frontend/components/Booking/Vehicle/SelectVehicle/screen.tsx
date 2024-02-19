@@ -1,9 +1,10 @@
+import { AntDesign } from "@expo/vector-icons";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { CheckCircle, Circle } from "@tamagui/lucide-icons";
 import React, { useEffect, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import AwesomeButton from "react-native-really-awesome-button";
-import { Image, ScrollView, Text, YStack } from "tamagui";
+import { ScrollView, Text, YStack } from "tamagui";
 import { StackNavigation } from "../../../../app/(auth)/home";
 import Vehicles from "../../../../assets/data/Vehicles.json";
 import { ParkingLot } from "../../../Map/screen";
@@ -17,7 +18,7 @@ type RouteParams = {
   };
 };
 
-interface Vehicle {
+export interface Vehicle {
   VehicleID: string;
   RegistrationNumber: string;
   image: string;
@@ -29,7 +30,7 @@ interface Vehicle {
   DefaultVehicle: boolean;
 }
 export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
-  const [selectedId, setSelectedId] = useState<string>("");
+  const [selectedVehicle, setselectedVehicle] = useState<Vehicle>();
   //get parkinglot selected
   const route = useRoute<RouteProp<RouteParams, "VehicleScreen">>();
   const { parkingLot } = route.params;
@@ -41,7 +42,8 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
   useEffect(() => {
     Vehicles.map((vehicle: Vehicle) => {
       if (vehicle.DefaultVehicle) {
-        setSelectedId(vehicle.VehicleID);
+        // create a vehicle and set it to the selected vehicle
+        setselectedVehicle(vehicle);
       }
     });
   }, [Vehicles]);
@@ -53,9 +55,9 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
           {Vehicles.map((vehicle: Vehicle) => {
             return (
               <TouchableOpacity
-                disabled={selectedId === vehicle.VehicleID}
+                disabled={selectedVehicle?.VehicleID === vehicle.VehicleID}
                 key={vehicle.VehicleID}
-                onPress={() => setSelectedId(vehicle.VehicleID)}
+                onPress={() => setselectedVehicle(vehicle)}
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
@@ -74,13 +76,10 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
                     alignItems: "center"
                   }}
                 >
-                  <Image
-                    source={require("../../../../assets/images/vehicleSelectCar.png")}
-                    resizeMode="contain"
-                    style={{
-                      width: 50,
-                      height: 50
-                    }}
+                  <AntDesign
+                    name="car"
+                    size={30}
+                    color="black"
                   />
                   <View
                     style={{
@@ -92,7 +91,7 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
                     <Text>{vehicle.RegistrationNumber} </Text>
                   </View>
                 </View>
-                {selectedId ? (
+                {selectedVehicle ? (
                   <View
                     style={{
                       flex: 1,
@@ -100,15 +99,15 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
                       alignItems: "flex-end"
                     }}
                   >
-                    {selectedId === vehicle.VehicleID ? (
+                    {selectedVehicle.VehicleID === vehicle.VehicleID ? (
                       <CheckCircle
                         size={24}
-                        color="black"
+                        color={"#00b894"}
                       />
                     ) : (
                       <Circle
                         size={24}
-                        color="black"
+                        color={"#00b894"}
                       />
                     )}
                   </View>
@@ -141,7 +140,13 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
       >
         <AwesomeButton
           height={50}
-          onPress={() => navigation.navigate("BookParkingDetailsScreen")}
+          onPress={() =>
+            navigation.navigate("BookParkingDetailsScreen", {
+              parkingLot,
+              // if no vehicle is selected, use the default vehicle
+              vehicle: selectedVehicle || Vehicles[0]
+            })
+          }
           raiseLevel={1}
           stretch={true}
           borderRadius={10}

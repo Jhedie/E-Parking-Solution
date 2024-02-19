@@ -1,5 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
+import { RouteProp, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -9,14 +10,31 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AwesomeButton from "react-native-really-awesome-button";
 import { H6, ScrollView, YStack } from "tamagui";
 import { StackNavigation } from "../../../app/(auth)/home";
+import { ParkingLot } from "../../Map/screen";
+import { Vehicle } from "../Vehicle/SelectVehicle/screen";
+
+type RouteParams = {
+  BookParkingDetailsScreen: {
+    parkingLot: ParkingLot;
+    vehicle: Vehicle;
+  };
+};
 
 interface BookParkingDetailsScreenProps {
   navigation: StackNavigation;
 }
 
+export type BookingDetails = {
+  date: string;
+  startTime: string;
+  endTime: string;
+  price: number;
+};
+
 export const BookParkingDetailsScreen: React.FC<
   BookParkingDetailsScreenProps
 > = ({ navigation }) => {
+  const route = useRoute<RouteProp<RouteParams, "BookParkingDetailsScreen">>();
   const today = dayjs().format("YYYY-MM-DD HH:mm:ss");
   const [date, setDate] = useState("");
   const [selectedStartHour, setSelectedStartHour] = useState();
@@ -171,7 +189,7 @@ export const BookParkingDetailsScreen: React.FC<
             marginHorizontal: 5 * 2
           }}
         >
-          <Text style={{}}>price</Text>
+          <Text style={{}}>Price</Text>
           <Text style={{}}>
             <Text>£5.00 </Text>
             <Text style={{}}>for 1 hour</Text>
@@ -202,7 +220,12 @@ export const BookParkingDetailsScreen: React.FC<
       >
         <AwesomeButton
           height={50}
-          onPress={() => navigation.navigate("SelectSlotScreen")}
+          onPress={() =>
+            navigation.navigate("SelectSpotScreen", {
+              parkingLot: route.params.parkingLot, // Pass the parking lot to the next screen
+              vehicle: route.params.vehicle // Pass the vehicle to the next screen
+            })
+          }
           raiseLevel={1}
           stretch={true}
           borderRadius={10}

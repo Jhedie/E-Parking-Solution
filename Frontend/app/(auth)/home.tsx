@@ -1,4 +1,4 @@
-import { NavigationProp } from "@react-navigation/native";
+import { NavigationProp, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { BookParkingDetailsScreen } from "../../components/Booking/BookingDetails/screen";
 import { SelectSlotScreen } from "../../components/Booking/SelectSlot/screen";
@@ -18,10 +18,12 @@ export type HomeStackParamList = {
 };
 export type StackNavigation = NavigationProp<HomeStackParamList>;
 
-export default function Screen() {
-  const HomeScreenStack = createNativeStackNavigator<HomeStackParamList>();
+const HomeScreenStack = createNativeStackNavigator<HomeStackParamList>();
+
+function HomeStack() {
+
   return (
-    <>
+
       <HomeScreenStack.Navigator
         initialRouteName="Home"
         screenOptions={{
@@ -64,6 +66,13 @@ export default function Screen() {
           options={{ headerTitle: "Select Slot" }}
         />
       </HomeScreenStack.Navigator>
-    </>
+  );
+}
+
+export default function Screen() {
+  return (
+    <NavigationContainer>
+      <HomeStack />
+    </NavigationContainer>
   );
 }

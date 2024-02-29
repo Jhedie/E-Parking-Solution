@@ -19,5 +19,5 @@ No issues
 ## Action Item:
 
 Continue working on the secure parking spot feature. #15
-Clean up prepared code for delivering demo for second marker interview.
+Clean up, prepare code for delivering demo for second marker interview.
 

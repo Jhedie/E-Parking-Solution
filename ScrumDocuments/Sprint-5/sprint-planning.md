@@ -2,20 +2,20 @@
 
 ## Date and Participants
 
-- **Date**: 27/01/2024 -
+- **Date**: 22/03/2024
 - **Participants**: Jedidiah
 
 ## Sprint Goal
 
-End of sprint3 - ![Alt text](../Sprint-3/sprint3-26-Jan-2024.png)
-Beginning of sprint4 - ![Alt text](../Sprint-4/sprint4-27-Jan-2024.png)
+End of sprint4 - ![Alt text](../Sprint-4/sprint4-21-February-2024.png)
+Beginning of sprint5 - ![Alt text](../Sprint-5/sprint5-22-February-2024.png)
 
-The main goal of this sprint is to create an MVP.
+The main goal of this sprint is to create ensure that the core requirements are achieved.
 
 ## Product Backlog Items Discussed
 
-Some issues need to be completed through fully ticking off the Definition of Done.
-To achieve an MVP some tickets will be picked up later once the core functionality (MVP) is completed.
+To achieve an MVP some tickets will be picked up later once the core functionality (MVP) is completed with more focus on backend as most 
+frontend parts are near completion.
 
 ## Decisions Made
 
@@ -27,7 +27,7 @@ To achieve an MVP some tickets will be picked up later once the core functionali
 
 ## Action Items
 
-- Focus on achieving an MVP
+- Focus on achieving an MVP with focus on backend
 
 ## Issues Raised
 

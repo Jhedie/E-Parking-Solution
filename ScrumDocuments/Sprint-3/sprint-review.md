@@ -12,3 +12,5 @@
 - Blockers were resolved mainly the switch to a compatible backend ie. firebase
 - Once the blockages were resolved, Authentication and session management was finally completed.
 - Made progress on the Map display
+
+

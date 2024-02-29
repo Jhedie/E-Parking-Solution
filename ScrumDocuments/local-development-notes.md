@@ -93,6 +93,7 @@ https://dev.to/absek/car-parking-finder-app-ui-clone-in-react-native-2-scrolling
 https://shopify.github.io/flash-list/
 
 https://wix.github.io/react-native-calendars/docs/Components/Calendar
+https://youtu.be/RZtULGjtG_U
 
 Sliders:
 https://youtu.be/jlSWxkITOW8
@@ -146,3 +147,94 @@ https://youtu.be/ybcL8e6ImSo
 
 Custom Animated Markers and Region Focus when Content is Scrolled in React Native:
 https://youtu.be/sueqYRRarso
+
+Handling multiple dates logic:
+
+```
+// State variables to track if the start and end dates have been picked
+  const [isStartDatePicked, setIsStartDatePicked] = useState(false);
+  const [isEndDatePicked, setIsEndDatePicked] = useState(false);
+
+  // Function to handle when a day is pressed
+  const onDayPress = (day: DateData) => {
+    console.log("selected day", day.dateString);
+
+    // If the start date hasn't been picked or both dates have been picked, set the start date
+    if (!isStartDatePicked || (isStartDatePicked && isEndDatePicked)) {
+      setStartDate(day.dateString);
+      setEndDate("");
+      setIsStartDatePicked(true);
+      setIsEndDatePicked(false);
+    }
+    // If the start date has been picked but the end date hasn't, set the end date
+    else if (!isEndDatePicked) {
+      // If the selected day is before the start date, swap the start and end dates
+      if (dayjs(day.dateString).isBefore(startDate)) {
+        setEndDate(startDate);
+        setStartDate(day.dateString);
+      }
+      // Otherwise, just set the end date
+      else {
+        setEndDate(day.dateString);
+      }
+      setIsEndDatePicked(true);
+    }
+  };
+
+  // State variables to store the start and end dates
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  // Function to generate the marked dates object
+  const getMarkedDates = () => {
+    let marked = {};
+    if (startDate === endDate) {
+      marked = {
+        [startDate]: {
+          startingDay: true,
+          endingDay: true,
+          color: "green",
+          textColor: "white"
+        }
+      };
+    } else {
+      // Initialize the marked dates object with the start and end dates
+      marked = {
+        [startDate]: { startingDay: true, color: "green", textColor: "white" },
+        [endDate]: { endingDay: true, color: "green", textColor: "white" }
+      };
+
+      // Start from the day after the start date
+      let start = dayjs(startDate).add(1, "day");
+      const end = dayjs(endDate);
+
+      // Iterate over the dates between the start and end dates
+      while (start.isBefore(end)) {
+        // Add each date to the marked dates object
+        marked[start.format("YYYY-MM-DD")] = {
+          selected: true,
+          marked: true,
+          selectedColor: "blue"
+        };
+        // Move to the next date
+        start = start.add(1, "day");
+      }
+    }
+    return marked;
+  };
+```
+
+- How to send emails using Python Django and Google SMTP server at no cost.
+
+https://medium.com/@elijahobara/how-to-send-emails-using-python-django-and-google-smtp-server-at-no-cost-bbcbb8e8638b#:~:text=Configuring%20django%20for%20Gmail%20SMTP%20server.&text=The%20EMAIL_BACKEND%20setting%20specifies%20the,server%2C%20as%20specified%20by%20Google.
+
+- Creating QR codes
+  https://dev.to/dallington256/how-to-generate-and-download-qr-code-in-a-react-native-application-1k8e
+
+- Stripe Docs:
+
+  - https://github.com/jonasgroendahl/yt-react-native-payment-sheet/blob/main/App.tsx
+
+  - https://docs.stripe.com/payments/accept-a-payment?platform=react-native&ui=payment-sheet&lang=node#react-native-add-server-endpoint
+
+- How to set up node typescript express
+  https://blog.logrocket.com/how-to-set-up-node-typescript-express/

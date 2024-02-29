@@ -1,0 +1,35 @@
+{
+  "currentBooking": {
+    "bookingDetails": {
+      "endDateTime": "2024-02-24T20:12:06.461Z",
+      "rateNumber": 1,
+      "rateType": "hour",
+      "startDateTime": "2024-02-24T19:12:06.461Z",
+      "totalprice": 5
+    },
+    "parkingLot": {
+      "Capacity": 150,
+      "Facilities": ["EV Charging", "Disabled Access"],
+      "LiveStatus": "Medium",
+      "Location": { "Latitude": "52.641879", "Longitude": "-1.133759" },
+      "LotId": "LOT001",
+      "Occupancy": 75,
+      "OperatingHours": "24/7",
+      "Owner": { "Name": "Jane Doe", "OwnerId": "OWNER123" },
+      "Rate": "2.50 per hour"
+    },
+    "parkingSlot": {
+      "Position": { "Column": 5, "Row": "A" },
+      "ReservedTimeSlots": [],
+      "SpotID": 25,
+      "Status": "Available",
+      "Type": "Standard"
+    },
+    "vehicle": {
+      "DefaultVehicle": true,
+      "Nickname": "My Mercedes",
+      "RegistrationNumber": "ABC123",
+      "VehicleID": "1"
+    }
+  }
+}

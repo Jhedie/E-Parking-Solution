@@ -9,7 +9,7 @@ import { StackNavigation } from "../../../../app/(auth)/home";
 import paymentList from "../../../../assets/data/paymentList.json";
 import { ParkingLot } from "../../../Map/screen";
 
-import { ParkingSpot } from "../../SelectSpot/screen";
+import { ParkingSlot } from "../../SelectSpot/screen";
 import { Vehicle } from "../../Vehicle/SelectVehicle/screen";
 interface PaymentOptionScreenProps {
   navigation: StackNavigation;
@@ -18,7 +18,7 @@ interface PaymentOptionScreenProps {
 type RouteParams = {
   PaymentOptionScreen: {
     parkingLot: ParkingLot;
-    parkingSpot: ParkingSpot;
+    parkingSlot: ParkingSlot;
     vehicle: Vehicle;
   };
 };
@@ -43,7 +43,7 @@ export const PaymentOptionScreen: React.FC<PaymentOptionScreenProps> = ({
   navigation
 }) => {
   const route = useRoute<RouteProp<RouteParams, "PaymentOptionScreen">>();
-  const { parkingLot, parkingSpot, vehicle } = route.params;
+  const { parkingLot, parkingSlot, vehicle } = route.params;
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>();
 
   useEffect(() => {
@@ -150,15 +150,15 @@ export const PaymentOptionScreen: React.FC<PaymentOptionScreenProps> = ({
         <AwesomeButton
           height={50}
           width={200}
-          onPress={() =>
-            paymentMethod &&
-            navigation.navigate("BookingConfirmationScreen", {
-              parkingLot,
-              parkingSpot,
-              vehicle,
-              paymentMethod
-            })
-          }
+          // onPress={() =>
+          //   paymentMethod &&
+          //   navigation.navigate("BookingConfirmationScreen", {
+          //     parkingLot,
+          //     parkingSlot,
+          //     vehicle,
+          //     bookingDetails: {} // Add an initializer for the 'bookingDetails' variable
+          //   })
+          // }
           raiseLevel={1}
           stretch={true}
           borderRadius={10}

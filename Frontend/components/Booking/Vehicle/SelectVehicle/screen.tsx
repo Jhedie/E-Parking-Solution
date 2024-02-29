@@ -19,14 +19,9 @@ type RouteParams = {
 };
 
 export interface Vehicle {
-  VehicleID: string;
+  VehicleID?: string; // for backend use
   RegistrationNumber: string;
-  image: string;
-  Make: string;
-  Model: string;
-  Year: string;
-  Type: string;
-  Colour: string;
+  Nickname: string;
   DefaultVehicle: boolean;
 }
 export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
@@ -87,8 +82,12 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
                       marginHorizontal: "10%"
                     }}
                   >
-                    <Text style={{}}>{vehicle.VehicleID}</Text>
-                    <Text>{vehicle.RegistrationNumber} </Text>
+                    <Text style={{ fontSize: 15, fontWeight: "500" }}>
+                      {vehicle.RegistrationNumber}{" "}
+                    </Text>
+                    <Text style={{ fontSize: 12, color: "gray" }}>
+                      {vehicle.Nickname}
+                    </Text>
                   </View>
                 </View>
                 {selectedVehicle ? (
@@ -102,12 +101,12 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
                     {selectedVehicle.VehicleID === vehicle.VehicleID ? (
                       <CheckCircle
                         size={24}
-                        color={"#00b894"}
+                        color={"black"}
                       />
                     ) : (
                       <Circle
                         size={24}
-                        color={"#00b894"}
+                        color={"lightgray"}
                       />
                     )}
                   </View>
@@ -129,7 +128,7 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
             backgroundColor: "white"
           }}
         >
-          <Text style={{}}>Add Vehicle</Text>
+          <Text style={{ fontWeight: "500" }}>Add Vehicle</Text>
         </TouchableOpacity>
       </ScrollView>
 
@@ -154,7 +153,7 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
           backgroundDarker="#fff"
           backgroundColor="#fff"
         >
-          <Text style={{}}>Continue</Text>
+          <Text style={{ fontWeight: "500" }}>Continue</Text>
         </AwesomeButton>
       </View>
     </YStack>

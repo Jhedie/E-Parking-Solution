@@ -1,57 +1,135 @@
 import { RouteProp, useRoute } from "@react-navigation/native";
-import React from "react";
-import { ScrollView, Text, View } from "react-native";
+import { useStripe } from "@stripe/stripe-react-native";
+import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
+import { Alert, ScrollView, Text, View } from "react-native";
 import AwesomeButton from "react-native-really-awesome-button";
-import { YStack } from "tamagui";
+import { Image, YStack } from "tamagui";
 import { StackNavigation } from "../../../app/(auth)/home";
 import { ParkingLot } from "../../Map/screen";
-import { ParkingSpot } from "../SelectSpot/screen";
+import { BookingDetails } from "../BookingDetails/screen";
+import { ParkingSlot } from "../SelectSpot/screen";
 import { Vehicle } from "../Vehicle/SelectVehicle/screen";
-import { PaymentMethod } from "../payment/selectPaymentOption/screen";
+import { PaymentMethod } from "../payment - ToBeReplacedWithStripe/selectPaymentOption/screen";
 import BookingSuccessModal from "./BookingSuccess/screen";
 
-interface BookingConfirmationScreenProps {
+export interface BookingConfirmationScreenProps {
   navigation: StackNavigation;
 }
 
 type RouteParams = {
   BookingConfirmationScreen: {
     parkingLot: ParkingLot;
-    parkingSpot: ParkingSpot;
+    parkingSlot: ParkingSlot;
     vehicle: Vehicle;
-    paymentMethod: PaymentMethod;
+    bookingDetails: BookingDetails;
+    // paymentMethod: PaymentMethod;  - to be replaced with stripe
   };
 };
 
 export type ConfirmationDetails = {
   parkingLot: ParkingLot;
-  parkingSpot: ParkingSpot;
+  parkingSlot: ParkingSlot;
   vehicle: Vehicle;
-  paymentMethod: PaymentMethod;
+  bookingDetails: BookingDetails;
+  // paymentMethod: PaymentMethod; - to be replaced with stripe
 };
 
 const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
   navigation
 }) => {
   const route = useRoute<RouteProp<RouteParams, "BookingConfirmationScreen">>();
-  const { parkingLot, parkingSpot, vehicle, paymentMethod } = route.params;
+  const { parkingLot, parkingSlot, vehicle, bookingDetails } = route.params;
   const ConfirmationDetails: ConfirmationDetails = {
     parkingLot: parkingLot,
-    parkingSpot: parkingSpot,
+    parkingSlot: parkingSlot,
     vehicle: vehicle,
-    paymentMethod: paymentMethod
+    bookingDetails: bookingDetails
+    // paymentMethod: paymentMethod  - to be replaced with stripe
   };
 
   const [openBookingSuccessModal, setOpenBookingSuccessModal] =
     React.useState(false);
   const successBookingModalClose = () => setOpenBookingSuccessModal(false);
-  console.log(ConfirmationDetails);
+
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
+  const [loading, setLoading] = useState(false);
+
+  const API_URL = "http://localhost:3000";
+
+  const fetchPaymentSheetParams = async () => {
+    try {
+      const response = await fetch(`${API_URL}/payment-sheet`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          amount: 1000, // Amount in the smallest currency unit (e.g., cents for USD)
+          currency: "usd",
+          description: "Payment for parking",
+          customer: {
+            name: "John Doe",
+            email: "john.doe@example.com"
+          }
+        })
+      });
+      const { paymentIntent, ephemeralKey, customer } = await response.json();
+
+      return {
+        paymentIntent,
+        ephemeralKey,
+        customer
+      };
+    } catch (error) {
+      console.error("Error fetching payment sheet params:", error);
+      throw error; // Throw the error so it can be caught and handled outside
+    }
+  };
+
+  const initializePaymentSheet = async () => {
+    try {
+      const { paymentIntent, ephemeralKey, customer } =
+        await fetchPaymentSheetParams();
+
+      const { error } = await initPaymentSheet({
+        merchantDisplayName: "Example, Inc.",
+        customerId: customer,
+        customerEphemeralKeySecret: ephemeralKey,
+        paymentIntentClientSecret: paymentIntent,
+        // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
+        //methods that complete payment after a delay, like SEPA Debit and Sofort.
+        allowsDelayedPaymentMethods: true,
+        defaultBillingDetails: {
+          name: "Jane Doe"
+        }
+      });
+      if (!error) {
+        setLoading(true);
+      }
+    } catch (error) {
+      console.log("initializePaymentSheet", error);
+    }
+  };
+
+  const openPaymentSheet = async () => {
+    const { error } = await presentPaymentSheet();
+
+    if (error) {
+      Alert.alert(`Error code: ${error.code}`, error.message);
+    } else {
+      setOpenBookingSuccessModal(true);
+    }
+  };
+
+  useEffect(() => {
+    initializePaymentSheet();
+  }, []);
+  console.log("ConfirmationDetails", ConfirmationDetails);
 
   return (
     <YStack flex={1}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* print the details accumulated by ConfirmationDetails */}
-
         <View
           style={{
             flexDirection: "row",
@@ -65,21 +143,32 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
           <View style={{ flex: 2.5 }}>
             <View
               style={{
-                width: 50,
-                height: 50,
-                backgroundColor: "black"
+                backgroundColor: "black",
+                borderRadius: 10
               }}
-            />
+            >
+              <Image
+                source={require("../../../assets/images/parking-lot-image.png")}
+                style={{
+                  overflow: "hidden",
+                  width: 84,
+                  height: 74,
+                  borderRadius: 5
+                }}
+              />
+            </View>
           </View>
           <View
             style={{
               flex: 7.5,
               alignItems: "flex-start",
-              marginLeft: 10 * 1.5,
-              marginRight: 0
+              marginLeft: 10 * 1.5
             }}
           >
-            <Text style={{}}>{ConfirmationDetails.parkingLot.LotId}</Text>
+            <Text style={{ fontWeight: "500" }}>
+              {ConfirmationDetails.parkingLot.LotId}
+            </Text>
+            {/* //TODO - Add the address of the parking lot */}
             <Text
               numberOfLines={1}
               style={{
@@ -89,7 +178,6 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
             >
               Leicester, United Kingdom
             </Text>
-            <Text style={{}}>{ConfirmationDetails.parkingLot.Rate}</Text>
           </View>
         </View>
 
@@ -97,67 +185,106 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
           style={{
             flexDirection: "row",
             alignItems: "center",
+            justifyContent: "space-between",
             paddingHorizontal: 10 * 1.5,
-            paddingVertical: 10,
+            paddingVertical: 15,
             marginBottom: 10,
             marginHorizontal: 10 * 2,
             borderRadius: 5,
             backgroundColor: "white"
           }}
         >
-          <View style={{ marginHorizontal: 10 * 1.5 }}>
-            <Text style={{}}>Parking Spot</Text>
-            <Text
-              style={{
-                marginTop: 10 * 0.4
-              }}
-            >
-              {ConfirmationDetails.parkingSpot.SpotID}
+          <Text style={{ fontWeight: "500" }}>Parking Slot</Text>
+          <View style={{}}>
+            <Text style={{}}>
+              {ConfirmationDetails.parkingSlot.Position.Row}
+              {ConfirmationDetails.parkingSlot.Position.Column}
             </Text>
           </View>
         </View>
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
             paddingHorizontal: 10 * 1.5,
-            paddingVertical: 10,
+            paddingVertical: 15,
             marginBottom: 10,
             marginHorizontal: 10 * 2,
             borderRadius: 5,
             backgroundColor: "white"
           }}
         >
-          <View style={{ marginHorizontal: 10 * 1.5 }}>
-            <Text style={{}}>Booking Details</Text>
-            <Text
-              style={{
-                marginTop: 10 * 0.4
-              }}
-            ></Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between"
+            }}
+          >
+            <Text style={{ fontWeight: "500" }}>Start Date</Text>
+            <Text>
+              {dayjs(ConfirmationDetails.bookingDetails.startDateTime).format(
+                "dddd, MMMM D, YYYY"
+              )}
+            </Text>
           </View>
-        </View>
 
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingHorizontal: 10 * 1.5,
-            paddingVertical: 10,
-            marginBottom: 10,
-            marginHorizontal: 10 * 2,
-            borderRadius: 5,
-            backgroundColor: "white"
-          }}
-        >
-          <View style={{ marginHorizontal: 10 * 1.5 }}>
-            <Text style={{}}>Vehicle Details</Text>
-            <Text
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 10 * 0.5,
+              justifyContent: "space-between"
+            }}
+          >
+            <Text style={{ fontWeight: "500" }}>End Date</Text>
+            <Text>
+              {dayjs(ConfirmationDetails.bookingDetails.endDateTime).format(
+                "dddd, MMMM D, YYYY"
+              )}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 10 * 0.5,
+              justifyContent: "space-between"
+            }}
+          >
+            <Text style={{ fontWeight: "500" }}>Hours</Text>
+            <View
               style={{
-                marginTop: 10 * 0.4
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: 10 * 0.5,
+                justifyContent: "space-between"
               }}
             >
-              {ConfirmationDetails.vehicle.VehicleID}
+              <Text>
+                {dayjs(ConfirmationDetails.bookingDetails.startDateTime).format(
+                  "h:mm A"
+                )}
+              </Text>
+              <Text> - </Text>
+              <Text>
+                {dayjs(ConfirmationDetails.bookingDetails.endDateTime).format(
+                  "h:mm A"
+                )}
+              </Text>
+            </View>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 10 * 0.5,
+              justifyContent: "space-between"
+            }}
+          >
+            <Text style={{ fontWeight: "500" }}>Duration</Text>
+            <Text style={{}}>
+              {ConfirmationDetails.bookingDetails.rateNumber}{" "}
+              {ConfirmationDetails.bookingDetails.rateType}
             </Text>
           </View>
         </View>
@@ -166,26 +293,71 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
           style={{
             flexDirection: "row",
             alignItems: "center",
+            justifyContent: "space-between",
             paddingHorizontal: 10 * 1.5,
-            paddingVertical: 10,
+            paddingVertical: 15,
             marginBottom: 10,
             marginHorizontal: 10 * 2,
             borderRadius: 5,
             backgroundColor: "white"
           }}
         >
-          <View style={{ marginHorizontal: 10 * 1.5 }}>
-            <Text style={{}}>Payment Method</Text>
-            <Text
-              style={{
-                marginTop: 10 * 0.4
-              }}
-            >
-              {ConfirmationDetails.paymentMethod.type}
+          <Text style={{ fontWeight: "500" }}>Vehicle</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center"
+            }}
+          >
+            <Text style={{ marginRight: 6 }}>
+              {ConfirmationDetails.vehicle.Nickname}
+              {" |"}
+            </Text>
+
+            <Text style={{}}>
+              {ConfirmationDetails.vehicle.RegistrationNumber}
+            </Text>
+          </View>
+        </View>
+        <View
+          style={{
+            paddingHorizontal: 10 * 1.5,
+            paddingVertical: 15,
+            marginBottom: 10,
+            marginHorizontal: 10 * 2,
+            borderRadius: 5,
+            backgroundColor: "white",
+            justifyContent: "space-between"
+          }}
+        >
+          {/* price */}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between"
+            }}
+          >
+            <Text style={{ fontWeight: "500" }}>Price</Text>
+            <Text style={{}}>
+              <Text>£{ConfirmationDetails.bookingDetails.rateNumber}</Text>
+            </Text>
+          </View>
+          {/* total price */}
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 10 * 0.5,
+              justifyContent: "space-between"
+            }}
+          >
+            <Text style={{ fontWeight: "500" }}>Total Price</Text>
+            <Text style={{}}>
+              <Text>£{ConfirmationDetails.bookingDetails.totalprice}</Text>
             </Text>
           </View>
         </View>
       </ScrollView>
+
       <View
         style={{
           margin: 10 * 2
@@ -194,7 +366,10 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
         <AwesomeButton
           height={50}
           width={200}
-          onPress={() => setOpenBookingSuccessModal(true)}
+          onPress={openPaymentSheet}
+          // onPress={() => {
+          //   setOpenBookingSuccessModal(true);
+          // }}
           raiseLevel={1}
           borderRadius={10}
           backgroundShadow="#fff"
@@ -210,7 +385,12 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
         bookingSuccessModalClose={successBookingModalClose}
         onParkingTicketHandler={() => {
           successBookingModalClose();
-          navigation.navigate("ParkingTicketScreen");
+          navigation.navigate("ParkingTicketScreen", {
+            parkingLot: ConfirmationDetails.parkingLot,
+            parkingSlot: ConfirmationDetails.parkingSlot,
+            vehicle: ConfirmationDetails.vehicle,
+            bookingDetails: ConfirmationDetails.bookingDetails
+          });
         }}
         onBackToHomeHandler={() => {
           successBookingModalClose();

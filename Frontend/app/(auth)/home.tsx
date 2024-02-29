@@ -1,11 +1,15 @@
 import { NavigationProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { BookParkingDetailsScreen } from "../../components/Booking/BookingDetails/screen";
+import {
+  BookParkingDetailsScreen,
+  BookingDetails
+} from "../../components/Booking/BookingDetails/screen";
 
+import { Home } from "@tamagui/lucide-icons";
 import BookingConfirmationScreen from "../../components/Booking/BookingConfirmation/screen";
 import { ParkingTicketScreen } from "../../components/Booking/ParkingTicket/screen";
 import {
-  ParkingSpot,
+  ParkingSlot,
   SelectSpotScreen
 } from "../../components/Booking/SelectSpot/screen";
 import { AddVehicleScreen } from "../../components/Booking/Vehicle/AddVehicle/screen";
@@ -14,11 +18,8 @@ import {
   VehicleScreen
 } from "../../components/Booking/Vehicle/SelectVehicle/screen";
 import { ParkingLotDetailsScreen } from "../../components/Booking/parkingLotDetails/screen";
-import { AddPaymentOptionScreen } from "../../components/Booking/payment/addPaymentOption/screen";
-import {
-  PaymentMethod,
-  PaymentOptionScreen
-} from "../../components/Booking/payment/selectPaymentOption/screen";
+import { AddPaymentOptionScreen } from "../../components/Booking/payment - ToBeReplacedWithStripe/addPaymentOption/screen";
+import { PaymentOptionScreen } from "../../components/Booking/payment - ToBeReplacedWithStripe/selectPaymentOption/screen";
 import MapScreen, { ParkingLot } from "../../components/Map/screen";
 
 export type ScreenNames = [
@@ -28,8 +29,8 @@ export type ScreenNames = [
   "AddVehicleScreen",
   "BookParkingDetailsScreen",
   "SelectSpotScreen",
-  "PaymentOptionScreen",
-  "AddPaymentOptionScreen",
+  // "PaymentOptionScreen",
+  // "AddPaymentOptionScreen",
   "BookingConfirmationScreen",
   "ParkingTicketScreen"
 ];
@@ -42,20 +43,30 @@ export type HomeStackParamList = {
     parkingLot: ParkingLot;
     vehicle: Vehicle;
   };
-  SelectSpotScreen: { parkingLot: ParkingLot; vehicle: Vehicle };
+  SelectSpotScreen: {
+    parkingLot: ParkingLot;
+    vehicle: Vehicle;
+    bookingDetails: BookingDetails;
+  };
   PaymentOptionScreen: {
     parkingLot: ParkingLot;
-    parkingSpot: ParkingSpot;
+    parkingSlot: ParkingSlot;
     vehicle: Vehicle;
   };
   AddPaymentOptionScreen: undefined;
   BookingConfirmationScreen: {
     parkingLot: ParkingLot;
-    parkingSpot: ParkingSpot;
+    parkingSlot: ParkingSlot;
     vehicle: Vehicle;
-    paymentMethod: PaymentMethod;
+    bookingDetails: BookingDetails;
+    // paymentMethod: PaymentMethod;
   };
-  ParkingTicketScreen: undefined;
+  ParkingTicketScreen: {
+    parkingLot: ParkingLot;
+    parkingSlot: ParkingSlot;
+    vehicle: Vehicle;
+    bookingDetails: BookingDetails;
+  };
 };
 export type StackNavigation = NavigationProp<HomeStackParamList>;
 
@@ -103,7 +114,7 @@ export default function Screen() {
         component={SelectSpotScreen}
         options={{ headerTitle: "Select Slot" }}
       />
-      <HomeScreenStack.Screen
+      {/* <HomeScreenStack.Screen
         name="PaymentOptionScreen"
         component={PaymentOptionScreen}
         options={{ headerTitle: "Payment" }}
@@ -115,7 +126,7 @@ export default function Screen() {
           headerTitle: "Add Payment Option",
           presentation: "modal"
         }}
-      />
+      /> */}
       <HomeScreenStack.Screen
         name="BookingConfirmationScreen"
         component={BookingConfirmationScreen}

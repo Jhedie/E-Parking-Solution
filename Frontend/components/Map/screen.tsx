@@ -287,7 +287,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                           }}
                         />
 
-                        <View
+                        {/* <View
                           style={{
                             position: "absolute",
                             alignSelf: "flex-end",
@@ -297,7 +297,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                           }}
                         >
                           <Text style={{ color: "white" }}>review</Text>
-                        </View>
+                        </View> */}
                       </View>
                       <View
                         style={{

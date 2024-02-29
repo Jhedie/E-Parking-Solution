@@ -59,7 +59,14 @@
       "@react-native-firebase/app",
       "@react-native-firebase/app",
       "@react-native-firebase/perf",
-      "@react-native-firebase/crashlytics"
+      "@react-native-firebase/crashlytics",
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.jhedie.frontend",
+          "enableGooglePay": true
+        }
+      ]
     ],
     "experiments": {
       "tsconfigPaths": true,

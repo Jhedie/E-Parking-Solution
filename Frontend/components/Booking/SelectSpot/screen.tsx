@@ -1,15 +1,17 @@
 import { AntDesign } from "@expo/vector-icons";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
+
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+
 import AwesomeButton from "react-native-really-awesome-button";
 import { YStack } from "tamagui";
 import { StackNavigation } from "../../../app/(auth)/home";
+import parkingSlots from "../../../assets/data/parkingSlots.json";
 import { ParkingLot } from "../../Map/screen";
 import { Vehicle } from "../Vehicle/SelectVehicle/screen";
 
-import parkingSpots from "../../../assets/data/parkingSpots.json";
-
+import { BookingDetails } from "../BookingDetails/screen";
 interface SelectSpotScreenProps {
   navigation: StackNavigation;
 }
@@ -18,6 +20,7 @@ type RouteParams = {
   SelectSpotScreen: {
     parkingLot: ParkingLot;
     vehicle: Vehicle;
+    bookingDetails: BookingDetails;
   };
 };
 
@@ -26,187 +29,211 @@ export interface TimeSlot {
   end: string;
 }
 
-export interface ParkingSpot {
+interface Position {
+  Row: string;
+  Column: number;
+}
+
+export interface ParkingSlot {
   SpotID: number;
   Type: string;
   Status: string;
   ReservedTimeSlots: TimeSlot[];
-  Position: string;
+  Position: Position;
 }
 
 export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
   navigation
 }) => {
-  const [selectedParkingSpot, setSelectedParkingSpot] = useState<ParkingSpot>();
+  const [selectedParkingSlot, setSelectedParkingSlot] = useState<ParkingSlot>();
   const route = useRoute<RouteProp<RouteParams, "SelectSpotScreen">>();
 
-  //get parking slots for position A and position B separately
-  const parkingSpotsForPositionA = parkingSpots.filter((spot) =>
-    spot.Position.startsWith("A")
-  );
-  const parkingSpotsForPositionB = parkingSpots.filter((spot) =>
-    spot.Position.startsWith("B")
-  );
+  const handleSelectParkingSot = (spot: ParkingSlot) => {
+    setSelectedParkingSlot(spot);
+  };
 
-  const handleSelectParkingSpot = (spot: ParkingSpot) => {
-    console.log("Selected parking spot", spot);
-    setSelectedParkingSpot(spot);
+  const columns = [...new Set(parkingSlots.map((spot) => spot.Position.Row))];
+
+  // Dynamically generate parking spots based on row positions
+  const generateParkingSlots = (row: string) => {
+    const parkingSlotsForPosition = parkingSlots.filter(
+      (spot) => spot.Position.Row === row
+    );
+
+    return (
+      <View>
+        <View
+          style={{
+            flexDirection: "column",
+            padding: 10
+          }}
+        >
+          <View
+            style={{
+              alignSelf: "center",
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 15,
+              width: "50%",
+              height: 30,
+              borderRadius: 4,
+              borderWidth: 1,
+              backgroundColor: "black"
+            }}
+          >
+            <Text style={{ color: "white" }}>{row}</Text>
+          </View>
+          {parkingSlotsForPosition.map((spot, index) => (
+            <View
+              key={spot.SpotID}
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginRight: 20,
+                paddingVertical: 15,
+                borderTopWidth: index === 0 ? 1 : undefined,
+                borderTopColor: index === 0 ? "lightgrey" : undefined,
+                borderBottomWidth: 1,
+                borderBottomColor: "lightgrey"
+              }}
+            >
+              {spot.Status === "Occupied" ? (
+                <AntDesign
+                  name="car"
+                  size={30}
+                  color="black"
+                  style={{ marginLeft: 20 }}
+                />
+              ) : (
+                <TouchableOpacity
+                  onPress={() => handleSelectParkingSot(spot)}
+                  style={{
+                    width: 70,
+                    height: 30,
+                    borderWidth: 1.5,
+                    borderColor: "black",
+                    borderRadius: 5,
+
+                    backgroundColor:
+                      selectedParkingSlot?.SpotID === spot.SpotID
+                        ? "black"
+                        : "white"
+                  }}
+                />
+              )}
+              <Text style={{ marginLeft: 20, fontWeight: "700" }}>
+                {spot.SpotID}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </View>
+    );
   };
 
   return (
     <YStack
       flex={1}
       backgroundColor={"white"}
-      justifyContent="center"
       alignItems="center"
+      justifyContent="center"
     >
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View
-          style={{
-            padding: 10,
-            borderRadius: 10,
-            flexDirection: "row",
-            marginHorizontal: 10 * 2
-          }}
+      <View
+        style={{
+          padding: 10,
+          borderRadius: 10,
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80%"
+        }}
+      >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          horizontal
         >
           <View
             style={{
-              flexDirection: "column",
-              marginRight: 10 * 2
+              padding: 10,
+              borderRadius: 10,
+              flexDirection: "row",
+              marginHorizontal: 20
             }}
           >
-            <View
-              style={{
-                alignSelf: "center",
-                justifyContent: "center",
-                alignItems: "center",
-                marginBottom: 10 * 1.5,
-                width: "50%",
-                height: 30,
-                borderRadius: 4,
-                borderWidth: 1,
-                backgroundColor: "black"
-              }}
-            >
-              <Text style={{ color: "white" }}>A</Text>
-            </View>
-            {parkingSpotsForPositionA.map((spot, index) => {
-              const firstItem = index === 0;
-              return (
-                <View
-                  key={index}
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginRight: 10 * 2,
-                    paddingVertical: 10 * 1.5,
-                    borderTopWidth: firstItem ? 1 : undefined,
-                    borderTopColor: firstItem ? "lightgrey" : undefined,
-                    borderBottomWidth: 1,
-                    borderBottomColor: "lightgrey"
-                  }}
-                >
-                  {spot.Status === "Occupied" ? (
-                    <AntDesign
-                      name="car"
-                      size={30}
-                      color="black"
-                      style={{ marginLeft: 10 * 2 }}
-                    />
-                  ) : (
-                    <TouchableOpacity
-                      onPress={() => handleSelectParkingSpot(spot)}
-                      style={{
-                        width: 70,
-                        height: 30,
-                        borderWidth: 1.5,
-                        borderColor: "black",
-                        borderRadius: 5,
-                        backgroundColor:
-                          selectedParkingSpot?.SpotID === spot.SpotID
-                            ? "black"
-                            : "white"
-                      }}
-                    />
-                  )}
-                  <Text style={{ marginLeft: 10 * 2, fontWeight: "700" }}>
-                    {spot.SpotID}
-                  </Text>
-                </View>
-              );
-            })}
-          </View>
-          <View>
-            <View
-              style={{
-                alignSelf: "center",
-                justifyContent: "center",
-                alignItems: "center",
-                marginBottom: 10 * 1.5,
-                width: "50%",
-                height: 30,
-                borderRadius: 4,
-                borderWidth: 1,
-                backgroundColor: "black"
-              }}
-            >
-              <Text style={{ color: "white" }}>B</Text>
-            </View>
-            {parkingSpotsForPositionB.map((spot, index) => {
-              const firstItem = index === 0;
-              return (
-                <View
-                  key={index}
-                  style={{
-                    marginLeft: 10 * 2,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    paddingVertical: 10 * 1.5,
-                    borderTopWidth: firstItem ? 1 : undefined,
-                    borderTopColor: firstItem ? "lightgrey" : undefined,
-                    borderBottomWidth: 1,
-                    borderBottomColor: "lightgrey"
-                  }}
-                >
-                  {spot.Status === "Occupied" ? (
-                    <AntDesign
-                      name="car"
-                      size={30}
-                      color="black"
-                      style={{ marginLeft: 10 * 2 }}
-                    />
-                  ) : (
-                    <TouchableOpacity
-                      onPress={() => handleSelectParkingSpot(spot)}
-                      style={{
-                        width: 70,
-                        height: 30,
-                        borderWidth: 1.5,
-                        borderColor: "black",
-                        borderRadius: 5,
-                        backgroundColor:
-                          selectedParkingSpot?.SpotID === spot.SpotID
-                            ? "black"
-                            : "white"
-                      }}
-                    />
-                  )}
-                  <Text
+            {/* Dynamically generate parking spots based on row positions */}
+            {columns.map((row, index) => (
+              <View
+                key={index}
+                style={{
+                  flexDirection: "row",
+                  borderColor: "black"
+                }}
+              >
+                {generateParkingSlots(row)}
+                {index !== columns.length - 1 && (
+                  <View
                     style={{
-                      marginLeft: 10 * 2,
-                      fontWeight: "700"
+                      flex: 2
                     }}
                   >
-                    {spot.SpotID}
-                  </Text>
-                </View>
-              );
-            })}
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        alignSelf: "center",
+                        alignItems: "center",
+                        paddingHorizontal: 10 * 0.5,
+                        width: 60,
+                        height: 25,
+                        borderRadius: 4,
+                        backgroundColor: "lightgrey"
+                      }}
+                    >
+                      <Text
+                        numberOfLines={1}
+                        style={{ overflow: "hidden" }}
+                      >
+                        Entry
+                      </Text>
+                    </View>
+
+                    <View
+                      style={{
+                        flex: 1,
+                        marginTop: 10 * 0.5,
+                        marginBottom: 10 * 0.5,
+                        borderLeftWidth: 1,
+                        alignSelf: "center",
+                        borderLeftColor: "lightgrey"
+                      }}
+                    />
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        alignSelf: "center",
+                        alignItems: "center",
+                        paddingHorizontal: 10 * 0.5,
+                        width: 60,
+                        height: 25,
+                        borderRadius: 4,
+                        backgroundColor: "lightgrey"
+                      }}
+                    >
+                      <Text
+                        numberOfLines={1}
+                        style={{ overflow: "hidden" }}
+                      >
+                        Exit
+                      </Text>
+                    </View>
+                  </View>
+                )}
+              </View>
+            ))}
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
 
       <View
         style={{
@@ -217,12 +244,16 @@ export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
           height={50}
           width={200}
           onPress={() => {
-            selectedParkingSpot &&
-              navigation.navigate("PaymentOptionScreen", {
+            if (selectedParkingSlot) {
+              navigation.navigate("BookingConfirmationScreen", {
                 parkingLot: route.params.parkingLot,
-                parkingSpot: selectedParkingSpot,
-                vehicle: route.params.vehicle
+                parkingSlot: selectedParkingSlot,
+                vehicle: route.params.vehicle,
+                bookingDetails: route.params.bookingDetails // Pass the booking details to the next screen
               });
+            } else {
+              alert("Please select a parking slot");
+            }
           }}
           raiseLevel={1}
           borderRadius={10}
@@ -230,8 +261,8 @@ export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
           backgroundDarker="#fff"
           backgroundColor="black"
         >
-          <Text style={{ color: "white" }}>
-            Proceed with Spot {selectedParkingSpot?.SpotID}
+          <Text style={{ color: "white", fontWeight: "500" }}>
+            Proceed with Spot {selectedParkingSlot?.SpotID}
           </Text>
         </AwesomeButton>
       </View>

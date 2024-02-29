@@ -1,4 +1,4 @@
-import { NavigationProp, NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, NavigationProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
   BookParkingDetailsScreen,
@@ -147,9 +147,5 @@ function HomeStack() {
   );
 }
 export default function Screen() {
-  return (
-    <NavigationContainer>
-      <HomeStack />
-    </NavigationContainer>
-  );
+  return <HomeStack />;
 }

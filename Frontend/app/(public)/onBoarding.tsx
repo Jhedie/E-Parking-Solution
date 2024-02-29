@@ -1,31 +1,23 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  StatusBar
-} from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
+import { Dimensions, StatusBar, StyleSheet, Text, View } from "react-native";
 
 import { useNavigation, useRouter } from "expo-router";
 
 import Onboarding from "react-native-onboarding-swiper";
-import { Image, Button } from "tamagui";
+import { Button, Image } from "tamagui";
 
 import { colors } from "@theme/colors";
 
 import { storage } from "@utils/asyncStorage";
 
-import parkingAreaPlace from "../../assets/static/images/parking-area-place.png";
-import parkingPanalWithBikeusingMobile from "../../assets/static/images/Parking-panal-with-bikeusing-mobile.png";
 import CardsAndBikeAndBuildingInBackgroundSvg from "@assets/static/images/building-and-parked-cars-andbikes.png";
+import parkingPanalWithBikeusingMobile from "../../assets/static/images/Parking-panal-with-bikeusing-mobile.png";
+import parkingAreaPlace from "../../assets/static/images/parking-area-place.png";
 import userScanningCard from "../../assets/static/images/user-scanning-card.png";
 
+import LockIcon from "@assets/static/svgs/lock-icon.svg";
 import MapIcon from "@assets/static/svgs/map-icon.svg";
 import SettingIcon from "@assets/static/svgs/settings-icon.svg";
-import LockIcon from "@assets/static/svgs/lock-icon.svg";
-
-import CircleIconWithText from "@components/OnBoarding/CircleIconWithText";
 
 interface OnboardingPage {
   backgroundColor: string;
@@ -34,15 +26,13 @@ interface OnboardingPage {
   subtitle: JSX.Element;
 }
 
-
 const { height, width } = Dimensions.get("window");
 const potrait = height > width;
 // const isLight = tinycolor(backgroundColor).getBrightness() > 180;
 
 const OnboardingScreen: React.FC = () => {
   const navigation = useNavigation();
-  const router = useRouter()
-
+  const router = useRouter();
 
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -303,7 +293,6 @@ const OnboardingScreen: React.FC = () => {
         <Button
           className="px-10 text-sm text-center rounded-lg focus:ring-4 focus:outline-none bg-transparent"
           {...props}
-          
         >
           {skipLabel}
         </Button>
@@ -340,7 +329,7 @@ const OnboardingScreen: React.FC = () => {
     );
   };
 
-  async function handleDoneButtonAction(){
+  async function handleDoneButtonAction() {
     // update the 'onboarding' to 1 (complete)
     // storage.setItem("onboarding", 1);
     console.log("Pressed");

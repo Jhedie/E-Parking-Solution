@@ -51,24 +51,24 @@ function userProtectedRouter(user: User) {
 
   useEffect(() => {
     if (!rootNavigationState?.key || hasNavigated) return;
-  
+
     const inTabsGroup = segments[0] === "(auth)"; // these routes in the auth group
     const inPublicGroup = segments[0] === "(public)"; // these routes in the public group
     const isUSerAuthenticated = user?.uid; // user is logged in
-  
+
     const checkOnboardingStatus = async () => {
-      let onboarded = await storage.getItem("onboarding");
+      const onboarded = await storage.getItem("onboarding");
       console.log(onboarded, "onboarded");
-    
+
       const hasDoneOnboarding = onboarded === 1;
       console.log(hasDoneOnboarding, "hasDoneOnBoarding");
-  
+
       if (!isUSerAuthenticated && !hasDoneOnboarding) {
         // if user is not logged in and not in the auth group then redirect to the auth group
         // setHasNavigated(true);
         console.log("routing to onboarding");
         router.replace("/(public)/onBoarding");
-      }else if (!isUSerAuthenticated && !inTabsGroup && hasDoneOnboarding) {
+      } else if (!isUSerAuthenticated && !inTabsGroup && hasDoneOnboarding) {
         router.replace("/(public)/welcome");
       } else if (isUSerAuthenticated && !inTabsGroup) {
         // if user is logged in and not in the auth group then redirect to the auth group
@@ -77,7 +77,7 @@ function userProtectedRouter(user: User) {
         router.replace("/(auth)/home");
       } else return;
     };
-    checkOnboardingStatus();
+    // checkOnboardingStatus();
   }, [user?.uid, rootNavigationState?.key, segments]);
 }
 
@@ -90,8 +90,7 @@ export function AuthProvider({
   const [user, setUser] = useState<User>(null);
 
   userProtectedRouter(user);
-    // this function will redirect the user to the correct route based on the user state. Every time the user state changes, this function will be called.
-
+  // this function will redirect the user to the correct route based on the user state. Every time the user state changes, this function will be called.
 
   useEffect(() => {
     const unsubscribeAuth = auth().onAuthStateChanged(async (user) => {

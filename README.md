@@ -4,15 +4,31 @@
 
 #### 1st:
 
-<img src="Frontend/currentDesigns/Map.png" alt="alt text" width="200"/>
-<img src="Frontend/currentDesigns/parkingDetails.png" alt="alt text" width="200"/>
-<img src="Frontend/currentDesigns/BookingDetails.png" alt="alt text" width="200"/>
-<img src="Frontend/currentDesigns/VehicleSelect.png" alt="alt text" width="200"/>
-<img src="Frontend/currentDesigns/Profile.png" alt="alt text" width="200"/>
-<img src="Frontend/currentDesigns/Parking.png" alt="alt text" width="200"/>
+<details>
+<summary>Authenticated User Screens (click to expand)</summary>
+    <img src="Frontend/currentDesigns/Map.png" alt="alt text" width="200"/>
+    <img src="Frontend/currentDesigns/parkingDetails.png" alt="alt text" width="200"/>
+    <img src="Frontend/currentDesigns/BookingDetails.png" alt="alt text" width="200"/>
+    <img src="Frontend/currentDesigns/VehicleSelect.png" alt="alt text" width="200"/>
+    <img src="Frontend/currentDesigns/Profile.png" alt="alt text" width="200"/>
+    <img src="Frontend/currentDesigns/Parking.png" alt="alt text" width="200"/>
+</details>
 
 #### 2nd:
 
+<table>
+  <tr>
+    <td><img src="Frontend/docs/Screens/onBoarding/welcome-to-e-parky.png" alt="Onboarding screen 1" width="200"/></td>
+    <td><img src="Frontend/docs/Screens/onBoarding/welcome-screen-2.png" alt="Onboarding screen 2" width="200"/></td>
+  </tr>
+  <tr>
+    <td><img src="Frontend/docs/Screens/onBoarding/welcome-screen-3.png" alt="Onboarding screen 3" width="200"/></td>
+    <td><img src="Frontend/docs/Screens/onBoarding/welcome-screen-4.png" alt="Onboarding screen 4" width="200"/></td>
+  </tr>
+    <tr>
+    <td><img src="Frontend/docs/Screens/onBoarding/welcome-with-sign-in.png" alt="Onboarding screen 3" width="200"/></td>
+  </tr>
+</table>
 - To be added
 
 ## Information about this repository

@@ -17,7 +17,10 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.jhedie.frontend",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "config": {
+        "googleMapsApiKey": ""
+      }
     },
     "android": {
       "package": "com.jhedie.frontend",
@@ -26,7 +29,12 @@
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE"
       ],
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleMaps": {
+          "apiKey": ""
+        }
+      }
     },
     "assetBundlePatterns": ["**/*"],
     "icon": "./assets/icon.png",
@@ -45,7 +53,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Show current location on map."
+          "locationAlwaysAndWhenInUsePermission": "Allow Frontend to use your location."
         }
       ],
       "@react-native-firebase/app",

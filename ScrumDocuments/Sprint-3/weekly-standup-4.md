@@ -6,7 +6,7 @@ This document is used to record the weekly standup notes for the project.
 
 ## Last Week's Action Items:
 
-- First standup notes for sprint.
+- Continue working on issues in the In Progress column
 
 ## Updates:
 
@@ -21,3 +21,5 @@ This document is used to record the weekly standup notes for the project.
 - No blockers
 
 ## Action Item:
+
+- Continue working on issue #14 making sure to meet the Definition of Done and Acceptance Criteria

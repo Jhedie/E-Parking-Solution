@@ -59,9 +59,17 @@ Below are the development notes for the project. It comprises of links and resou
   - video for maps:
     https://www.youtube.com/watch?v=9xD4coXs6Ts&t=3739s
 
+10. Error:WARN The redirect prop on <Screen /> is deprecated and will be removed. Please use router.redirect
+    Solution: https://github.com/expo/router/issues/834#:~:text=6-,branaust%20commented%20on%20Sep%2015%2C%202023,-%E2%80%A2
+
+11. Error with react native maps on android. The streets were in colour black see example in
+    https://github.com/react-native-maps/react-native-maps/issues/4920
+    After reading some documentation I discovered that there had been a change in the google maps renderer. The solution is available at the github issue link below:
+    https://github.com/react-native-maps/react-native-maps/pull/4055#:~:text=feat(android)%3A%20add%20support%20for%20new%20google%20maps%20renderer%20%234055
+
 ## Extra notes:
 
-UI  -
+UI -
 https://www.figma.com/file/mklroFLA8ElqjLEyaWVW6O/Parking-App-Design-UI-%7C-Figma-(Community)?type=design&node-id=201-1100&mode=design&t=4n7ERUDiK9cpHxmx-0
 
 https://www.figma.com/file/oRAtKh02FgKw5FhUfwuY3q/Parkir---Parking-App-UI-Kit-(Preview)?type=design&node-id=1127-9957&mode=design&t=33UDqdHsnBSBsVvz-0
@@ -70,13 +78,16 @@ https://www.figma.com/file/6B1CUowi8YAh3ncWdx993F/Parking-app-UI-UX-Kit-%7C-Case
 
 https://www.figma.com/files/recents-and-sharing/recently-viewed?fuid=1111328759623863677
 
-
 Stacks and Navigation:
 https://youtu.be/QpfAyQgphgw?t=1957
 
 https://expo.github.io/router/docs/migration/react-navigation/navigation-container/
 
-
+https://reactnavigation.org/docs/nesting-navigators#navigating-to-a-screen-in-a-nested-navigator
 
 Car Parking Finder App UI Clone in React Native #2: Scrolling/Swiping Transition:
 https://dev.to/absek/car-parking-finder-app-ui-clone-in-react-native-2-scrolling-swiping-transition-kc1
+
+https://shopify.github.io/flash-list/
+
+https://github.com/wix/react-native-calendars

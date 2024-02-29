@@ -28,6 +28,7 @@
     "@tamagui/toast": "^1.76.0",
     "burnt": "^0.12.1",
     "expo": "49.0.9",
+    "expo-blur": "~12.4.1",
     "expo-build-properties": "~0.8.3",
     "expo-constants": "~14.4.2",
     "expo-dev-client": "~2.4.12",

@@ -1,2 +1,11 @@
 #mac
 .DS_Store
+*.patch
+
+admin
+frontend-server
+server
+drf_with_firebase_auth
+firebase-cloud-functions-typescript-example
+payment-api
+

@@ -12,7 +12,8 @@ import "react-native-get-random-values";
 import { Provider } from "react-redux";
 import { TamaguiProvider, Theme } from "tamagui";
 import { CustomToast } from "../components/CustomToast";
-import { AuthProvider } from "../providers/AuthProvider";
+import { AuthProvider } from "../providers/Authentication/AuthProvider";
+import { UserLocationProvider } from "../providers/UserLocation/UserLocationProvider";
 import { store } from "../store/index";
 import config from "../tamagui.config";
 
@@ -35,30 +36,32 @@ export default function Layout() {
   if (!loaded) return null;
 
   return (
-    <Provider store={store}>
-      <TamaguiProvider config={config}>
-        <Theme name={colorScheme}>
-          <ThemeProvider
-            value={colorScheme === "light" ? DefaultTheme : DarkTheme}
-          >
-            <ToastProvider
-              swipeDirection="horizontal"
-              duration={6000}
-              native={["mobile"]}
+    <UserLocationProvider>
+      <Provider store={store}>
+        <TamaguiProvider config={config}>
+          <Theme name={colorScheme}>
+            <ThemeProvider
+              value={colorScheme === "light" ? DefaultTheme : DarkTheme}
             >
-              <AuthProvider>
-                <Stack
-                  screenOptions={{
-                    headerShown: false
-                  }}
-                ></Stack>
-              </AuthProvider>
-              <CustomToast />
-              <ToastViewport />
-            </ToastProvider>
-          </ThemeProvider>
-        </Theme>
-      </TamaguiProvider>
-    </Provider>
+              <ToastProvider
+                swipeDirection="horizontal"
+                duration={6000}
+                native={["mobile"]}
+              >
+                <AuthProvider>
+                  <Stack
+                    screenOptions={{
+                      headerShown: false
+                    }}
+                  ></Stack>
+                </AuthProvider>
+                <CustomToast />
+                <ToastViewport />
+              </ToastProvider>
+            </ThemeProvider>
+          </Theme>
+        </TamaguiProvider>
+      </Provider>
+    </UserLocationProvider>
   );
 }

@@ -1,9 +1,6 @@
-import auth from "@react-native-firebase/auth";
-import { useToastController } from "@tamagui/toast";
 import { Formik, FormikValues } from "formik";
-import { useState } from "react";
 import { Button, H3, Input, Spinner, YStack } from "tamagui";
-import { User, useAuth } from "../../../providers/AuthProvider";
+import { User, useAuth } from "../../../providers/Authentication/AuthProvider";
 
 export default function SignUpScreen() {
   const { signUp } = useAuth();
@@ -17,12 +14,12 @@ export default function SignUpScreen() {
     >
       <H3>Sign Up Screen</H3>
       <Formik
-        initialValues={{ username: "", password: "" }}
+        initialValues={{ email: "", password: "" }}
         onSubmit={function (
           values: FormikValues,
           actions
         ): void | Promise<User> {
-          signUp(values.username, values.password);
+          signUp(values.email, values.password);
           setTimeout(() => {
             actions.setSubmitting(false);
           }, 1000);
@@ -35,9 +32,9 @@ export default function SignUpScreen() {
           >
             <YStack space>
               <Input
-                placeholder="Username"
-                onChangeText={formikProps.handleChange("username")}
-                value={formikProps.values.username}
+                placeholder="Email"
+                onChangeText={formikProps.handleChange("email")}
+                value={formikProps.values.email}
                 autoCapitalize="none"
               />
               <Input
@@ -55,7 +52,7 @@ export default function SignUpScreen() {
                 themeInverse
                 onPress={() => formikProps.handleSubmit()}
               >
-                Sign In
+                Sign Up
               </Button>
             )}
           </YStack>

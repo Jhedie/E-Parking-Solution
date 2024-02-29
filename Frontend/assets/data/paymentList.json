@@ -1,0 +1,26 @@
+[
+  {
+    "paymentId": "1",
+    "type": "Paypal",
+    "default": false
+  },
+  {
+    "paymentId": "2",
+    "type": "Google Pay",
+    "default": false
+  },
+  {
+    "paymentId": "3",
+    "type": "Apple Pay",
+    "default": false
+  },
+  {
+    "paymentId": "4",
+    "type": "Credit Card",
+    "default": true,
+    "details": {
+      "cardNumber": "**** **** **** 4679",
+      "cardType": "MasterCard"
+    }
+  }
+]

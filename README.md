@@ -1,5 +1,20 @@
 # E - Parking Solution
 
+### Current Mockups:
+
+#### 1st:
+
+<img src="Frontend/currentDesigns/Map.png" alt="alt text" width="200"/>
+<img src="Frontend/currentDesigns/parkingDetails.png" alt="alt text" width="200"/>
+<img src="Frontend/currentDesigns/BookingDetails.png" alt="alt text" width="200"/>
+<img src="Frontend/currentDesigns/VehicleSelect.png" alt="alt text" width="200"/>
+<img src="Frontend/currentDesigns/Profile.png" alt="alt text" width="200"/>
+<img src="Frontend/currentDesigns/Parking.png" alt="alt text" width="200"/>
+
+#### 2nd:
+
+- To be added
+
 ## Information about this repository
 
 This is the repository that you are going to use **individually** for developing your project. Please use the resources provided in the module to learn about **plagiarism** and how plagiarism awareness can foster your learning.
@@ -7,3 +22,13 @@ This is the repository that you are going to use **individually** for developing
 Regarding the use of this repository, once a feature (or part of it) is developed and **working** or parts of your system are integrated and **working**, define a commit and push it to the remote repository. You may find yourself making a commit after a productive hour of work (or even after 20 minutes!), for example. Choose commit message wisely and be concise.
 
 Please choose the structure of the contents of this repository that suits the needs of your project but do indicate in this file where the main software artefacts are located.
+
+# How to run the project
+
+## Frontend
+
+npx expo start --dev-client
+
+## Server
+
+npm start

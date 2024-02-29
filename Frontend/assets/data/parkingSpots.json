@@ -1,0 +1,110 @@
+[
+  {
+    "SpotID": 1,
+    "Type": "Electric",
+    "Status": "Available",
+    "ReservedTimeSlots": [],
+    "Position": "A1"
+  },
+  {
+    "SpotID": 2,
+    "Type": "Standard",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [
+      {
+        "start": "2024-02-13T19:18:02Z",
+        "end": "2024-02-13T21:18:02Z"
+      },
+      {
+        "start": "2024-02-18T19:18:02Z",
+        "end": "2024-02-18T21:18:02Z"
+      }
+    ],
+    "Position": "B1"
+  },
+  {
+    "SpotID": 3,
+    "Type": "Handicap",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [
+      {
+        "start": "2024-02-18T19:18:02Z",
+        "end": "2024-02-18T21:18:02Z"
+      },
+      {
+        "start": "2024-02-14T19:18:02Z",
+        "end": "2024-02-14T21:18:02Z"
+      }
+    ],
+    "Position": "A2"
+  },
+  {
+    "SpotID": 4,
+    "Type": "Electric",
+    "Status": "Available",
+    "ReservedTimeSlots": [],
+    "Position": "B2"
+  },
+  {
+    "SpotID": 5,
+    "Type": "Standard",
+    "Status": "Available",
+    "ReservedTimeSlots": [],
+    "Position": "A3"
+  },
+  {
+    "SpotID": 6,
+    "Type": "Handicap",
+    "Status": "Available",
+    "ReservedTimeSlots": [
+      {
+        "start": "2024-02-15T08:30:00Z",
+        "end": "2024-02-15T10:30:00Z"
+      }
+    ],
+    "Position": "B3"
+  },
+  {
+    "SpotID": 7,
+    "Type": "Electric",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [
+      {
+        "start": "2024-02-17T12:00:00Z",
+        "end": "2024-02-17T14:00:00Z"
+      }
+    ],
+    "Position": "A4"
+  },
+  {
+    "SpotID": 8,
+    "Type": "Standard",
+    "Status": "Available",
+    "ReservedTimeSlots": [],
+    "Position": "B4"
+  },
+  {
+    "SpotID": 9,
+    "Type": "Electric",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [
+      {
+        "start": "2024-02-20T09:00:00Z",
+        "end": "2024-02-20T11:00:00Z"
+      }
+    ],
+    "Position": "A5"
+  },
+  {
+    "SpotID": 10,
+    "Type": "Standard",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [
+      {
+        "start": "2024-02-20T09:00:00Z",
+        "end": "2024-02-20T11:00:00Z"
+      }
+    ],
+    "Position": "B5"
+  }
+]

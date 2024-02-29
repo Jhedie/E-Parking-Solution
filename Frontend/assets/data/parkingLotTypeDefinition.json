@@ -1,0 +1,86 @@
+[
+  {
+    "LotId": "LOT001",
+    "Location": {
+      "Latitude": "52.641879",
+      "Longitude": "-1.133759",
+      "Address": {
+        "Street": "Leicester Square",
+        "City": "London",
+        "State": "London",
+        "PostalCode": "WC2H 7DE"
+      }
+    },
+    "Description": "Leicester Square Car Park is a 24/7 car park located in the heart of London's West End. It is a short walk from the National Gallery, Trafalgar Square, and the National Portrait Gallery.",
+    "Owner": "OWNER123",
+    "Image": "../images/parkingLot/leicester-square-1.jpg",
+    "Capacity": 150,
+    "Occupancy": 75,
+    "LiveStatus": "Medium",
+    "OperatingTimes": [
+      {
+        "Day": "Monday",
+        "Open": "00:00",
+        "Close": "23:59"
+      },
+      {
+        "Day": "Tuesday",
+        "Open": "00:00",
+        "Close": "23:59"
+      },
+      {
+        "Day": "Wednesday",
+        "Open": "00:00",
+        "Close": "23:59"
+      },
+      {
+        "Day": "Thursday",
+        "Open": "00:00",
+        "Close": "23:59"
+      },
+      {
+        "Day": "Friday",
+        "Open": "00:00",
+        "Close": "23:59"
+      },
+      {
+        "Day": "Saturday",
+        "Open": "00:00",
+        "Close": "23:59"
+      },
+      {
+        "Day": "Sunday",
+        "Open": "00:00",
+        "Close": "23:59"
+      }
+    ],
+    "Facilities": ["EV Charging", "Disabled Access"],
+    "AdvancedBooking": true,
+    "Rates": [
+      {
+        "RateType": "per hour",
+        "Rate": 5,
+        "minimum": 1,
+        "maximum": 24
+      },
+      {
+        "RateType": "per day",
+        "Rate": 30,
+        "minimum": 1,
+        "maximum": 7
+      },
+      {
+        "RateType": "per week",
+        "Rate": 150,
+        "minimum": 1,
+        "maximum": 4
+      },
+      {
+        "RateType": "per month",
+        "Rate": 500,
+        "minimum": 1,
+        "maximum": 12
+      }
+    ]
+  }
+]

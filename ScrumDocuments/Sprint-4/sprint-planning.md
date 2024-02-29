@@ -37,6 +37,6 @@ No issues raised
 
 ## Next Steps
 
-- Start work on the issues mentioned above.
-
 <!-- plans to do next, such as start work on the sprint backlog items, hold a follow-up meeting, etc. -->
+
+- Start work on the issues mentioned above.

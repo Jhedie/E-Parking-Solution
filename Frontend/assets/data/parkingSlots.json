@@ -1,0 +1,317 @@
+[
+  {
+    "SpotID": 1,
+    "Type": "Electric",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [],
+    "Position": { "Row": "A", "Column": 1 }
+  },
+  {
+    "SpotID": 2,
+    "Type": "Standard",
+    "Status": "Available",
+    "ReservedTimeSlots": [],
+    "Position": { "Row": "A", "Column": 2 }
+  },
+  {
+    "SpotID": 3,
+    "Type": "Standard",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-07T19:47:01Z", "end": "2024-03-07T21:47:01Z" },
+      { "start": "2024-03-22T19:47:01Z", "end": "2024-03-22T21:47:01Z" }
+    ],
+    "Position": { "Row": "A", "Column": 3 }
+  },
+  {
+    "SpotID": 19,
+    "Type": "Standard",
+    "Status": "Available",
+    "ReservedTimeSlots": [],
+    "Position": { "Row": "A", "Column": 4 }
+  },
+  {
+    "SpotID": 25,
+    "Type": "Standard",
+    "Status": "Available",
+    "ReservedTimeSlots": [],
+    "Position": { "Row": "A", "Column": 5 }
+  },
+  {
+    "SpotID": 4,
+    "Type": "Standard",
+    "Status": "Available",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-22T19:47:01Z", "end": "2024-03-22T21:47:01Z" },
+      { "start": "2024-03-20T19:47:01Z", "end": "2024-03-20T21:47:01Z" }
+    ],
+    "Position": { "Row": "B", "Column": 1 }
+  },
+  {
+    "SpotID": 5,
+    "Type": "Electric",
+    "Status": "Available",
+    "ReservedTimeSlots": [],
+    "Position": { "Row": "B", "Column": 2 }
+  },
+  {
+    "SpotID": 6,
+    "Type": "Electric",
+    "Status": "Available",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-01T19:47:01Z", "end": "2024-03-01T21:47:01Z" },
+      { "start": "2024-03-12T19:47:01Z", "end": "2024-03-12T21:47:01Z" }
+    ],
+    "Position": { "Row": "B", "Column": 3 }
+  },
+  {
+    "SpotID": 20,
+    "Type": "Electric",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-23T19:47:01Z", "end": "2024-03-23T21:47:01Z" },
+      { "start": "2024-03-24T19:47:01Z", "end": "2024-03-24T21:47:01Z" }
+    ],
+    "Position": { "Row": "B", "Column": 4 }
+  },
+  {
+    "SpotID": 26,
+    "Type": "Electric",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-29T19:47:01Z", "end": "2024-03-29T21:47:01Z" },
+      { "start": "2024-03-30T19:47:01Z", "end": "2024-03-30T21:47:01Z" }
+    ],
+    "Position": { "Row": "B", "Column": 5 }
+  },
+  {
+    "SpotID": 7,
+    "Type": "Standard",
+    "Status": "Available",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-22T19:47:01Z", "end": "2024-03-22T21:47:01Z" },
+      { "start": "2024-03-09T19:47:01Z", "end": "2024-03-09T21:47:01Z" }
+    ],
+    "Position": { "Row": "C", "Column": 1 }
+  },
+  {
+    "SpotID": 8,
+    "Type": "Standard",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-15T19:47:01Z", "end": "2024-03-15T21:47:01Z" }
+    ],
+    "Position": { "Row": "C", "Column": 2 }
+  },
+  {
+    "SpotID": 9,
+    "Type": "Standard",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [],
+    "Position": { "Row": "C", "Column": 3 }
+  },
+  {
+    "SpotID": 21,
+    "Type": "Standard",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [],
+    "Position": { "Row": "C", "Column": 4 }
+  },
+  {
+    "SpotID": 27,
+    "Type": "Standard",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [],
+    "Position": { "Row": "C", "Column": 5 }
+  },
+  {
+    "SpotID": 10,
+    "Type": "Standard",
+    "Status": "Available",
+    "ReservedTimeSlots": [
+      { "start": "2024-02-25T19:47:01Z", "end": "2024-02-25T21:47:01Z" },
+      { "start": "2024-03-16T19:47:01Z", "end": "2024-03-16T21:47:01Z" }
+    ],
+    "Position": { "Row": "D", "Column": 1 }
+  },
+  {
+    "SpotID": 11,
+    "Type": "Standard",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-21T19:47:01Z", "end": "2024-03-21T21:47:01Z" }
+    ],
+    "Position": { "Row": "D", "Column": 2 }
+  },
+  {
+    "SpotID": 12,
+    "Type": "Standard",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-09T19:47:01Z", "end": "2024-03-09T21:47:01Z" },
+      { "start": "2024-03-06T19:47:01Z", "end": "2024-03-06T21:47:01Z" }
+    ],
+    "Position": { "Row": "D", "Column": 3 }
+  },
+  {
+    "SpotID": 22,
+    "Type": "Electric",
+    "Status": "Available",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-25T19:47:01Z", "end": "2024-03-25T21:47:01Z" },
+      { "start": "2024-03-26T19:47:01Z", "end": "2024-03-26T21:47:01Z" }
+    ],
+    "Position": { "Row": "D", "Column": 4 }
+  },
+  {
+    "SpotID": 28,
+    "Type": "Electric",
+    "Status": "Available",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-31T19:47:01Z", "end": "2024-03-31T21:47:01Z" },
+      { "start": "2024-04-01T19:47:01Z", "end": "2024-04-01T21:47:01Z" }
+    ],
+    "Position": { "Row": "D", "Column": 5 }
+  },
+  {
+    "SpotID": 13,
+    "Type": "Standard",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-13T19:47:01Z", "end": "2024-03-13T21:47:01Z" },
+      { "start": "2024-02-23T19:47:01Z", "end": "2024-02-23T21:47:01Z" }
+    ],
+    "Position": { "Row": "E", "Column": 1 }
+  },
+  {
+    "SpotID": 14,
+    "Type": "Electric",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [],
+    "Position": { "Row": "E", "Column": 2 }
+  },
+  {
+    "SpotID": 15,
+    "Type": "Standard",
+    "Status": "Available",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-02T19:47:01Z", "end": "2024-03-02T21:47:01Z" }
+    ],
+    "Position": { "Row": "E", "Column": 3 }
+  },
+
+  {
+    "SpotID": 23,
+    "Type": "Standard",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [],
+    "Position": { "Row": "E", "Column": 5 }
+  },
+  {
+    "SpotID": 29,
+    "Type": "Standard",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [],
+    "Position": { "Row": "E", "Column": 6 }
+  },
+  {
+    "SpotID": 16,
+    "Type": "Standard",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-20T19:47:01Z", "end": "2024-03-20T21:47:01Z" },
+      { "start": "2024-03-20T19:47:01Z", "end": "2024-03-20T21:47:01Z" }
+    ],
+    "Position": { "Row": "F", "Column": 1 }
+  },
+  {
+    "SpotID": 24,
+    "Type": "Electric",
+    "Status": "Available",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-27T19:47:01Z", "end": "2024-03-27T21:47:01Z" },
+      { "start": "2024-03-28T19:47:01Z", "end": "2024-03-28T21:47:01Z" }
+    ],
+    "Position": { "Row": "F", "Column": 2 }
+  },
+
+  {
+    "SpotID": 30,
+    "Type": "Electric",
+    "Status": "Available",
+    "ReservedTimeSlots": [
+      { "start": "2024-04-02T19:47:01Z", "end": "2024-04-02T21:47:01Z" },
+      { "start": "2024-04-03T19:47:01Z", "end": "2024-04-03T21:47:01Z" }
+    ],
+    "Position": { "Row": "F", "Column": 3 }
+  },
+  {
+    "SpotID": 17,
+    "Type": "Electric",
+    "Status": "Available",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-14T19:47:01Z", "end": "2024-03-14T21:47:01Z" },
+      { "start": "2024-03-02T19:47:01Z", "end": "2024-03-02T21:47:01Z" }
+    ],
+    "Position": { "Row": "F", "Column": 4 }
+  },
+  {
+    "SpotID": 18,
+    "Type": "Electric",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [],
+    "Position": { "Row": "F", "Column": 5 }
+  },
+
+  {
+    "SpotID": 19,
+    "Type": "Standard",
+    "Status": "Available",
+    "ReservedTimeSlots": [],
+    "Position": { "Row": "G", "Column": 1 }
+  },
+  {
+    "SpotID": 20,
+    "Type": "Electric",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-23T19:47:01Z", "end": "2024-03-23T21:47:01Z" },
+      { "start": "2024-03-24T19:47:01Z", "end": "2024-03-24T21:47:01Z" }
+    ],
+    "Position": { "Row": "G", "Column": 2 }
+  },
+  {
+    "SpotID": 21,
+    "Type": "Standard",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [],
+    "Position": { "Row": "G", "Column": 3 }
+  },
+  {
+    "SpotID": 22,
+    "Type": "Electric",
+    "Status": "Available",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-25T19:47:01Z", "end": "2024-03-25T21:47:01Z" },
+      { "start": "2024-03-26T19:47:01Z", "end": "2024-03-26T21:47:01Z" }
+    ],
+    "Position": { "Row": "H", "Column": 1 }
+  },
+  {
+    "SpotID": 23,
+    "Type": "Standard",
+    "Status": "Occupied",
+    "ReservedTimeSlots": [],
+    "Position": { "Row": "H", "Column": 2 }
+  },
+  {
+    "SpotID": 24,
+    "Type": "Electric",
+    "Status": "Available",
+    "ReservedTimeSlots": [
+      { "start": "2024-03-27T19:47:01Z", "end": "2024-03-27T21:47:01Z" },
+      { "start": "2024-03-28T19:47:01Z", "end": "2024-03-28T21:47:01Z" }
+    ],
+    "Position": { "Row": "H", "Column": 3 }
+  }
+]

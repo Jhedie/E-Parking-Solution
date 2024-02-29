@@ -1,0 +1,20 @@
+[
+  {
+    "VehicleID": "1",
+    "RegistrationNumber": "ABC123",
+    "Nickname": "My Mercedes",
+    "DefaultVehicle": true
+  },
+  {
+    "VehicleID": "2",
+    "RegistrationNumber": "DEF456",
+    "Nickname": "My BMW",
+    "DefaultVehicle": false
+  },
+  {
+    "VehicleID": "3",
+    "RegistrationNumber": "GHI789",
+    "Nickname": "My Audi",
+    "DefaultVehicle": false
+  }
+]

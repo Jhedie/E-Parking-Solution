@@ -2,8 +2,8 @@
   {
     "LotId": "LOT001",
     "Location": {
-      "Latitude": "52.637879",
-      "Longitude": "-1.139759"
+      "Latitude": "52.641879",
+      "Longitude": "-1.133759"
     },
     "Owner": {
       "OwnerId": "OWNER123",
@@ -19,8 +19,8 @@
   {
     "LotId": "LOT002",
     "Location": {
-      "Latitude": "52.635879",
-      "Longitude": "-1.137759"
+      "Latitude": "52.667879",
+      "Longitude": "-1.165759"
     },
     "Owner": {
       "OwnerId": "OWNER456",
@@ -36,8 +36,8 @@
   {
     "LotId": "LOT003",
     "Location": {
-      "Latitude": "52.638879",
-      "Longitude": "-1.142759"
+      "Latitude": "52.615879",
+      "Longitude": "-1.195759"
     },
     "Owner": {
       "OwnerId": "OWNER789",
@@ -53,8 +53,8 @@
   {
     "LotId": "LOT004",
     "Location": {
-      "Latitude": "52.639879",
-      "Longitude": "-1.135759"
+      "Latitude": "52.655879",
+      "Longitude": "-1.120759"
     },
     "Owner": {
       "OwnerId": "OWNER101",
@@ -70,8 +70,8 @@
   {
     "LotId": "LOT005",
     "Location": {
-      "Latitude": "52.635879",
-      "Longitude": "-1.145759"
+      "Latitude": "52.625879",
+      "Longitude": "-1.150759"
     },
     "Owner": {
       "OwnerId": "OWNER102",
@@ -87,8 +87,8 @@
   {
     "LotId": "LOT006",
     "Location": {
-      "Latitude": "52.640879",
-      "Longitude": "-1.132759"
+      "Latitude": "52.685879",
+      "Longitude": "-1.135759"
     },
     "Owner": {
       "OwnerId": "OWNER103",
@@ -104,8 +104,8 @@
   {
     "LotId": "LOT007",
     "Location": {
-      "Latitude": "52.634879",
-      "Longitude": "-1.140759"
+      "Latitude": "52.595879",
+      "Longitude": "-1.175759"
     },
     "Owner": {
       "OwnerId": "OWNER104",
@@ -121,8 +121,8 @@
   {
     "LotId": "LOT008",
     "Location": {
-      "Latitude": "52.637579",
-      "Longitude": "-1.138459"
+      "Latitude": "52.665879",
+      "Longitude": "-1.105759"
     },
     "Owner": {
       "OwnerId": "OWNER105",

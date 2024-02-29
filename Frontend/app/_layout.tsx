@@ -3,6 +3,7 @@ import {
   DefaultTheme,
   ThemeProvider
 } from "@react-navigation/native";
+import { StripeProvider } from "@stripe/stripe-react-native";
 import { ToastProvider, ToastViewport } from "@tamagui/toast";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
@@ -37,31 +38,36 @@ export default function Layout() {
 
   return (
     <UserLocationProvider>
-      <Provider store={store}>
-        <TamaguiProvider config={config}>
-          <Theme name={colorScheme}>
-            <ThemeProvider
-              value={colorScheme === "light" ? DefaultTheme : DarkTheme}
-            >
-              <ToastProvider
-                swipeDirection="horizontal"
-                duration={6000}
-                native={["mobile"]}
+      <StripeProvider
+        publishableKey="pk_test_51OlYLWB1AMLkBmu1BFmgWiauMWOF8ceITmtOaLoEKq9lfLPk6aTfSUlBPDVBtPEgHWqSCuuMMwSfrs88Gud7LQ4k00IBlTIko7"
+        merchantIdentifier="merchant.com.jhedie.frontend"
+      >
+        <Provider store={store}>
+          <TamaguiProvider config={config}>
+            <Theme name={colorScheme}>
+              <ThemeProvider
+                value={colorScheme === "light" ? DefaultTheme : DarkTheme}
               >
-                <AuthProvider>
-                  <Stack
-                    screenOptions={{
-                      headerShown: false
-                    }}
-                  ></Stack>
-                </AuthProvider>
-                <CustomToast />
-                <ToastViewport />
-              </ToastProvider>
-            </ThemeProvider>
-          </Theme>
-        </TamaguiProvider>
-      </Provider>
+                <ToastProvider
+                  swipeDirection="horizontal"
+                  duration={6000}
+                  native={["mobile"]}
+                >
+                  <AuthProvider>
+                    <Stack
+                      screenOptions={{
+                        headerShown: false
+                      }}
+                    ></Stack>
+                  </AuthProvider>
+                  <CustomToast />
+                  <ToastViewport />
+                </ToastProvider>
+              </ThemeProvider>
+            </Theme>
+          </TamaguiProvider>
+        </Provider>
+      </StripeProvider>
     </UserLocationProvider>
   );
 }

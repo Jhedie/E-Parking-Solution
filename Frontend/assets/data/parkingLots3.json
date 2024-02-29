@@ -1,0 +1,138 @@
+[
+  {
+    "LotId": "LOT001",
+    "Location": {
+      "Latitude": "52.637879",
+      "Longitude": "-1.139759"
+    },
+    "Owner": {
+      "OwnerId": "OWNER123",
+      "Name": "Jane Doe"
+    },
+    "Capacity": 150,
+    "Occupancy": 75,
+    "LiveStatus": "Medium",
+    "Rate": "2.50 per hour",
+    "OperatingHours": "24/7",
+    "Facilities": ["EV Charging", "Disabled Access"]
+  },
+  {
+    "LotId": "LOT002",
+    "Location": {
+      "Latitude": "52.635879",
+      "Longitude": "-1.137759"
+    },
+    "Owner": {
+      "OwnerId": "OWNER456",
+      "Name": "John Smith"
+    },
+    "Capacity": 100,
+    "Occupancy": 40,
+    "LiveStatus": "Low",
+    "Rate": "3.00 per hour",
+    "OperatingHours": "6am to 10pm",
+    "Facilities": ["EV Charging"]
+  },
+  {
+    "LotId": "LOT003",
+    "Location": {
+      "Latitude": "52.638879",
+      "Longitude": "-1.142759"
+    },
+    "Owner": {
+      "OwnerId": "OWNER789",
+      "Name": "Alice Johnson"
+    },
+    "Capacity": 200,
+    "Occupancy": 160,
+    "LiveStatus": "High",
+    "Rate": "4.00 per hour",
+    "OperatingHours": "24/7",
+    "Facilities": ["Bicycle Parking", "Disabled Access"]
+  },
+  {
+    "LotId": "LOT004",
+    "Location": {
+      "Latitude": "52.639879",
+      "Longitude": "-1.135759"
+    },
+    "Owner": {
+      "OwnerId": "OWNER101",
+      "Name": "Emily White"
+    },
+    "Capacity": 120,
+    "Occupancy": 60,
+    "LiveStatus": "Medium",
+    "Rate": "2.00 per hour",
+    "OperatingHours": "7am to 11pm",
+    "Facilities": ["Motorcycle Parking", "EV Charging"]
+  },
+  {
+    "LotId": "LOT005",
+    "Location": {
+      "Latitude": "52.635879",
+      "Longitude": "-1.145759"
+    },
+    "Owner": {
+      "OwnerId": "OWNER102",
+      "Name": "Michael Brown"
+    },
+    "Capacity": 80,
+    "Occupancy": 30,
+    "LiveStatus": "Low",
+    "Rate": "1.50 per hour",
+    "OperatingHours": "6am to 7pm",
+    "Facilities": ["Disabled Access"]
+  },
+  {
+    "LotId": "LOT006",
+    "Location": {
+      "Latitude": "52.640879",
+      "Longitude": "-1.132759"
+    },
+    "Owner": {
+      "OwnerId": "OWNER103",
+      "Name": "Olivia Taylor"
+    },
+    "Capacity": 200,
+    "Occupancy": 150,
+    "LiveStatus": "High",
+    "Rate": "3.50 per hour",
+    "OperatingHours": "24/7",
+    "Facilities": ["Bicycle Parking", "EV Charging", "Disabled Access"]
+  },
+  {
+    "LotId": "LOT007",
+    "Location": {
+      "Latitude": "52.634879",
+      "Longitude": "-1.140759"
+    },
+    "Owner": {
+      "OwnerId": "OWNER104",
+      "Name": "Lucas Miller"
+    },
+    "Capacity": 90,
+    "Occupancy": 45,
+    "LiveStatus": "Medium",
+    "Rate": "2.75 per hour",
+    "OperatingHours": "5am to 12am",
+    "Facilities": ["EV Charging"]
+  },
+  {
+    "LotId": "LOT008",
+    "Location": {
+      "Latitude": "52.637579",
+      "Longitude": "-1.138459"
+    },
+    "Owner": {
+      "OwnerId": "OWNER105",
+      "Name": "Sophia Wilson"
+    },
+    "Capacity": 110,
+    "Occupancy": 55,
+    "LiveStatus": "Medium",
+    "Rate": "3.25 per hour",
+    "OperatingHours": "8am to 10pm",
+    "Facilities": ["EV Charging", "Motorcycle Parking"]
+  }
+]

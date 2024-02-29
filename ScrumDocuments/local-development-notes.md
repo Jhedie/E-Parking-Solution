@@ -50,6 +50,8 @@ Below are the development notes for the project. It comprises of links and resou
    - when the app is closed and the is user but not verified, they are taken to the verification page
    - when the app is closed after verification and reopened, the user is taken to the welcome page
 
+   https://jscrambler.com/blog/how-to-integrate-firebase-authentication-with-an-expo-app
+
 9. An issue with react native maps:
 
 - I encountered an error message when performing an eas build to enable google maps on IOS. The problem was fixed by reading through the github issue below:
@@ -90,4 +92,149 @@ https://dev.to/absek/car-parking-finder-app-ui-clone-in-react-native-2-scrolling
 
 https://shopify.github.io/flash-list/
 
-https://github.com/wix/react-native-calendars
+https://wix.github.io/react-native-calendars/docs/Components/Calendar
+https://youtu.be/RZtULGjtG_U
+
+Sliders:
+https://youtu.be/jlSWxkITOW8
+https://www.npmjs.com/package/@react-native-community/slider
+
+Fast 2kB alternative to Moment.js with the same modern API
+https://day.js.org/
+
+Icons:
+https://icons.expo.fyi/Index/Feather/check-circle
+
+Icons and Photos For Everything
+https://thenounproject.com/
+
+DateTime picker
+https://docs.expo.dev/versions/latest/sdk/date-time-picker/
+How to use date time picker:
+https://youtu.be/UEfFjfW7Zes
+
+Buttons:
+https://github.com/rcaferati/react-native-really-awesome-button?tab=readme-ov-file
+
+Approach to development:
+https://www.linkedin.com/pulse/12-frontend-first-development-key-fast-scalable-e-commerce/
+
+https://www.quora.com/Which-approach-do-you-consider-better-backend-first-then-frontend-or-vice-versa
+
+https://www.reddit.com/r/reactjs/comments/11ejggq/frontend_or_backend_first/
+
+https://en.wikipedia.org/wiki/Vertical_slice
+
+Firebase Environment Configuration:
+https://firebase.google.com/docs/functions/config-env?gen=2nd
+
+Admin Panel:
+https://apexcharts.com/
+
+https://refine.dev/docs/getting-started/quickstart/
+
+RBAC with firebase:
+
+https://jscrambler.com/blog/how-to-integrate-firebase-authentication-with-an-expo-app
+https://www.toptal.com/firebase/role-based-firebase-authentication#:~:text=up%20and%20running.-,Role%2Dbased%20Auth,a%20user%20to%20execute%20it.
+
+REST:
+https://github.com/ebenezerdon/journal-rest-api/blob/main/functions/src/index.ts
+
+React native Animations:
+Interpolation:
+https://youtu.be/ybcL8e6ImSo
+
+Custom Animated Markers and Region Focus when Content is Scrolled in React Native:
+https://youtu.be/sueqYRRarso
+
+Handling multiple dates logic:
+
+```
+// State variables to track if the start and end dates have been picked
+  const [isStartDatePicked, setIsStartDatePicked] = useState(false);
+  const [isEndDatePicked, setIsEndDatePicked] = useState(false);
+
+  // Function to handle when a day is pressed
+  const onDayPress = (day: DateData) => {
+    console.log("selected day", day.dateString);
+
+    // If the start date hasn't been picked or both dates have been picked, set the start date
+    if (!isStartDatePicked || (isStartDatePicked && isEndDatePicked)) {
+      setStartDate(day.dateString);
+      setEndDate("");
+      setIsStartDatePicked(true);
+      setIsEndDatePicked(false);
+    }
+    // If the start date has been picked but the end date hasn't, set the end date
+    else if (!isEndDatePicked) {
+      // If the selected day is before the start date, swap the start and end dates
+      if (dayjs(day.dateString).isBefore(startDate)) {
+        setEndDate(startDate);
+        setStartDate(day.dateString);
+      }
+      // Otherwise, just set the end date
+      else {
+        setEndDate(day.dateString);
+      }
+      setIsEndDatePicked(true);
+    }
+  };
+
+  // State variables to store the start and end dates
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  // Function to generate the marked dates object
+  const getMarkedDates = () => {
+    let marked = {};
+    if (startDate === endDate) {
+      marked = {
+        [startDate]: {
+          startingDay: true,
+          endingDay: true,
+          color: "green",
+          textColor: "white"
+        }
+      };
+    } else {
+      // Initialize the marked dates object with the start and end dates
+      marked = {
+        [startDate]: { startingDay: true, color: "green", textColor: "white" },
+        [endDate]: { endingDay: true, color: "green", textColor: "white" }
+      };
+
+      // Start from the day after the start date
+      let start = dayjs(startDate).add(1, "day");
+      const end = dayjs(endDate);
+
+      // Iterate over the dates between the start and end dates
+      while (start.isBefore(end)) {
+        // Add each date to the marked dates object
+        marked[start.format("YYYY-MM-DD")] = {
+          selected: true,
+          marked: true,
+          selectedColor: "blue"
+        };
+        // Move to the next date
+        start = start.add(1, "day");
+      }
+    }
+    return marked;
+  };
+```
+
+- How to send emails using Python Django and Google SMTP server at no cost.
+
+https://medium.com/@elijahobara/how-to-send-emails-using-python-django-and-google-smtp-server-at-no-cost-bbcbb8e8638b#:~:text=Configuring%20django%20for%20Gmail%20SMTP%20server.&text=The%20EMAIL_BACKEND%20setting%20specifies%20the,server%2C%20as%20specified%20by%20Google.
+
+- Creating QR codes
+  https://dev.to/dallington256/how-to-generate-and-download-qr-code-in-a-react-native-application-1k8e
+
+- Stripe Docs:
+
+  - https://github.com/jonasgroendahl/yt-react-native-payment-sheet/blob/main/App.tsx
+
+  - https://docs.stripe.com/payments/accept-a-payment?platform=react-native&ui=payment-sheet&lang=node#react-native-add-server-endpoint
+
+- How to set up node typescript express
+  https://blog.logrocket.com/how-to-set-up-node-typescript-express/

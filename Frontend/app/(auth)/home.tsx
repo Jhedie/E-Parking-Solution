@@ -1,4 +1,4 @@
-import { NavigationProp } from "@react-navigation/native";
+import { NavigationProp, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
   BookParkingDetailsScreen,
@@ -36,6 +36,7 @@ export type ScreenNames = [
 ];
 export type HomeStackParamList = {
   Home: undefined;
+  OnboardingScreen: undefined;
   ParkingLotDetailsScreen: { parkingLot: ParkingLot }; // Define a parameter for the BookingScreen route
   VehicleScreen: { parkingLot: ParkingLot };
   AddVehicleScreen: undefined;
@@ -70,8 +71,9 @@ export type HomeStackParamList = {
 };
 export type StackNavigation = NavigationProp<HomeStackParamList>;
 
-export default function Screen() {
-  const HomeScreenStack = createNativeStackNavigator<HomeStackParamList>();
+const HomeScreenStack = createNativeStackNavigator<HomeStackParamList>();
+
+function HomeStack() {
   return (
     <HomeScreenStack.Navigator
       initialRouteName="Home"
@@ -142,5 +144,12 @@ export default function Screen() {
         }}
       />
     </HomeScreenStack.Navigator>
+  );
+}
+export default function Screen() {
+  return (
+    <NavigationContainer>
+      <HomeStack />
+    </NavigationContainer>
   );
 }

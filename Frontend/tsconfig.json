@@ -5,7 +5,20 @@
     "isolatedModules": true,
     "strict": true,
     "moduleResolution": "node",
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["app/*"],
+      "@components/*": ["components/*"],
+      "@pages/*": ["pages/*"],
+      "@providers/*": ["providers/*"],
+      "@utils/*": ["utils/*"],
+      "@store/*": ["store/*"],
+      // "@api/*": ["_api/*"],
+      "@theme/*": ["theme/*"],
+      "@assets/*": ["assets/*"],
+      
+    }
   },
   "extends": "expo/tsconfig.base",
   "include": [

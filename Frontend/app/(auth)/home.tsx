@@ -10,6 +10,7 @@ import MapScreen, { ParkingLot } from "../../components/Map/screen";
 export type ScreenNames = ["Home", "BookingScreen"];
 export type HomeStackParamList = {
   Home: undefined;
+  OnboardingScreen: undefined;
   ParkingLotDetailsScreen: { parkingLot: ParkingLot }; // Define a parameter for the BookingScreen route
   VehicleScreen: { parkingLot: ParkingLot };
   AddVehicleScreen: undefined;

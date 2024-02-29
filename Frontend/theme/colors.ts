@@ -1,8 +1,50 @@
-export const inherit = "inherit";
-export const transparent = "transparent";
-export const black = "#000";
-export const white = "#fff";
-export const slate = {
+const white = "#fff";
+const inherit = "inherit";
+const transparent = "transparent";
+const black = "#000";
+
+const WARNING = {
+    25: "#FFFCF5",
+    50: "#FFFAEB",
+    100: "#FEF0C7",
+    200: "#FEDF89",
+    300: "#FEC84B",
+    400: "#FDB022",
+    500: "#F79009",
+    600: "#DC6803",
+    700: "#B54708",
+    800: "#93370D",
+    900: "#7A2E0E",
+}
+const PRIMARY = WARNING[400];
+const ERROR = {
+  25: "#FFFBFA",
+  50: "#FEF3F2",
+  100: "#FEE4E2",
+  200: "#FECDCA",
+  300: "#FDA29B",
+  400: "#F97066",
+  500: "#F04438",
+  600: "#D92D20",
+  700: "#B42318",
+  800: "#912018",
+  900: "#7A271A",
+}
+
+const SUCCESS = {
+  25: "#F6FEF9",
+  50: "#ECFDF3",
+  100: "#D1FADF",
+  200: "#A6F4C5",
+  300: "#6CE9A6",
+  400: "#32D583",
+  500: "#12B76A",
+  600: "#039855",
+  700: "#027A48",
+  800: "#05603A",
+  900: "#054F31",
+}
+const slate = {
   50: "#f8fafc",
   100: "#f1f5f9",
   200: "#e2e8f0",
@@ -14,7 +56,7 @@ export const slate = {
   800: "#1e293b",
   900: "#0f172a"
 };
-export const gray = {
+const gray = {
   50: "#f9fafb",
   100: "#f3f4f6",
   200: "#e5e7eb",
@@ -26,7 +68,7 @@ export const gray = {
   800: "#1f2937",
   900: "#111827"
 };
-export const zinc = {
+const zinc = {
   50: "#fafafa",
   100: "#f4f4f5",
   200: "#e4e4e7",
@@ -38,7 +80,7 @@ export const zinc = {
   800: "#27272a",
   900: "#18181b"
 };
-export const neutral = {
+const neutral = {
   50: "#fafafa",
   100: "#f5f5f5",
   200: "#e5e5e5",
@@ -50,7 +92,7 @@ export const neutral = {
   800: "#262626",
   900: "#171717"
 };
-export const stone = {
+const stone = {
   50: "#fafaf9",
   100: "#f5f5f4",
   200: "#e7e5e4",
@@ -62,7 +104,7 @@ export const stone = {
   800: "#292524",
   900: "#1c1917"
 };
-export const red = {
+ const red = {
   50: "#fef2f2",
   100: "#fee2e2",
   200: "#fecaca",
@@ -74,7 +116,7 @@ export const red = {
   800: "#991b1b",
   900: "#7f1d1d"
 };
-export const orange = {
+ const orange = {
   50: "#fff7ed",
   100: "#ffedd5",
   200: "#fed7aa",
@@ -86,7 +128,7 @@ export const orange = {
   800: "#9a3412",
   900: "#7c2d12"
 };
-export const amber = {
+const amber = {
   50: "#fffbeb",
   100: "#fef3c7",
   200: "#fde68a",
@@ -98,7 +140,7 @@ export const amber = {
   800: "#92400e",
   900: "#78350f"
 };
-export const yellow = {
+ const yellow = {
   50: "#fefce8",
   100: "#fef9c3",
   200: "#fef08a",
@@ -110,7 +152,7 @@ export const yellow = {
   800: "#854d0e",
   900: "#713f12"
 };
-export const lime = {
+ const lime = {
   50: "#f7fee7",
   100: "#ecfccb",
   200: "#d9f99d",
@@ -122,7 +164,7 @@ export const lime = {
   800: "#3f6212",
   900: "#365314"
 };
-export const green = {
+ const green = {
   50: "#f0fdf4",
   100: "#dcfce7",
   200: "#bbf7d0",
@@ -134,7 +176,7 @@ export const green = {
   800: "#166534",
   900: "#14532d"
 };
-export const emerald = {
+ const emerald = {
   50: "#ecfdf5",
   100: "#d1fae5",
   200: "#a7f3d0",
@@ -146,7 +188,7 @@ export const emerald = {
   800: "#065f46",
   900: "#064e3b"
 };
-export const teal = {
+ const teal = {
   50: "#f0fdfa",
   100: "#ccfbf1",
   200: "#99f6e4",
@@ -158,7 +200,7 @@ export const teal = {
   800: "#115e59",
   900: "#134e4a"
 };
-export const cyan = {
+ const cyan = {
   50: "#ecfeff",
   100: "#cffafe",
   200: "#a5f3fc",
@@ -170,7 +212,7 @@ export const cyan = {
   800: "#155e75",
   900: "#164e63"
 };
-export const sky = {
+ const sky = {
   50: "#f0f9ff",
   100: "#e0f2fe",
   200: "#bae6fd",
@@ -182,7 +224,7 @@ export const sky = {
   800: "#075985",
   900: "#0c4a6e"
 };
-export const blue = {
+const blue = {
   50: "#eff6ff",
   100: "#dbeafe",
   200: "#bfdbfe",
@@ -194,7 +236,7 @@ export const blue = {
   800: "#1e40af",
   900: "#1e3a8a"
 };
-export const indigo = {
+const indigo = {
   50: "#eef2ff",
   100: "#e0e7ff",
   200: "#c7d2fe",
@@ -206,7 +248,7 @@ export const indigo = {
   800: "#3730a3",
   900: "#312e81"
 };
-export const violet = {
+const violet = {
   50: "#f5f3ff",
   100: "#ede9fe",
   200: "#ddd6fe",
@@ -218,7 +260,7 @@ export const violet = {
   800: "#5b21b6",
   900: "#4c1d95"
 };
-export const purple = {
+const purple = {
   50: "#faf5ff",
   100: "#f3e8ff",
   200: "#e9d5ff",
@@ -230,7 +272,7 @@ export const purple = {
   800: "#6b21a8",
   900: "#581c87"
 };
-export const fuchsia = {
+const fuchsia = {
   50: "#fdf4ff",
   100: "#fae8ff",
   200: "#f5d0fe",
@@ -242,7 +284,7 @@ export const fuchsia = {
   800: "#86198f",
   900: "#701a75"
 };
-export const pink = {
+const pink = {
   50: "#fdf2f8",
   100: "#fce7f3",
   200: "#fbcfe8",
@@ -254,7 +296,7 @@ export const pink = {
   800: "#9d174d",
   900: "#831843"
 };
-export const rose = {
+const rose = {
   50: "#fff1f2",
   100: "#ffe4e6",
   200: "#fecdd3",
@@ -265,4 +307,37 @@ export const rose = {
   700: "#be123c",
   800: "#9f1239",
   900: "#881337"
+};
+
+export const colors = {
+  slate,
+  gray,
+  zinc,
+  amber,
+  neutral,
+  stone,
+  red,
+  orange,
+  yellow,
+  lime,
+  green,
+  emerald,
+  teal,
+  cyan,
+  sky,
+  blue,
+  indigo,
+  violet,
+  purple,
+  fuchsia,
+  pink,
+  rose,
+  WARNING,
+  ERROR,
+  SUCCESS,
+  white,
+  inherit,
+  transparent,
+  black,
+  PRIMARY,
 };

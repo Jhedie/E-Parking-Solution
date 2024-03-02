@@ -63,16 +63,11 @@ export const verifyIdTokenInterceptor = (
       async (decoded) => {
         if (!finished) {
           finished = true;
-          console.log("req.authenticated", req.authenticated);
           req.authenticated = true;
-          console.log("req.authenticated", req.authenticated);
           req.auth = await admin.auth().getUser(decoded.uid);
-          console.log("req.auth", req.auth);
           req.token = decoded;
           req.claims = req.auth!.customClaims ?? ({} as any); // same object reference as Firebase
-          console.log("claims", req.claims);
           req.claims["authenticated" as MyClaims] = true;
-          console.log("claims", req.claims);
           if (req.auth && req.auth.customClaims) {
             assert(req.auth.customClaims["authenticated"] == true);
           }

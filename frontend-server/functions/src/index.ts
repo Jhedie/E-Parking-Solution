@@ -1,5 +1,5 @@
 import * as admin from "firebase-admin";
-import { https } from "firebase-functions/v2";
+import * as v2 from "firebase-functions/v2";
 import { apiApp } from "./api";
 import { eventTriggers } from "./event-triggers";
 /**
@@ -30,7 +30,7 @@ admin.initializeApp();
  * This is a Firebase Cloud Function that is triggered by HTTP requests.
  * The function uses the Express app defined in `apiApp`.
  */
-exports.api = https.onRequest(apiApp);
+exports.api = v2.https.onRequest(apiApp);
 
 /**
  * The event triggers for the application.

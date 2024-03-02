@@ -62,7 +62,22 @@ node_modules/
 # Yarn Integrity file
 .yarn-integrity
 
+
+################
+
 # dotenv environment variables file
 .env
 
+
 e-parking-app-b22cb-firebase-adminsdk-d5yi5-fb98f59c3c.json
+
+
+
+# Compiled JavaScript files
+functions/lib/
+
+# TypeScript v1 declaration files
+typings/
+
+# Node.js dependency directory
+node_modules/

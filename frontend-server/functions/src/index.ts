@@ -1,20 +1,41 @@
-import { onRequest } from "firebase-functions/v2/https";
+import * as admin from "firebase-admin";
+import { https } from "firebase-functions/v2";
+import { apiApp } from "./api";
+import { eventTriggers } from "./event-triggers";
+/**
+ * User roles in the system.
+ *
+ * @typedef {("driver" | "parkingOwner" | "admin")} UserRole
+ */
+export type UserRole = "driver" | "parkingOwner" | "admin";
 
-import * as express from "express";
-import { routesConfig } from "./routes-config";
+/**
+ * Claims for the system.
+ *
+ * @typedef {("authenticated" | UserRole)} MyClaims
+ * @todo Add OR operation with our own claims.
+ */
+export type MyClaims = "authenticated" | UserRole;
 
-import bodyParser = require("body-parser");
-import cors = require("cors");
+/**
+ * Initializes the Firebase Admin SDK.
+ *
+ * This is required to use the Firebase Admin SDK in the application.
+ */
+admin.initializeApp();
 
-// initialize express app
-const app = express();
+/**
+ * The API endpoint for the application.
+ *
+ * This is a Firebase Cloud Function that is triggered by HTTP requests.
+ * The function uses the Express app defined in `apiApp`.
+ */
+exports.api = https.onRequest(apiApp);
 
-// Middleware to parse JSON bodies
-app.use(bodyParser.json());
-
-// Middleware to enable CORS
-app.use(cors({ origin: true }));
-
-routesConfig(app);
-
-export const api = (exports.app = onRequest(app));
+/**
+ * The event triggers for the application.
+ *
+ * These are Firebase Cloud Functions that are triggered by events in the database.
+ * The functions are defined in `./eventTriggers`.
+ */
+Object.assign(exports, eventTriggers());

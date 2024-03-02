@@ -238,3 +238,11 @@ https://medium.com/@elijahobara/how-to-send-emails-using-python-django-and-googl
 
 - How to set up node typescript express
   https://blog.logrocket.com/how-to-set-up-node-typescript-express/
+
+- Adding SVG,PNGS etc
+  https://stackoverflow.com/questions/71099924/cannot-find-module-file-name-png-or-its-corresponding-type-declarations-type
+
+- Boiler plate for node typescript express REST API
+  https://github.com/vinicostaa/node-typescript-restify
+  https://github.com/RodrigoBertotti/firebase-cloud-functions-typescript-example?tab=readme-ov-file
+  https://www.reddit.com/r/Firebase/comments/18bnou6/i_created_a_nodejs_rest_api_example_for_firebase/

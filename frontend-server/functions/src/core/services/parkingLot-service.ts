@@ -43,6 +43,28 @@ class ParkingLotService {
       (await parkingLotRef.get()).data()
     );
   }
+
+  /**
+   * Returns a list of all parking lots in the firestore database.
+   * @returns A promise that resolves to an array of all parking lots in the firestore database.
+   */
+  async getParkingLots(): Promise<ParkingLot[]> {
+    // Fetch all documents from the collection
+
+    const snapshot = await this.collection().get();
+    // Convert each document to a ParkingLot object and return the array
+    return snapshot.docs.map((doc) =>
+      ParkingLotFirestoreModel.fromDocumentData(doc.data())
+    );
+  }
+
+  async getParkingLotById(productId: string): Promise<ParkingLot | null> {
+    const parkingLotResult = await this.doc(productId).get();
+    if (!parkingLotResult.exists) {
+      return null;
+    }
+    return ParkingLotFirestoreModel.fromDocumentData(parkingLotResult.data());
+  }
 }
 
 // Export a singleton instance in the global namespace

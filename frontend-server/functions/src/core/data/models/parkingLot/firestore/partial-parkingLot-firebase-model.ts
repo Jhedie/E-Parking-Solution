@@ -14,6 +14,8 @@ export class PartialParkingLotFirestoreModel {
         if (partialParkingLot.LotId)
           res[ParkingLotFirestoreModel.kLotId] = partialParkingLot.LotId;
 
+        if (partialParkingLot.LotName)
+          res[ParkingLotFirestoreModel.kLotName] = partialParkingLot.LotName;
         // Check if Coordinates is present and ensure it's a GeoPoint
         if (partialParkingLot.Coordinates) {
           // Assuming Coordinates is either already a GeoPoint or an object with Latitude and Longitude properties
@@ -30,6 +32,8 @@ export class PartialParkingLotFirestoreModel {
 
         if (partialParkingLot.Owner)
           res[ParkingLotFirestoreModel.kOwner] = partialParkingLot.Owner;
+        if (partialParkingLot.Address)
+          res[ParkingLotFirestoreModel.kAddress] = partialParkingLot.Address;
         if (partialParkingLot.Capacity)
           res[ParkingLotFirestoreModel.kCapacity] = partialParkingLot.Capacity;
         if (partialParkingLot.Occupancy)

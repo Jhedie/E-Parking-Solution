@@ -1,14 +1,16 @@
 import { firestore } from "firebase-admin";
+import { GeoPoint } from "firebase-admin/firestore";
 import { ParkingLot } from "../../../parkingLot";
 import FieldValue = firestore.FieldValue;
 import Timestamp = firestore.Timestamp;
 import DocumentData = firestore.DocumentData;
-import { GeoPoint } from "firebase-admin/firestore";
 
 export class ParkingLotFirestoreModel extends ParkingLot {
   static kLotId = "LotId";
+  static kLotName = "LotName";
   static kCoordinates = "Coordinates";
   static kOwner = "Owner";
+  static kAddress = "Address";
   static kCapacity = "Capacity";
   static kOccupancy = "Occupancy";
   static kLiveStatus = "LiveStatus";
@@ -21,8 +23,16 @@ export class ParkingLotFirestoreModel extends ParkingLot {
   static empty() {
     return new ParkingLotFirestoreModel(
       "", // LotId
+      "", // LotName
       new GeoPoint(0, 0), // Default Coordinates as a GeoPoint
       "", // Owner
+      {
+        street: "",
+        city: "",
+        state: "",
+        country: "",
+        postalCode: "",
+      }, // Empty Address
       0, // Capacity
       0, // Occupancy
       "Low", // LiveStatus
@@ -47,8 +57,10 @@ export class ParkingLotFirestoreModel extends ParkingLot {
   toDocumentData(lotId?: string, createdAt?: Timestamp | FieldValue) {
     return {
       [ParkingLotFirestoreModel.kLotId]: lotId ?? this.LotId,
+      [ParkingLotFirestoreModel.kLotName]: this.LotName,
       [ParkingLotFirestoreModel.kCoordinates]: this.Coordinates,
       [ParkingLotFirestoreModel.kOwner]: this.Owner,
+      [ParkingLotFirestoreModel.kAddress]: this.Address,
       [ParkingLotFirestoreModel.kCapacity]: this.Capacity,
       [ParkingLotFirestoreModel.kOccupancy]: this.Occupancy,
       [ParkingLotFirestoreModel.kLiveStatus]: this.LiveStatus,
@@ -63,8 +75,10 @@ export class ParkingLotFirestoreModel extends ParkingLot {
   static fromDocumentData(data: DocumentData) {
     return new ParkingLotFirestoreModel(
       data[ParkingLotFirestoreModel.kLotId],
-      data[ParkingLotFirestoreModel.kCoordinates], // Assumes GeoPoint is directly stored
+      data[ParkingLotFirestoreModel.kLotName],
+      data[ParkingLotFirestoreModel.kCoordinates],
       data[ParkingLotFirestoreModel.kOwner],
+      data[ParkingLotFirestoreModel.kAddress],
       data[ParkingLotFirestoreModel.kCapacity],
       data[ParkingLotFirestoreModel.kOccupancy],
       data[ParkingLotFirestoreModel.kLiveStatus],

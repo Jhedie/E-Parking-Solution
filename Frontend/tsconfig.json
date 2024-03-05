@@ -5,7 +5,19 @@
     "isolatedModules": true,
     "strict": true,
     "moduleResolution": "node",
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["app/*"],
+      "@components/*": ["components/*"],
+      "@pages/*": ["pages/*"],
+      "@providers/*": ["providers/*"],
+      "@utils/*": ["utils/*"],
+      "@store/*": ["store/*"],
+      // "@api/*": ["_api/*"],
+      "@theme/*": ["theme/*"],
+      "@assets/*": ["assets/*"]
+    }
   },
   "extends": "expo/tsconfig.base",
   "include": [
@@ -13,7 +25,8 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "**/*.d.ts", // Include .d.ts files in all directories
-    "expo-env.d.ts"
-, "babel.config.js"  ],
+    "expo-env.d.ts",
+    "babel.config.js"
+  ],
   "exclude": ["**/node_modules/*"]
 }

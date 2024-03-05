@@ -18,29 +18,68 @@ import MapView, {
   enableLatestRenderer
 } from "react-native-maps";
 
+import { useQuery } from "@tanstack/react-query";
+import { getParkingLots } from "api/api";
 import { Image, Text, YStack } from "tamagui";
 import { StackNavigation } from "../../app/(auth)/home";
 import parkingLots from "../../assets/data/parkingLots.json";
 import { UserLocationContext } from "../../providers/UserLocation/UserLocationProvider";
 
-export type ParkingLot = {
-  LotId: string;
-  Location: {
-    Latitude: string;
-    Longitude: string;
-  };
-  Owner: {
-    OwnerId: string;
-    Name: string;
-  };
-  Capacity: number;
-  Occupancy: number;
-  LiveStatus: string;
-  Rate: string;
-  OperatingHours: string;
-  Facilities: string[];
+const parkingLotsQuery = useQuery({
+  queryKey: ["parkingLots"],
+  queryFn: getParkingLots
+});
+
+console.log(parkingLotsQuery.data);
+
+export type GeoPoint = {
+  _latitude: number;
+  _longitude: number;
 };
 
+export type Rate = {
+  RateType: string;
+  Rate: number;
+  NightRate?: number;
+  minimum: number;
+  maximum: number;
+  discount?: number;
+  dynamicPricing?: {
+    baseRate: number;
+    peakRate: number;
+    offPeakRate: number;
+    peakTimes: string[];
+  };
+};
+
+export type Address = {
+  street: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode: string;
+};
+
+export type Facility =
+  | "EV Charging"
+  | "Disabled Access"
+  | "Bicycle Parking"
+  | "Motorcycle Parking";
+
+export type ParkingLot = {
+  LotId: string | undefined;
+  LotName: string;
+  Coordinates: GeoPoint;
+  Owner: string;
+  Address: Address;
+  Capacity: number;
+  Occupancy: number;
+  LiveStatus: "Low" | "Medium" | "High";
+  OperatingHours: string;
+  Facilities: Facility[];
+  Rates: Rate[];
+  createdAt: Date;
+};
 interface MapScreenProps {
   navigation: StackNavigation;
 }

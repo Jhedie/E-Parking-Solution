@@ -1263,7 +1263,7 @@
         "Input": {
           "staticConfig": {
             "isInput": true,
-            "accept": {
+            "acceptTokens": {
               "placeholderTextColor": "color",
               "selectionColor": "color"
             },
@@ -1317,7 +1317,7 @@
         "InputFrame": {
           "staticConfig": {
             "isInput": true,
-            "accept": {
+            "acceptTokens": {
               "placeholderTextColor": "color",
               "selectionColor": "color"
             },
@@ -2076,7 +2076,7 @@
         "TextArea": {
           "staticConfig": {
             "isInput": true,
-            "accept": {
+            "acceptTokens": {
               "placeholderTextColor": "color",
               "selectionColor": "color"
             },
@@ -2133,7 +2133,7 @@
         "TextAreaFrame": {
           "staticConfig": {
             "isInput": true,
-            "accept": {
+            "acceptTokens": {
               "placeholderTextColor": "color",
               "selectionColor": "color"
             },
@@ -6172,7 +6172,6 @@
               "hoverStyle": true,
               "pressStyle": true,
               "focusStyle": true,
-              "disabledStyle": true,
               "backfaceVisibility": true,
               "borderBottomEndRadius": true,
               "borderBottomStartRadius": true,
@@ -8711,7 +8710,6 @@
               "hoverStyle": true,
               "pressStyle": true,
               "focusStyle": true,
-              "disabledStyle": true,
               "backfaceVisibility": true,
               "borderBottomEndRadius": true,
               "borderBottomStartRadius": true,
@@ -9265,7 +9263,6 @@
               "hoverStyle": true,
               "pressStyle": true,
               "focusStyle": true,
-              "disabledStyle": true,
               "backfaceVisibility": true,
               "borderBottomEndRadius": true,
               "borderBottomStartRadius": true,
@@ -9543,7 +9540,6 @@
               "hoverStyle": true,
               "pressStyle": true,
               "focusStyle": true,
-              "disabledStyle": true,
               "backfaceVisibility": true,
               "borderBottomEndRadius": true,
               "borderBottomStartRadius": true,
@@ -9821,7 +9817,6 @@
               "hoverStyle": true,
               "pressStyle": true,
               "focusStyle": true,
-              "disabledStyle": true,
               "backfaceVisibility": true,
               "borderBottomEndRadius": true,
               "borderBottomStartRadius": true,
@@ -9982,7 +9977,6 @@
               "hoverStyle": true,
               "pressStyle": true,
               "focusStyle": true,
-              "disabledStyle": true,
               "backfaceVisibility": true,
               "borderBottomEndRadius": true,
               "borderBottomStartRadius": true,
@@ -10143,7 +10137,6 @@
               "hoverStyle": true,
               "pressStyle": true,
               "focusStyle": true,
-              "disabledStyle": true,
               "backfaceVisibility": true,
               "borderBottomEndRadius": true,
               "borderBottomStartRadius": true,
@@ -10305,7 +10298,6 @@
               "hoverStyle": true,
               "pressStyle": true,
               "focusStyle": true,
-              "disabledStyle": true,
               "backfaceVisibility": true,
               "borderBottomEndRadius": true,
               "borderBottomStartRadius": true,
@@ -10466,7 +10458,6 @@
               "hoverStyle": true,
               "pressStyle": true,
               "focusStyle": true,
-              "disabledStyle": true,
               "backfaceVisibility": true,
               "borderBottomEndRadius": true,
               "borderBottomStartRadius": true,
@@ -10627,7 +10618,6 @@
               "hoverStyle": true,
               "pressStyle": true,
               "focusStyle": true,
-              "disabledStyle": true,
               "backfaceVisibility": true,
               "borderBottomEndRadius": true,
               "borderBottomStartRadius": true,
@@ -10789,7 +10779,6 @@
               "hoverStyle": true,
               "pressStyle": true,
               "focusStyle": true,
-              "disabledStyle": true,
               "backfaceVisibility": true,
               "borderBottomEndRadius": true,
               "borderBottomStartRadius": true,

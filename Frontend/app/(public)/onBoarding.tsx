@@ -10,10 +10,10 @@ import { colors } from "@theme/colors";
 
 import { storage } from "@utils/asyncStorage";
 
-import parkingAreaPlace from ".@assets/static/images/parking-area-place.png";
-import parkingPanalWithBikeusingMobile from "@assets/static/images/Parking-panal-with-bikeusing-mobile.png";
 import CardsAndBikeAndBuildingInBackgroundSvg from "@assets/static/images/building-and-parked-cars-andbikes.png";
-import userScanningCard from "@assets/static/images/user-scanning-card.png";
+import parkingPanalWithBikeusingMobile from "../../assets/static/images/Parking-panal-with-bikeusing-mobile.png";
+import parkingAreaPlace from "../../assets/static/images/parking-area-place.png";
+import userScanningCard from "../../assets/static/images/user-scanning-card.png";
 
 import LockIcon from "@assets/static/svgs/lock-icon.svg";
 import MapIcon from "@assets/static/svgs/map-icon.svg";

@@ -1,4 +1,7 @@
+import { storage } from "@utils/asyncStorage";
 import { Link, useRouter } from "expo-router";
+import { Text, View } from "react-native";
+import AwesomeButton from "react-native-really-awesome-button";
 import { Button, H1, Paragraph, SizableText, XStack, YStack } from "tamagui";
 
 export const WelcomeScreen: React.FC = () => {
@@ -6,20 +9,32 @@ export const WelcomeScreen: React.FC = () => {
   return (
     <YStack
       flex={1}
-      justifyContent="center"
+      justifyContent="space-around"
       alignItems="center"
-      space="$3"
+      gap="$3"
     >
       <H1>Welcome</H1>
       <YStack>
-        <Button
-          themeInverse
-          onPress={() => {
-            router.push("/(public)/sign-in");
-          }}
-        >
-          Sign In
-        </Button>
+        <View>
+          <AwesomeButton
+            height={50}
+            width={200}
+            onPress={() => {
+              router.push("/(public)/sign-in");
+            }}
+            raiseLevel={1}
+            borderRadius={10}
+            backgroundColor="black"
+            backgroundShadow="black"
+          >
+            <Text
+              numberOfLines={1}
+              style={{ overflow: "hidden", color: "white" }}
+            >
+              Sign In
+            </Text>
+          </AwesomeButton>
+        </View>
         <XStack>
           <Paragraph
             size="$2"
@@ -40,6 +55,45 @@ export const WelcomeScreen: React.FC = () => {
           </Link>
         </XStack>
       </YStack>
+
+      {/* //TODO: To be remove */}
+      <View>
+        <AwesomeButton
+          height={50}
+          width={200}
+          onPress={() => {
+            const reset = async () => {
+              await storage.setItem("onboarding", 0);
+              console.log("pressed");
+            };
+            reset();
+          }}
+          raiseLevel={1}
+          borderRadius={10}
+          backgroundColor="black"
+          backgroundShadow="black"
+        >
+          <Text
+            numberOfLines={1}
+            style={{ overflow: "hidden", color: "white" }}
+          >
+            Reset OnBoarding
+          </Text>
+        </AwesomeButton>
+      </View>
+
+      {/* <Button
+        onPress={() => {
+          const reset = async () => {
+            await storage.setItem("onboarding", 0);
+            console.log("pressed");
+          };
+          reset();
+        }}
+        themeInverse
+      >
+        <Text style={{ color: "white" }}>Reset OnBoarding</Text>
+      </Button> */}
     </YStack>
   );
 };

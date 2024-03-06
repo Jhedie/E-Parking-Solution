@@ -4,7 +4,6 @@ import { User, useAuth } from "../../../providers/Authentication/AuthProvider";
 
 export default function SignUpScreen() {
   const { signUp } = useAuth();
-
   return (
     <YStack
       flex={1}

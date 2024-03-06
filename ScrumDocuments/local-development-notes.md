@@ -246,3 +246,7 @@ https://medium.com/@elijahobara/how-to-send-emails-using-python-django-and-googl
   https://github.com/vinicostaa/node-typescript-restify
   https://github.com/RodrigoBertotti/firebase-cloud-functions-typescript-example?tab=readme-ov-file
   https://www.reddit.com/r/Firebase/comments/18bnou6/i_created_a_nodejs_rest_api_example_for_firebase/
+
+- Http request
+  Fetch and Axios are both JavaScript libraries used for making HTTP requests in mobile/web applications.
+  https://www.linkedin.com/pulse/fetch-vs-axios-react-native-rohit-bansal/

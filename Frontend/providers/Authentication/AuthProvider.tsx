@@ -7,7 +7,6 @@ import {
   useRouter,
   useSegments
 } from "expo-router";
-import { has } from "immer/dist/internal";
 import {
   PropsWithChildren,
   createContext,

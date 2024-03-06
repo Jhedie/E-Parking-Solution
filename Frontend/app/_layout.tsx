@@ -41,39 +41,37 @@ export default function Layout() {
   const queryClient = new QueryClient();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <UserLocationProvider>
-        <StripeProvider
-          publishableKey="pk_test_51OlYLWB1AMLkBmu1BFmgWiauMWOF8ceITmtOaLoEKq9lfLPk6aTfSUlBPDVBtPEgHWqSCuuMMwSfrs88Gud7LQ4k00IBlTIko7"
-          merchantIdentifier="merchant.com.jhedie.frontend"
-        >
-          <Provider store={store}>
-            <TamaguiProvider config={config}>
-              <Theme name={colorScheme}>
-                <ThemeProvider
-                  value={colorScheme === "light" ? DefaultTheme : DarkTheme}
+    <UserLocationProvider>
+      <StripeProvider
+        publishableKey="pk_test_51OlYLWB1AMLkBmu1BFmgWiauMWOF8ceITmtOaLoEKq9lfLPk6aTfSUlBPDVBtPEgHWqSCuuMMwSfrs88Gud7LQ4k00IBlTIko7"
+        merchantIdentifier="merchant.com.jhedie.frontend"
+      >
+        <QueryClientProvider client={queryClient}>
+          <TamaguiProvider config={config}>
+            <Theme name={colorScheme}>
+              <ThemeProvider
+                value={colorScheme === "light" ? DefaultTheme : DarkTheme}
+              >
+                <ToastProvider
+                  swipeDirection="horizontal"
+                  duration={6000}
+                  native={["mobile"]}
                 >
-                  <ToastProvider
-                    swipeDirection="horizontal"
-                    duration={6000}
-                    native={["mobile"]}
-                  >
-                    <AuthProvider>
-                      <Stack
-                        screenOptions={{
-                          headerShown: false
-                        }}
-                      ></Stack>
-                    </AuthProvider>
-                    <CustomToast />
-                    <ToastViewport />
-                  </ToastProvider>
-                </ThemeProvider>
-              </Theme>
-            </TamaguiProvider>
-          </Provider>
-        </StripeProvider>
-      </UserLocationProvider>
-    </QueryClientProvider>
+                  <AuthProvider>
+                    <Stack
+                      screenOptions={{
+                        headerShown: false
+                      }}
+                    ></Stack>
+                  </AuthProvider>
+                  <CustomToast />
+                  <ToastViewport />
+                </ToastProvider>
+              </ThemeProvider>
+            </Theme>
+          </TamaguiProvider>
+        </QueryClientProvider>
+      </StripeProvider>
+    </UserLocationProvider>
   );
 }

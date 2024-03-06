@@ -1,12 +1,12 @@
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import "expo-dev-client";
-import React, { useContext, useEffect } from "react";
-import { Animated, StyleSheet } from "react-native";
-
+import React, { useContext, useEffect, useState } from "react";
 import {
+  Animated,
   Dimensions,
   Platform,
   ScrollView,
+  StyleSheet,
   TouchableOpacity,
   View
 } from "react-native";
@@ -19,18 +19,13 @@ import MapView, {
 } from "react-native-maps";
 
 import { useQuery } from "@tanstack/react-query";
-import { getParkingLots } from "api/api";
+
+import { useAuth } from "@providers/Authentication/AuthProvider";
+import { getAllParkingLots } from "api/api";
 import { Image, Text, YStack } from "tamagui";
 import { StackNavigation } from "../../app/(auth)/home";
 import parkingLots from "../../assets/data/parkingLots.json";
 import { UserLocationContext } from "../../providers/UserLocation/UserLocationProvider";
-
-const parkingLotsQuery = useQuery({
-  queryKey: ["parkingLots"],
-  queryFn: getParkingLots
-});
-
-console.log(parkingLotsQuery.data);
 
 export type GeoPoint = {
   _latitude: number;
@@ -79,7 +74,7 @@ export type ParkingLot = {
   Facilities: Facility[];
   Rates: Rate[];
   createdAt: Date;
-};
+} | null;
 interface MapScreenProps {
   navigation: StackNavigation;
 }
@@ -90,6 +85,33 @@ const { width } = Dimensions.get("window");
 const CARD_WIDTH = width * 0.9;
 
 const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
+  const { user } = useAuth();
+
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      user.getIdToken().then((idToken) => {
+        setToken(idToken);
+      });
+    }
+  }, [user]);
+
+  const parkingLotsQuery = useQuery({
+    queryKey: ["parkingLots"],
+    queryFn: () => {
+      if (token) {
+        return getAllParkingLots(token);
+      } else {
+        // Return a default value or throw an error
+        return [];
+        // throw new Error("Token is not available");
+      }
+    }
+  });
+
+  console.log(parkingLotsQuery.data);
+
   const userLocationContext = useContext(UserLocationContext);
   const [selectedParkingLot, setSelectedParkingLot] =
     React.useState<ParkingLot | null>(null);
@@ -419,7 +441,9 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                     >
                       <TouchableOpacity
                         onPress={() => {
-                          navigation.navigate("VehicleScreen", { parkingLot });
+                          navigation.navigate("VehicleScreen", {
+                            parkingLot: null
+                          });
                         }}
                         style={{
                           flex: 5.0,
@@ -445,7 +469,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                       <TouchableOpacity
                         onPress={() =>
                           navigation.navigate("ParkingLotDetailsScreen", {
-                            parkingLot
+                            parkingLot: null
                           })
                         }
                         style={{

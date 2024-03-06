@@ -8,6 +8,7 @@ import DocumentData = firestore.DocumentData;
 export class ParkingLotFirestoreModel extends ParkingLot {
   static kLotId = "LotId";
   static kLotName = "LotName";
+  static kDescription = "Description";
   static kCoordinates = "Coordinates";
   static kOwner = "Owner";
   static kAddress = "Address";
@@ -24,6 +25,7 @@ export class ParkingLotFirestoreModel extends ParkingLot {
     return new ParkingLotFirestoreModel(
       "", // LotId
       "", // LotName
+      "", // Description
       new GeoPoint(0, 0), // Default Coordinates as a GeoPoint
       "", // Owner
       {
@@ -36,7 +38,6 @@ export class ParkingLotFirestoreModel extends ParkingLot {
       0, // Capacity
       0, // Occupancy
       "Low", // LiveStatus
-      "", // Rate
       "", // OperatingHours
       [], // Facilities
       [], // Rates
@@ -58,13 +59,13 @@ export class ParkingLotFirestoreModel extends ParkingLot {
     return {
       [ParkingLotFirestoreModel.kLotId]: lotId ?? this.LotId,
       [ParkingLotFirestoreModel.kLotName]: this.LotName,
+      [ParkingLotFirestoreModel.kDescription]: this.Description,
       [ParkingLotFirestoreModel.kCoordinates]: this.Coordinates,
       [ParkingLotFirestoreModel.kOwner]: this.Owner,
       [ParkingLotFirestoreModel.kAddress]: this.Address,
       [ParkingLotFirestoreModel.kCapacity]: this.Capacity,
       [ParkingLotFirestoreModel.kOccupancy]: this.Occupancy,
       [ParkingLotFirestoreModel.kLiveStatus]: this.LiveStatus,
-      [ParkingLotFirestoreModel.kRate]: this.Rate,
       [ParkingLotFirestoreModel.kOperatingHours]: this.OperatingHours,
       [ParkingLotFirestoreModel.kFacilities]: this.Facilities,
       [ParkingLotFirestoreModel.kRates]: this.Rates,
@@ -76,13 +77,13 @@ export class ParkingLotFirestoreModel extends ParkingLot {
     return new ParkingLotFirestoreModel(
       data[ParkingLotFirestoreModel.kLotId],
       data[ParkingLotFirestoreModel.kLotName],
+      data[ParkingLotFirestoreModel.kDescription],
       data[ParkingLotFirestoreModel.kCoordinates],
       data[ParkingLotFirestoreModel.kOwner],
       data[ParkingLotFirestoreModel.kAddress],
       data[ParkingLotFirestoreModel.kCapacity],
       data[ParkingLotFirestoreModel.kOccupancy],
       data[ParkingLotFirestoreModel.kLiveStatus],
-      data[ParkingLotFirestoreModel.kRate],
       data[ParkingLotFirestoreModel.kOperatingHours],
       data[ParkingLotFirestoreModel.kFacilities],
       data[ParkingLotFirestoreModel.kRates],

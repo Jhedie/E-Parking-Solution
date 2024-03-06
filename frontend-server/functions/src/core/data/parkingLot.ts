@@ -34,13 +34,13 @@ export class ParkingLot {
   constructor(
     public readonly LotId: string | undefined,
     public readonly LotName: string,
+    public readonly Description: string,
     public readonly Coordinates: GeoPoint,
     public readonly Owner: string,
     public readonly Address: Address,
     public readonly Capacity: number,
     public readonly Occupancy: number,
     public readonly LiveStatus: "Low" | "Medium" | "High",
-    public readonly Rate: string,
     public readonly OperatingHours: string,
     public readonly Facilities: Facility[],
     public readonly Rates: Rate[],
@@ -51,6 +51,7 @@ export class ParkingLot {
     return new ParkingLot(
       undefined, // LotId is undefined for an empty object
       "", // Empty LotName
+      "", // Empty Description
       new GeoPoint(0, 0), // Default Coordinates
       "", // Empty owner
       {
@@ -63,7 +64,6 @@ export class ParkingLot {
       0, // Capacity
       0, // Occupancy
       "Low", // Default LiveStatus
-      "", // Rate
       "", // Operating Hours
       [], // No Facilities
       [], // No Rates

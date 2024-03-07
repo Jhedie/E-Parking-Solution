@@ -1,65 +1,126 @@
-import auth from "@react-native-firebase/auth";
 import { useToastController } from "@tamagui/toast";
 import { useRouter } from "expo-router";
-import { Formik, FormikValues } from "formik";
-import { Button, H3, Input, Spinner, YStack } from "tamagui";
-import { User, useAuth } from "../../../providers/Authentication/AuthProvider";
+import { Formik } from "formik";
+import { Image, StyleSheet, Text, View } from "react-native";
+import { Button, Input, Spinner, YStack } from "tamagui";
+import { ZodError, z } from "zod";
+import { useAuth } from "../../../providers/Authentication/AuthProvider";
+
+const signInValidationSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters long")
+});
+type SignInFormValues = z.infer<typeof signInValidationSchema>;
 
 export default function SignInScreen() {
   const router = useRouter();
   const toaster = useToastController();
   const { signIn } = useAuth();
+
+  const initialValues: SignInFormValues = {
+    email: "",
+    password: ""
+  };
+
+  const validateForm = (values: SignInFormValues) => {
+    try {
+      signInValidationSchema.parse(values);
+      return {};
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return error.formErrors.fieldErrors;
+      }
+      return {};
+    }
+  };
+
   return (
     <YStack
       flex={1}
       justifyContent="center"
       alignItems="center"
-      space
+      gap
     >
-      <H3>Sign In Screen</H3>
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: 30,
+          marginTop: 30
+        }}
+      >
+        <Image
+          source={require("../../../assets/static/logo/Icon-1024x1024.png")}
+          style={{ width: 200, height: 200 }}
+        />
+      </View>
       <Formik
-        initialValues={{ email: "", password: "" }}
-        onSubmit={function (
-          values: FormikValues,
-          actions
-        ): void | Promise<User> {
+        initialValues={initialValues}
+        onSubmit={(values, actions) => {
           signIn(values.email, values.password);
           setTimeout(() => {
             actions.setSubmitting(false);
           }, 1000);
         }}
+        validate={validateForm}
       >
         {(formikProps) => (
           <YStack
             width={300}
-            space
+            gap={20}
           >
-            <YStack space>
+            <YStack gap={10}>
               <Input
                 placeholder="Email"
                 onChangeText={formikProps.handleChange("email")}
                 value={formikProps.values.email}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                onBlur={formikProps.handleBlur("email")}
+                style={{
+                  ...(formikProps.errors.email &&
+                    formikProps.touched.email && {
+                      borderBottomColor: "rgb(100, 0, 0)",
+                      borderWidth: 1
+                    })
+                }}
               />
+              {formikProps.errors.email && formikProps.touched.email && (
+                <Text style={styles.error}>{formikProps.errors.email}</Text>
+              )}
               <Input
                 size="$4"
                 placeholder="Password"
                 secureTextEntry
                 onChangeText={formikProps.handleChange("password")}
                 value={formikProps.values.password}
-                autoCapitalize="none"
+                onBlur={formikProps.handleBlur("password")}
+                style={{
+                  ...(formikProps.errors.password &&
+                    formikProps.touched.password && {
+                      borderBottomColor: "rgb(100, 0, 0)",
+                      borderWidth: 1
+                    })
+                }}
               />
+              {formikProps.errors.password && formikProps.touched.password && (
+                <Text style={styles.error}>{formikProps.errors.password}</Text>
+              )}
             </YStack>
             {formikProps.isSubmitting ? (
               <Spinner />
             ) : (
-              <Button
-                themeInverse
-                onPress={() => formikProps.handleSubmit()}
-              >
-                Sign In
-              </Button>
+              <>
+                <Button
+                  themeInverse
+                  onPress={() => formikProps.handleSubmit()}
+                >
+                  Sign In
+                </Button>
+                <Button onPress={() => router.push("/(public)/reset")}>
+                  Forgot Password?
+                </Button>
+              </>
             )}
           </YStack>
         )}
@@ -67,3 +128,11 @@ export default function SignInScreen() {
     </YStack>
   );
 }
+const styles = StyleSheet.create({
+  error: {
+    fontSize: 12,
+    color: "rgb(100, 0, 0)",
+    marginBottom: 10,
+    textAlign: "center"
+  }
+});

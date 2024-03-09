@@ -10,36 +10,31 @@ const PublicLayout = () => {
       <Stack.Screen
         name="sign-in"
         options={{
-          headerTitle: "Sign In",
-          headerShown: false
+          headerTitle: "Sign In"
         }}
       ></Stack.Screen>
       <Stack.Screen
         name="sign-up"
         options={{
-          headerTitle: "Sign Up",
-          headerShown: false
+          headerTitle: "Sign Up"
         }}
       ></Stack.Screen>
       <Stack.Screen
         name="reset"
         options={{
-          headerTitle: "Reset Password",
-          headerShown: false
+          headerTitle: "Reset Password"
         }}
       ></Stack.Screen>
       <Stack.Screen
         name="welcome"
         options={{
-          headerTitle: "Welcome",
-          headerShown: false
+          headerTitle: "Welcome"
         }}
       ></Stack.Screen>
       <Stack.Screen
         name="verification"
         options={{
-          headerTitle: "Verification",
-          headerShown: false
+          headerTitle: "Verification"
         }}
       ></Stack.Screen>
     </Stack>

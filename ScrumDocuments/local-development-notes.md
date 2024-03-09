@@ -238,3 +238,22 @@ https://medium.com/@elijahobara/how-to-send-emails-using-python-django-and-googl
 
 - How to set up node typescript express
   https://blog.logrocket.com/how-to-set-up-node-typescript-express/
+
+- Adding SVG,PNGS etc
+  https://stackoverflow.com/questions/71099924/cannot-find-module-file-name-png-or-its-corresponding-type-declarations-type
+
+- Boiler plate for node typescript express REST API
+  https://github.com/vinicostaa/node-typescript-restify
+  https://github.com/RodrigoBertotti/firebase-cloud-functions-typescript-example?tab=readme-ov-file
+  https://www.reddit.com/r/Firebase/comments/18bnou6/i_created_a_nodejs_rest_api_example_for_firebase/
+
+- Http request
+  Fetch and Axios are both JavaScript libraries used for making HTTP requests in mobile/web applications.
+  https://www.linkedin.com/pulse/fetch-vs-axios-react-native-rohit-bansal/
+
+- Ensuring Verification security:
+  A token is required to send a verification email.
+  Further validation is made to ensure that a different token is not used before proceeding to sending a verificaiton email.
+
+- Firebase auth tokens:
+  https://medium.com/@jwngr/demystifying-firebase-auth-tokens-e0c533ed330c

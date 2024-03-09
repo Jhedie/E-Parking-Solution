@@ -5,6 +5,7 @@ import {
 } from "@react-navigation/native";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import { ToastProvider, ToastViewport } from "@tamagui/toast";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
@@ -36,13 +37,16 @@ export default function Layout() {
 
   if (!loaded) return null;
 
+  // Create a new instance of QueryClient
+  const queryClient = new QueryClient();
+
   return (
     <UserLocationProvider>
       <StripeProvider
         publishableKey="pk_test_51OlYLWB1AMLkBmu1BFmgWiauMWOF8ceITmtOaLoEKq9lfLPk6aTfSUlBPDVBtPEgHWqSCuuMMwSfrs88Gud7LQ4k00IBlTIko7"
         merchantIdentifier="merchant.com.jhedie.frontend"
       >
-        <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
           <TamaguiProvider config={config}>
             <Theme name={colorScheme}>
               <ThemeProvider
@@ -66,7 +70,7 @@ export default function Layout() {
               </ThemeProvider>
             </Theme>
           </TamaguiProvider>
-        </Provider>
+        </QueryClientProvider>
       </StripeProvider>
     </UserLocationProvider>
   );

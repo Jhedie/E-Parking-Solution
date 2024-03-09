@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { useToastController } from "@tamagui/toast";
+import { BASE_URL } from "api/api";
+import axios, { AxiosError } from "axios";
 import {
   router,
   useRootNavigationState,
@@ -24,12 +26,21 @@ interface AuthContextInterface {
   signIn: (email: string, password: string) => void;
   signOut: () => void;
   signUp: (email: string, password: string) => void;
+  signUpBackend: (
+    email: string,
+    password: string,
+    userName: string,
+    phoneNumber: string
+  ) => void;
+  resetPassword: (email: string) => void;
 }
 const AuthContextInitialState: AuthContextInterface = {
   user: auth().currentUser,
   signIn: () => {},
   signOut: () => {},
-  signUp: () => {}
+  signUp: () => {},
+  signUpBackend: () => {},
+  resetPassword: () => {}
 };
 const AuthContext = createContext<AuthContextInterface>(
   AuthContextInitialState
@@ -142,7 +153,6 @@ export function AuthProvider({
           setUser(user);
           router.replace("/(auth)/home");
         } else {
-          toaster.show("Please verify your email!");
           router.replace("/(public)/verification");
         }
       } else {
@@ -168,7 +178,7 @@ export function AuthProvider({
               router.replace("/(public)/verification");
             })
             .catch((error) => {
-              console.log("Failed to send verification email: ", error);
+              console.log("Failed to send verification email here: ", error);
             });
         })
         .catch((error) => {
@@ -186,13 +196,99 @@ export function AuthProvider({
     }
   }
 
+  // Define an interface for the response data if you know the structure,
+  // otherwise use any or define a more generic type
+  interface SignUpResponse {
+    email: string;
+    name: string;
+    phoneNumber: string;
+    customToken: string;
+    token: string;
+  }
+
+  async function signUpUserOnPressBackend(
+    email: string,
+    password: string,
+    userName: string,
+    phoneNumber: string
+  ): Promise<void> {
+    try {
+      await axios
+        .post<SignUpResponse>(`${BASE_URL}/account/driver`, {
+          email,
+          password,
+          name: userName,
+          phoneNumber
+        })
+        .then((userFromBackend) => {
+          toaster.show("User account created");
+          console.log(userFromBackend.data);
+          toaster.show("User account created. Please verify your email!");
+
+          auth()
+            .signInWithCustomToken(userFromBackend.data.customToken)
+            .then((userCredential) => {
+              //get the token from the userCredential
+              // make verification request
+              setUser(userCredential.user);
+              userCredential.user.getIdToken().then((idtoken) => {
+                console.log("idtoken", idtoken);
+                console.log("Bearer ${idtoken}");
+                axios
+                  .post(
+                    `${BASE_URL}/account/verify`,
+                    {
+                      email: userCredential.user.email
+                    },
+                    {
+                      headers: {
+                        Authorization: `Bearer ${idtoken}`
+                      }
+                    }
+                  )
+                  .then(() => {
+                    router.replace("/(public)/verification");
+                    console.log("Verification email sent!");
+                  })
+                  .catch((error) => {
+                    console.log("Failed to send verification email: ", error);
+                  });
+              });
+            });
+        });
+    } catch (error) {
+      const axiosError = error as AxiosError;
+
+      // Log the error details based on the type of error
+      if (axiosError.response) {
+        // Server responded with a status code outside the 2xx range
+        console.error("Server Response Error:", {
+          data: axiosError.response.data,
+          status: axiosError.response.status,
+          headers: axiosError.response.headers
+        });
+      } else if (axiosError.request) {
+        // Request was made but no response was received
+        console.error("No Response:", axiosError.request);
+      } else {
+        // An error occurred in setting up the request
+        console.error("Request Setup Error:", axiosError.message);
+      }
+
+      // Display a generic error message to the user
+      toaster.show("Failed to sign up. Please try again!");
+      console.error("Failed to sign up:", axiosError);
+    }
+  }
+
+  //TODO Deprecated using signUpUserOnPressBackend
   function signInUserOnPress(email: string, password: string) {
     try {
       auth()
         .signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
+          setUser(userCredential.user);
           if (userCredential.user?.emailVerified) {
-            setUser(userCredential.user);
             toaster.show("Welcome back!");
             router.replace("/(auth)/home");
           } else {
@@ -218,16 +314,40 @@ export function AuthProvider({
       console.log(error);
     }
   }
+
+  function resetPasswordOnPress(email: string): void {
+    try {
+      auth()
+        .sendPasswordResetEmail(email)
+        .then(() => {
+          toaster.show("Password reset email sent!");
+          console.log("Password reset email sent!");
+
+          setTimeout(() => {
+            router.replace("/(public)/sign-in");
+          }, 3000);
+        })
+        .catch((error) => {
+          console.log("Failed to send password reset email: ", error);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
         user,
+
         signIn: signInUserOnPress,
         signOut: () => {
           setUser(null);
           auth().signOut();
         },
-        signUp: signUpUserOnPress
+        signUp: signUpUserOnPress,
+        signUpBackend: signUpUserOnPressBackend,
+        resetPassword: resetPasswordOnPress
       }}
     >
       {children}

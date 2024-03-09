@@ -1,8 +1,8 @@
 import { storage } from "@utils/asyncStorage";
 import { Link, useRouter } from "expo-router";
-import { Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import AwesomeButton from "react-native-really-awesome-button";
-import { Button, H1, Paragraph, SizableText, XStack, YStack } from "tamagui";
+import { Paragraph, SizableText, XStack, YStack } from "tamagui";
 
 export const WelcomeScreen: React.FC = () => {
   const router = useRouter();
@@ -13,7 +13,19 @@ export const WelcomeScreen: React.FC = () => {
       alignItems="center"
       gap="$3"
     >
-      <H1>Welcome</H1>
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: 30,
+          marginTop: 30
+        }}
+      >
+        <Image
+          source={require("../../assets/static/logo/Icon-1024x1024.png")}
+          style={{ width: 200, height: 200 }}
+        />
+      </View>
       <YStack>
         <View>
           <AwesomeButton

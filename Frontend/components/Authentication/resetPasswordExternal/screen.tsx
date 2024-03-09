@@ -1,30 +1,17 @@
+import { useAuth } from "@providers/Authentication/AuthProvider";
 import { Formik, FormikErrors } from "formik";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { Button, Input, Spinner, YStack } from "tamagui";
 import { ZodError, z } from "zod";
 
-export default function ResetPasswordScreen() {
-  const passwordRegex = new RegExp(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/);
-  const resetPasswordValidationSchema = z
-    .object({
-      email: z.string().email("Please enter a valid email address"),
-      newPassword: z
-        .string()
-        .regex(
-          passwordRegex,
-          "Password must be at least 8 characters long and include at least one letter and one number"
-        ),
-      confirmPassword: z.string()
-    })
-    .refine((data) => data.newPassword === data.confirmPassword, {
-      message: "Passwords do not match",
-      path: ["confirmPassword"]
-    });
+export default function ResetPasswordExternalScreen() {
+  const { resetPassword } = useAuth();
+  const resetPasswordValidationSchema = z.object({
+    email: z.string().email("Please enter a valid email address")
+  });
 
   const initialValues = {
-    email: "",
-    newPassword: "",
-    confirmPassword: ""
+    email: ""
   };
 
   type FormValues = z.infer<typeof resetPasswordValidationSchema>;
@@ -68,11 +55,29 @@ export default function ResetPasswordScreen() {
           style={{ width: 200, height: 200 }}
         />
       </View>
+      <View
+        style={{
+          marginBottom: 20,
+          marginHorizontal: 10 * 5
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 20,
+            textAlign: "center"
+          }}
+        >
+          Enter your email address to receive a password reset link
+        </Text>
+      </View>
       <Formik
         initialValues={initialValues}
-        onSubmit={(values: FormValues) => {
-          console.log(values);
-          // Implement your password reset logic here
+        onSubmit={(values: FormValues, actions) => {
+          console.log("resetting password");
+          resetPassword(values.email);
+          setTimeout(() => {
+            actions.setSubmitting(false);
+          }, 3000);
         }}
         validate={validateForm}
       >
@@ -98,46 +103,7 @@ export default function ResetPasswordScreen() {
             {formikProps.errors.email && formikProps.touched.email && (
               <Text style={styles.error}>{formikProps.errors.email}</Text>
             )}
-            <Input
-              placeholder="New Password"
-              secureTextEntry
-              onChangeText={formikProps.handleChange("newPassword")}
-              onBlur={formikProps.handleBlur("newPassword")}
-              value={formikProps.values.newPassword}
-              style={{
-                ...(formikProps.errors.newPassword &&
-                  formikProps.touched.newPassword && {
-                    borderBottomColor: "rgb(100, 0, 0)",
-                    borderWidth: 1
-                  })
-              }}
-            />
-            {formikProps.errors.newPassword &&
-              formikProps.touched.newPassword && (
-                <Text style={styles.error}>
-                  {formikProps.errors.newPassword}
-                </Text>
-              )}
-            <Input
-              placeholder="Confirm New Password"
-              secureTextEntry
-              onChangeText={formikProps.handleChange("confirmPassword")}
-              onBlur={formikProps.handleBlur("confirmPassword")}
-              value={formikProps.values.confirmPassword}
-              style={{
-                ...(formikProps.errors.confirmPassword &&
-                  formikProps.touched.confirmPassword && {
-                    borderBottomColor: "rgb(100, 0, 0)",
-                    borderWidth: 1
-                  })
-              }}
-            />
-            {formikProps.errors.confirmPassword &&
-              formikProps.touched.confirmPassword && (
-                <Text style={styles.error}>
-                  {formikProps.errors.confirmPassword}
-                </Text>
-              )}
+
             {formikProps.isSubmitting ? (
               <Spinner />
             ) : (

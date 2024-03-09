@@ -1,9 +1,16 @@
-import ResetPasswordScreen from "../../components/Authentication/resetPassword/screen";
+import ResetPasswordExternalScreen from "@components/Authentication/resetPasswordExternal/screen";
+import { Stack } from "expo-router";
 
 export default function Screen() {
   return (
     <>
-      <ResetPasswordScreen />
+      <Stack.Screen
+        options={{
+          title: "Sign Up",
+          headerShown: true
+        }}
+      />
+      <ResetPasswordExternalScreen />
     </>
   );
 }

@@ -6,7 +6,7 @@ export class User {
     public readonly name: string,
     public readonly role: UserRole,
     public readonly email: string,
-    public readonly birthDate: Date
+    public readonly phoneNumber: string
   ) {}
 
   copyWith(data: Partial<Record<keyof User, any>>) {
@@ -15,7 +15,7 @@ export class User {
       data.name ?? this.name,
       data.role ?? this.role,
       data.email ?? this.email,
-      data.birthDate ?? this.birthDate
+      data.phoneNumber ?? this.phoneNumber
     );
   }
 }

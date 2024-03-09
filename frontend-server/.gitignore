@@ -81,3 +81,8 @@ typings/
 
 # Node.js dependency directory
 node_modules/
+
+# Postman collection
+postman_collection.json
+
+sendgrid.env

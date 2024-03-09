@@ -250,3 +250,10 @@ https://medium.com/@elijahobara/how-to-send-emails-using-python-django-and-googl
 - Http request
   Fetch and Axios are both JavaScript libraries used for making HTTP requests in mobile/web applications.
   https://www.linkedin.com/pulse/fetch-vs-axios-react-native-rohit-bansal/
+
+- Ensuring Verification security:
+  A token is required to send a verification email.
+  Further validation is made to ensure that a different token is not used before proceeding to sending a verificaiton email.
+
+- Firebase auth tokens:
+  https://medium.com/@jwngr/demystifying-firebase-auth-tokens-e0c533ed330c

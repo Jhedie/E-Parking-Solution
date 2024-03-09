@@ -1,7 +1,6 @@
 import { firestore } from "firebase-admin";
 import { User } from "../../../user";
 import DocumentData = firestore.DocumentData;
-import Timestamp = firestore.Timestamp;
 
 /**
  * UserFirestoreModel is a class that extends the User class.
@@ -17,7 +16,7 @@ export class UserFirestoreModel extends User {
   static kName = "name";
   static kRole = "role";
   static kEmail = "email";
-  static kBirthDate = "birthDate";
+  static kPhoneNumber = "phoneNumber";
 
   /**
    * Creates a UserFirestoreModel instance from a User entity.
@@ -35,7 +34,7 @@ export class UserFirestoreModel extends User {
    * @returns {UserFirestoreModel} - The created empty UserFirestoreModel instance.
    */
   static empty(): UserFirestoreModel {
-    return new UserFirestoreModel("", "", "" as any, "", new Date());
+    return new UserFirestoreModel("", "", "" as any, "", "");
   }
 
   /**
@@ -50,7 +49,7 @@ export class UserFirestoreModel extends User {
       data[UserFirestoreModel.kName],
       data[UserFirestoreModel.kRole],
       data[UserFirestoreModel.kEmail],
-      (data[UserFirestoreModel.kBirthDate] as Timestamp).toDate()
+      data[UserFirestoreModel.kPhoneNumber]
     );
   }
   /**
@@ -64,7 +63,7 @@ export class UserFirestoreModel extends User {
       [UserFirestoreModel.kName]: this.name,
       [UserFirestoreModel.kRole]: this.role,
       [UserFirestoreModel.kEmail]: this.email,
-      [UserFirestoreModel.kBirthDate]: this.birthDate,
+      [UserFirestoreModel.kPhoneNumber]: this.phoneNumber,
     };
   }
 }

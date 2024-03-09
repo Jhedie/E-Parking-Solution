@@ -21,11 +21,13 @@ import MapView, {
 import { useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "@providers/Authentication/AuthProvider";
-import { getAllParkingLots } from "api/api";
+import axios from "axios";
 import { Image, Text, YStack } from "tamagui";
 import { StackNavigation } from "../../app/(auth)/home";
 import parkingLots from "../../assets/data/parkingLots.json";
 import { UserLocationContext } from "../../providers/UserLocation/UserLocationProvider";
+
+export const BASE_URL = process.env.FRONTEND_SERVER_BASE_URL;
 
 export type GeoPoint = {
   _latitude: number;
@@ -92,10 +94,28 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
   useEffect(() => {
     if (user) {
       user.getIdToken().then((idToken) => {
+        console.log("idToken", idToken);
         setToken(idToken);
       });
     }
   }, [user]);
+
+  const getAllParkingLots = async function getParkingLots(token: string) {
+    console.log("BASE_URL", `${BASE_URL}/all-parkinglots-public`);
+    try {
+      const response = await axios.get(`${BASE_URL}/all-parkinglots-public`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log("returned parking lots", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to fetch parking lots:", error);
+      throw error;
+    }
+  };
 
   const parkingLotsQuery = useQuery({
     queryKey: ["parkingLots"],
@@ -110,7 +130,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
     }
   });
 
-  console.log(parkingLotsQuery.data);
+  console.log("data from parkinglot query", parkingLotsQuery.data);
 
   const userLocationContext = useContext(UserLocationContext);
   const [selectedParkingLot, setSelectedParkingLot] =

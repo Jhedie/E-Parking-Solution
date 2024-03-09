@@ -2,6 +2,7 @@ import * as admin from "firebase-admin";
 import * as v2 from "firebase-functions/v2";
 import { apiApp } from "./api";
 import { eventTriggers } from "./event-triggers";
+const serviceAccount = require("../e-parking-app-b22cb-firebase-adminsdk-d5yi5-fb98f59c3c.json");
 /**
  * User roles in the system.
  *
@@ -22,7 +23,7 @@ export type MyClaims = "authenticated" | UserRole;
  *
  * This is required to use the Firebase Admin SDK in the application.
  */
-admin.initializeApp();
+admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 
 /**
  * The API endpoint for the application.

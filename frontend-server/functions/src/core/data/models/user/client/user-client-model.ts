@@ -1,9 +1,9 @@
 import { User } from "../../../user";
 import {
-  validateUserBirthDate,
   validateUserEmail,
   validateUserName,
   validateUserPassword,
+  validateUserPhoneNumber,
   validateUserRole,
 } from "./validators";
 
@@ -21,7 +21,7 @@ export class UserClientModel extends User {
   static kName = "name";
   static kRole = "role";
   static kEmail = "email";
-  static kBirthDateMillisecondsSinceEpoch = "birthDateMillisecondsSinceEpoch";
+  static kPhoneNumber = "phoneNumber";
 
   /** On request only: */
   static kPassword = "password";
@@ -32,7 +32,7 @@ export class UserClientModel extends User {
   }
 
   static empty(): UserClientModel {
-    return new UserClientModel("", "", "" as any, "", new Date());
+    return new UserClientModel("", "", "" as any, "", "");
   }
 
   /**
@@ -48,8 +48,7 @@ export class UserClientModel extends User {
       [UserClientModel.kName]: this.name,
       [UserClientModel.kRole]: this.role,
       [UserClientModel.kEmail]: this.email,
-      [UserClientModel.kBirthDateMillisecondsSinceEpoch]:
-        this.birthDate.getTime(),
+      [UserClientModel.kPhoneNumber]: this.phoneNumber,
     };
   }
 
@@ -69,9 +68,7 @@ export class UserClientModel extends User {
     validateUserName(body[UserClientModel.kName]);
     validateUserEmail(body[UserClientModel.kEmail]);
     validateUserRole(body[UserClientModel.kRole]);
-    validateUserBirthDate(
-      body[UserClientModel.kBirthDateMillisecondsSinceEpoch]
-    );
+    validateUserPhoneNumber(body[UserClientModel.kPhoneNumber]);
     validateUserPassword(body[UserClientModel.kPassword]);
 
     return Object.assign(
@@ -80,7 +77,7 @@ export class UserClientModel extends User {
         body[UserClientModel.kName],
         body[UserClientModel.kRole],
         body[UserClientModel.kEmail],
-        new Date(body[UserClientModel.kBirthDateMillisecondsSinceEpoch])
+        body[UserClientModel.kPhoneNumber]
       ),
       {
         password: body[UserClientModel.kPassword],

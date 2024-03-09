@@ -7,6 +7,7 @@ import {
   useRouter,
   useSegments
 } from "expo-router";
+import { has } from "immer/dist/internal";
 import {
   PropsWithChildren,
   createContext,
@@ -43,41 +44,80 @@ export const useAuth = () => {
   return context;
 };
 
+// function userProtectedRouter(user: User) {
+//   const segments = useSegments(); // hook that allows all navigation routes defined.
+//   const rootNavigationState = useRootNavigationState(); // hook allows to determine if the router is ready to be used.
+//   const [hasNavigated, setHasNavigated] = useState(false); // state to avoid navigating before the navigator is ready. It also avoids having to add a listener to the navigation state.
+//   const router = useRouter(); // hook that allows to navigate to a route.
+
+//   useEffect(() => {
+//     if (!rootNavigationState?.key || hasNavigated) return;
+
+//     const inTabsGroup = segments[0] === "(auth)"; // these routes in the auth group
+//     const inPublicGroup = segments[0] === "(public)"; // these routes in the public group
+//     const isUSerAuthenticated = user?.uid; // user is logged in
+
+//     const checkOnboardingStatus = async () => {
+//       const onboarded = await storage.getItem("onboarding");
+//       console.log(onboarded, "onboarded");
+
+//       const hasDoneOnboarding = onboarded === 1;
+//       console.log(hasDoneOnboarding, "hasDoneOnBoarding");
+
+//       if (!isUSerAuthenticated && !hasDoneOnboarding) {
+//         // if user is not logged in and not in the auth group then redirect to the auth group
+//         // setHasNavigated(true);
+//         console.log("routing to onboarding");
+//         router.replace("/(public)/onBoarding");
+//       } else if (!isUSerAuthenticated && !inTabsGroup && hasDoneOnboarding) {
+//         router.replace("/(public)/welcome");
+//       } else if (isUSerAuthenticated && !inTabsGroup) {
+//         // if user is logged in and not in the auth group then redirect to the auth group
+//         setHasNavigated(true);
+//         console.log("routing to main");
+//         router.replace("/(auth)/home");
+//       } else return;
+//     };
+//     // checkOnboardingStatus();
+//   }, [user?.uid, rootNavigationState?.key, segments]);
+// }
+async function getOnboardingStatus(): Promise<boolean> {
+  const onboarded = await storage.getItem("onboarding");
+  console.log(onboarded, "onboarded");
+
+  const hasDoneOnboarding = onboarded === 1;
+  console.log(hasDoneOnboarding, "hasDoneOnBoarding");
+  return hasDoneOnboarding;
+}
 function userProtectedRouter(user: User) {
   const segments = useSegments(); // hook that allows all navigation routes defined.
+
   const rootNavigationState = useRootNavigationState(); // hook allows to determine if the router is ready to be used.
+
   const [hasNavigated, setHasNavigated] = useState(false); // state to avoid navigating before the navigator is ready. It also avoids having to add a listener to the navigation state.
+
   const router = useRouter(); // hook that allows to navigate to a route.
 
   useEffect(() => {
     if (!rootNavigationState?.key || hasNavigated) return;
-
     const inTabsGroup = segments[0] === "(auth)"; // these routes in the auth group
-    const inPublicGroup = segments[0] === "(public)"; // these routes in the public group
-    const isUSerAuthenticated = user?.uid; // user is logged in
-
-    const checkOnboardingStatus = async () => {
-      const onboarded = await storage.getItem("onboarding");
-      console.log(onboarded, "onboarded");
-
-      const hasDoneOnboarding = onboarded === 1;
-      console.log(hasDoneOnboarding, "hasDoneOnBoarding");
-
-      if (!isUSerAuthenticated && !hasDoneOnboarding) {
-        // if user is not logged in and not in the auth group then redirect to the auth group
-        // setHasNavigated(true);
-        console.log("routing to onboarding");
-        router.replace("/(public)/onBoarding");
-      } else if (!isUSerAuthenticated && !inTabsGroup && hasDoneOnboarding) {
-        router.replace("/(public)/welcome");
-      } else if (isUSerAuthenticated && !inTabsGroup) {
-        // if user is logged in and not in the auth group then redirect to the auth group
-        setHasNavigated(true);
-        console.log("routing to main");
-        router.replace("/(auth)/home");
-      } else return;
-    };
-    // checkOnboardingStatus();
+    if (!user?.uid && !inTabsGroup) {
+      // if user is not logged in and not in the auth group then redirect to the auth group
+      setHasNavigated(true);
+      console.log("routing to sign-up");
+      getOnboardingStatus().then((hasDoneOnboarding) => {
+        if (hasDoneOnboarding) {
+          router.replace("/(public)/welcome");
+        } else {
+          router.replace("/(public)/onBoarding");
+        }
+      });
+    } else if (user && inTabsGroup) {
+      // if user is logged in and in the auth group then redirect to the auth group
+      setHasNavigated(true);
+      console.log("routing to main");
+      router.replace("/(auth)/home");
+    } else return;
   }, [user?.uid, rootNavigationState?.key, segments]);
 }
 

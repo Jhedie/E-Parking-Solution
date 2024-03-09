@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const storage = {
   setItem: async (key: string, value: number): Promise<void> => {
@@ -28,5 +28,5 @@ export const storage = {
       console.error(`[AsyncStorage] Error removing item: ${key}`, error);
       throw error;
     }
-  },
+  }
 };

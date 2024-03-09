@@ -37,7 +37,7 @@
       }
     },
     "assetBundlePatterns": ["**/*"],
-    "icon": "./assets/icon.png",
+    "icon": "./assets/static/logo/icon-192x192.png",
     "plugins": [
       "./react-native-maps-plugin",
       "expo-router",

@@ -1,12 +1,12 @@
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import "expo-dev-client";
-import React, { useContext, useEffect } from "react";
-import { Animated, StyleSheet } from "react-native";
-
+import React, { useContext, useEffect, useState } from "react";
 import {
+  Animated,
   Dimensions,
   Platform,
   ScrollView,
+  StyleSheet,
   TouchableOpacity,
   View
 } from "react-native";
@@ -18,29 +18,65 @@ import MapView, {
   enableLatestRenderer
 } from "react-native-maps";
 
+import { useQuery } from "@tanstack/react-query";
+
+import { useAuth } from "@providers/Authentication/AuthProvider";
+import axios from "axios";
 import { Image, Text, YStack } from "tamagui";
 import { StackNavigation } from "../../app/(auth)/home";
 import parkingLots from "../../assets/data/parkingLots.json";
 import { UserLocationContext } from "../../providers/UserLocation/UserLocationProvider";
 
-export type ParkingLot = {
-  LotId: string;
-  Location: {
-    Latitude: string;
-    Longitude: string;
-  };
-  Owner: {
-    OwnerId: string;
-    Name: string;
-  };
-  Capacity: number;
-  Occupancy: number;
-  LiveStatus: string;
-  Rate: string;
-  OperatingHours: string;
-  Facilities: string[];
+export const BASE_URL = process.env.FRONTEND_SERVER_BASE_URL;
+
+export type GeoPoint = {
+  _latitude: number;
+  _longitude: number;
 };
 
+export type Rate = {
+  RateType: string;
+  Rate: number;
+  NightRate?: number;
+  minimum: number;
+  maximum: number;
+  discount?: number;
+  dynamicPricing?: {
+    baseRate: number;
+    peakRate: number;
+    offPeakRate: number;
+    peakTimes: string[];
+  };
+};
+
+export type Address = {
+  street: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode: string;
+};
+
+export type Facility =
+  | "EV Charging"
+  | "Disabled Access"
+  | "Bicycle Parking"
+  | "Motorcycle Parking";
+
+export type ParkingLot = {
+  LotId: string | undefined;
+  LotName: string;
+  Coordinates: GeoPoint;
+  Owner: string;
+  Address: Address;
+  Capacity: number;
+  Occupancy: number;
+  LiveStatus: "Low" | "Medium" | "High";
+  OperatingHours: string;
+  Facilities: Facility[];
+  Rates: Rate[];
+  createdAt: Date;
+} | null;
 interface MapScreenProps {
   navigation: StackNavigation;
 }
@@ -51,6 +87,51 @@ const { width } = Dimensions.get("window");
 const CARD_WIDTH = width * 0.9;
 
 const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
+  const { user } = useAuth();
+
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      user.getIdToken().then((idToken) => {
+        console.log("idToken", idToken);
+        setToken(idToken);
+      });
+    }
+  }, [user]);
+
+  const getAllParkingLots = async function getParkingLots(token: string) {
+    console.log("BASE_URL", `${BASE_URL}/all-parkinglots-public`);
+    try {
+      const response = await axios.get(`${BASE_URL}/all-parkinglots-public`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log("returned parking lots", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to fetch parking lots:", error);
+      throw error;
+    }
+  };
+
+  const parkingLotsQuery = useQuery({
+    queryKey: ["parkingLots"],
+    queryFn: () => {
+      if (token) {
+        return getAllParkingLots(token);
+      } else {
+        // Return a default value or throw an error
+        return [];
+        // throw new Error("Token is not available");
+      }
+    }
+  });
+
+  console.log("data from parkinglot query", parkingLotsQuery.data);
+
   const userLocationContext = useContext(UserLocationContext);
   const [selectedParkingLot, setSelectedParkingLot] =
     React.useState<ParkingLot | null>(null);
@@ -380,7 +461,9 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                     >
                       <TouchableOpacity
                         onPress={() => {
-                          navigation.navigate("VehicleScreen", { parkingLot });
+                          navigation.navigate("VehicleScreen", {
+                            parkingLot: null
+                          });
                         }}
                         style={{
                           flex: 5.0,
@@ -406,7 +489,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                       <TouchableOpacity
                         onPress={() =>
                           navigation.navigate("ParkingLotDetailsScreen", {
-                            parkingLot
+                            parkingLot: null
                           })
                         }
                         style={{

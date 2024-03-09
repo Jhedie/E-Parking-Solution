@@ -4,18 +4,18 @@ const transparent = "transparent";
 const black = "#000";
 
 const WARNING = {
-    25: "#FFFCF5",
-    50: "#FFFAEB",
-    100: "#FEF0C7",
-    200: "#FEDF89",
-    300: "#FEC84B",
-    400: "#FDB022",
-    500: "#F79009",
-    600: "#DC6803",
-    700: "#B54708",
-    800: "#93370D",
-    900: "#7A2E0E",
-}
+  25: "#FFFCF5",
+  50: "#FFFAEB",
+  100: "#FEF0C7",
+  200: "#FEDF89",
+  300: "#FEC84B",
+  400: "#FDB022",
+  500: "#F79009",
+  600: "#DC6803",
+  700: "#B54708",
+  800: "#93370D",
+  900: "#7A2E0E"
+};
 const PRIMARY = WARNING[400];
 const ERROR = {
   25: "#FFFBFA",
@@ -28,8 +28,8 @@ const ERROR = {
   600: "#D92D20",
   700: "#B42318",
   800: "#912018",
-  900: "#7A271A",
-}
+  900: "#7A271A"
+};
 
 const SUCCESS = {
   25: "#F6FEF9",
@@ -42,8 +42,8 @@ const SUCCESS = {
   600: "#039855",
   700: "#027A48",
   800: "#05603A",
-  900: "#054F31",
-}
+  900: "#054F31"
+};
 const slate = {
   50: "#f8fafc",
   100: "#f1f5f9",
@@ -104,7 +104,7 @@ const stone = {
   800: "#292524",
   900: "#1c1917"
 };
- const red = {
+const red = {
   50: "#fef2f2",
   100: "#fee2e2",
   200: "#fecaca",
@@ -116,7 +116,7 @@ const stone = {
   800: "#991b1b",
   900: "#7f1d1d"
 };
- const orange = {
+const orange = {
   50: "#fff7ed",
   100: "#ffedd5",
   200: "#fed7aa",
@@ -140,7 +140,7 @@ const amber = {
   800: "#92400e",
   900: "#78350f"
 };
- const yellow = {
+const yellow = {
   50: "#fefce8",
   100: "#fef9c3",
   200: "#fef08a",
@@ -152,7 +152,7 @@ const amber = {
   800: "#854d0e",
   900: "#713f12"
 };
- const lime = {
+const lime = {
   50: "#f7fee7",
   100: "#ecfccb",
   200: "#d9f99d",
@@ -164,7 +164,7 @@ const amber = {
   800: "#3f6212",
   900: "#365314"
 };
- const green = {
+const green = {
   50: "#f0fdf4",
   100: "#dcfce7",
   200: "#bbf7d0",
@@ -176,7 +176,7 @@ const amber = {
   800: "#166534",
   900: "#14532d"
 };
- const emerald = {
+const emerald = {
   50: "#ecfdf5",
   100: "#d1fae5",
   200: "#a7f3d0",
@@ -188,7 +188,7 @@ const amber = {
   800: "#065f46",
   900: "#064e3b"
 };
- const teal = {
+const teal = {
   50: "#f0fdfa",
   100: "#ccfbf1",
   200: "#99f6e4",
@@ -200,7 +200,7 @@ const amber = {
   800: "#115e59",
   900: "#134e4a"
 };
- const cyan = {
+const cyan = {
   50: "#ecfeff",
   100: "#cffafe",
   200: "#a5f3fc",
@@ -212,7 +212,7 @@ const amber = {
   800: "#155e75",
   900: "#164e63"
 };
- const sky = {
+const sky = {
   50: "#f0f9ff",
   100: "#e0f2fe",
   200: "#bae6fd",
@@ -339,5 +339,5 @@ export const colors = {
   inherit,
   transparent,
   black,
-  PRIMARY,
+  PRIMARY
 };

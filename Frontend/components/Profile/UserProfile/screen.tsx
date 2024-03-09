@@ -84,7 +84,7 @@ const ProfileScreen = () => {
       </YGroup>
       <XStack>
         <Button onPress={handleSignOutButtonPress}>
-          <ButtonText> Sign Out</ButtonText>
+          <ButtonText>Sign Out</ButtonText>
         </Button>
       </XStack>
     </YStack>

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { useToastController } from "@tamagui/toast";
-import { BASE_URL } from "api/api";
 import axios, { AxiosError } from "axios";
 import {
   router,
@@ -9,7 +8,6 @@ import {
   useRouter,
   useSegments
 } from "expo-router";
-import { has } from "immer/dist/internal";
 import {
   PropsWithChildren,
   createContext,
@@ -18,6 +16,8 @@ import {
   useState
 } from "react";
 import { storage } from "../../utils/asyncStorage";
+
+const BASE_URL = process.env.FRONTEND_SERVER_BASE_URL;
 
 // Define a type for the user state
 export type User = FirebaseAuthTypes.User | null;

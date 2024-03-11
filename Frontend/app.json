@@ -4,11 +4,11 @@
     "slug": "frontend",
     "version": "2.0.0",
     "owner": "jhedie",
-    "scheme": "tamagui-app",
+    "scheme": "e-parking-app",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "backgroundColor": "#ddffe2",
-      "image": "./assets/splash.png",
+      "backgroundColor": "#1d1f1d",
+      "image": "./assets/expo-splash/splash.png",
       "resizeMode": "contain"
     },
     "updates": {
@@ -20,6 +20,11 @@
       "googleServicesFile": "./GoogleService-Info.plist",
       "config": {
         "googleMapsApiKey": ""
+      },
+      "splash": {
+        "backgroundColor": "#1d1f1d",
+        "image": "./assets/expo-splash/splash.png",
+        "resizeMode": "contain"
       }
     },
     "android": {
@@ -34,10 +39,15 @@
         "googleMaps": {
           "apiKey": ""
         }
+      },
+      "splash": {
+        "backgroundColor": "#1d1f1d",
+        "image": "./assets/expo-splash/adaptive-icon.png",
+        "resizeMode": "contain"
       }
     },
     "assetBundlePatterns": ["**/*"],
-    "icon": "./assets/static/logo/icon-192x192.png",
+    "icon": "./assets/expo-splash/icon.png",
     "plugins": [
       "./react-native-maps-plugin",
       "expo-router",

@@ -78,11 +78,10 @@ export class ParkingLotClientModel extends ParkingLot {
   toBodyFullParkingLot() {
     return {
       ...this.toBodyPublicParkingLot(),
-      [ParkingLotClientModel.kOccupancy]: this.Occupancy,
-      [ParkingLotClientModel.kLiveStatus]: this.LiveStatus,
-      [ParkingLotClientModel.kOperatingHours]: this.OperatingHours,
-      [ParkingLotClientModel.kFacilities]: this.Facilities,
-      [ParkingLotClientModel.kRates]: this.Rates,
+      [ParkingLotClientModel.kLotId]: this.LotId,
+      [ParkingLotClientModel.kOwner]: this.Owner,
+      [ParkingLotClientModel.kCreatedAt]: this.createdAt,
+      
     };
   }
   /**
@@ -92,6 +91,8 @@ export class ParkingLotClientModel extends ParkingLot {
    */
   toBodyPublicParkingLot() {
     return {
+      [ParkingLotClientModel.kLotName]: this.LotName,
+      [ParkingLotClientModel.kAddress]: this.Address,
       [ParkingLotClientModel.kCoordinates]: this.Coordinates,
       [ParkingLotClientModel.kDescription]: this.Description,
       [ParkingLotClientModel.kCapacity]: this.Capacity,

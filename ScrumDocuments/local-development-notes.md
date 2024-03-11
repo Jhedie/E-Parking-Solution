@@ -257,3 +257,8 @@ https://medium.com/@elijahobara/how-to-send-emails-using-python-django-and-googl
 
 - Firebase auth tokens:
   https://medium.com/@jwngr/demystifying-firebase-auth-tokens-e0c533ed330c
+
+- Calculating distance between two points:
+  https://www.geodatasource.com/developers/javascript
+  https://en.wikipedia.org/wiki/Haversine_formula
+  https://stackoverflow.com/questions/18883601/function-to-calculate-distance-between-two-coordinates

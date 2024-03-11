@@ -3,12 +3,14 @@ import auth from "@react-native-firebase/auth";
 import AwesomeButton from "react-native-really-awesome-button";
 
 import { useToastController } from "@tamagui/toast";
-import { BASE_URL } from "api/api";
 import axios from "axios";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { H3, Spinner, Text, YStack } from "tamagui";
+
+const BASE_URL = process.env.FRONTEND_SERVER_BASE_URL;
+
 export default function VerificationScreen() {
   const router = useRouter();
   const toaster = useToastController();

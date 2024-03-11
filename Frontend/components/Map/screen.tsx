@@ -20,18 +20,23 @@ import MapView, {
 
 import { useQuery } from "@tanstack/react-query";
 
+import { formatAddress } from "@components/Booking/parkingLotDetails/screen";
 import { useAuth } from "@providers/Authentication/AuthProvider";
+import { User } from "@tamagui/lucide-icons";
 import axios from "axios";
 import { Image, Text, YStack } from "tamagui";
 import { StackNavigation } from "../../app/(auth)/home";
-import parkingLots from "../../assets/data/parkingLots.json";
 import { UserLocationContext } from "../../providers/UserLocation/UserLocationProvider";
+import {
+  calculateDistance,
+  calculateDistance1
+} from "../../utils/map/geoUtils";
 
 export const BASE_URL = process.env.FRONTEND_SERVER_BASE_URL;
 
 export type GeoPoint = {
-  _latitude: number;
-  _longitude: number;
+  Latitude: string;
+  Longitude: string;
 };
 
 export type Rate = {
@@ -66,6 +71,7 @@ export type Facility =
 export type ParkingLot = {
   LotId: string | undefined;
   LotName: string;
+  Description: string;
   Coordinates: GeoPoint;
   Owner: string;
   Address: Address;
@@ -76,7 +82,8 @@ export type ParkingLot = {
   Facilities: Facility[];
   Rates: Rate[];
   createdAt: Date;
-} | null;
+};
+
 interface MapScreenProps {
   navigation: StackNavigation;
 }
@@ -89,19 +96,22 @@ const CARD_WIDTH = width * 0.9;
 const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
   const { user } = useAuth();
 
-  const [token, setToken] = useState<string | null>(null);
-
+  const [token, setToken] = useState<string>("");
   useEffect(() => {
-    if (user) {
-      user.getIdToken().then((idToken) => {
-        console.log("idToken", idToken);
-        setToken(idToken);
-      });
-    }
+    const fetchToken = async () => {
+      if (user) {
+        const token = await user.getIdToken();
+        console.log("idToken", token);
+        setToken(token);
+      }
+    };
+
+    fetchToken();
   }, [user]);
 
-  const getAllParkingLots = async function getParkingLots(token: string) {
+  const getAllParkingLots = async (token: string): Promise<ParkingLot[]> => {
     console.log("BASE_URL", `${BASE_URL}/all-parkinglots-public`);
+    console.log("token in method", token);
     try {
       const response = await axios.get(`${BASE_URL}/all-parkinglots-public`, {
         headers: {
@@ -117,24 +127,21 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
     }
   };
 
-  const parkingLotsQuery = useQuery({
-    queryKey: ["parkingLots"],
-    queryFn: () => {
-      if (token) {
-        return getAllParkingLots(token);
-      } else {
-        // Return a default value or throw an error
-        return [];
-        // throw new Error("Token is not available");
-      }
-    }
+  const {
+    data: parkingLots,
+    isLoading,
+    isError
+  } = useQuery({
+    queryKey: ["allParkingLots"],
+    queryFn: () => getAllParkingLots(token),
+    enabled: !!token
   });
-
-  console.log("data from parkinglot query", parkingLotsQuery.data);
-
+  console.log("parkingLots inner", parkingLots?.["parkingLots"]);
+  console.log(
+    "checking the lat long",
+    parkingLots?.["parkingLots"][0].Coordinates.Longitude
+  );
   const userLocationContext = useContext(UserLocationContext);
-  const [selectedParkingLot, setSelectedParkingLot] =
-    React.useState<ParkingLot | null>(null);
 
   // _map is a mutable reference object where we store the map instance.
   // useRef is used so that the value persists across re-renders without causing additional renders.
@@ -156,7 +163,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
     scrollViewRef.current?.scrollTo({ x: x, y: 0, animated: true });
   };
 
-  const interpolations = parkingLots.map((_, index) => {
+  const interpolations = parkingLots?.["parkingLots"].map((_, index) => {
     const inputRange = [
       (index - 1) * CARD_WIDTH,
       index * CARD_WIDTH,
@@ -171,12 +178,11 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
 
     return { scale };
   });
-
   if (!userLocationContext) {
     throw new Error("MapScreen must be used within a UserLocationProvider");
   }
   const { location } = userLocationContext;
-  enableLatestRenderer();
+  enableLatestRenderer(); // This is a workaround for a bug in react-native-maps
 
   const initialMapRegion: Region = {
     latitude: location?.coords.latitude as number,
@@ -191,8 +197,10 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
 
     mapAnimation.addListener(({ value }) => {
       let index = Math.floor(value / CARD_WIDTH + 0.3);
-      if (index >= parkingLots.length) {
-        index = parkingLots.length - 1;
+
+      const lotArray = parkingLots?.["parkingLots"];
+      if (index >= lotArray.length) {
+        index = lotArray.length - 1;
       }
       if (index <= 0) {
         index = 0;
@@ -202,11 +210,13 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
       regionTimeout = setTimeout(() => {
         if (mapIndex !== index) {
           mapIndex = index;
-          const { Location } = parkingLots[index];
+
+          const { Coordinates } = lotArray[index];
+          console.log("Coordinates", Coordinates);
           _map.current?.animateToRegion(
             {
-              latitude: parseFloat(Location.Latitude),
-              longitude: parseFloat(Location.Longitude),
+              latitude: Coordinates.Latitude,
+              longitude: Coordinates.Longitude,
               latitudeDelta: initialMapRegion.latitudeDelta,
               longitudeDelta: initialMapRegion.longitudeDelta
             },
@@ -234,7 +244,8 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
           }
           initialRegion={initialMapRegion}
         >
-          {parkingLots.map((parkingLot, index) => {
+          {parkingLots?.["parkingLots"].map((parkingLot, index) => {
+            console.log("parkingLotIn marker", parkingLot);
             const scaleStyle = {
               transform: [
                 {
@@ -247,10 +258,10 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                 key={index}
                 onPress={handleMarkerPress}
                 coordinate={{
-                  latitude: parseFloat(parkingLot.Location.Latitude),
-                  longitude: parseFloat(parkingLot.Location.Longitude)
+                  latitude: parkingLot.Coordinates.Latitude,
+                  longitude: parkingLot.Coordinates.Longitude
                 }}
-                title={parkingLot.LotId}
+                title={parkingLot.LotName}
                 description="Parking Lot"
               >
                 <Animated.View style={[styles.markerWrap]}>
@@ -331,11 +342,11 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                 marginHorizontal: 10 * 1.5
               }}
             >
-              {parkingLots.map((parkingLot) => {
+              {parkingLots?.["parkingLots"].map((parkingLot) => {
                 return (
                   <TouchableOpacity
                     onPress={() => console.log("card pressed")}
-                    key={parkingLot.LotId}
+                    key={parkingLot?.LotId}
                     style={{
                       paddingTop: 10 * 1.5,
                       marginBottom: 10 * 3,
@@ -391,19 +402,20 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                         <Text
                           numberOfLines={1}
                           style={{
-                            overflow: "hidden"
+                            overflow: "hidden",
+                            fontWeight: "bold"
                           }}
                         >
-                          {parkingLot.LotId}
+                          {parkingLot?.LotName}
                         </Text>
                         <Text
-                          numberOfLines={1}
+                          // numberOfLines={1}
                           style={{
                             overflow: "hidden",
                             paddingVertical: 10 * 0.3
                           }}
                         >
-                          address
+                          {formatAddress(parkingLot.Address)}
                         </Text>
                         <Text
                           numberOfLines={1}
@@ -411,7 +423,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                             overflow: "hidden"
                           }}
                         >
-                          {parkingLot.Rate}
+                          {parkingLot?.Rates[0][0]}
                         </Text>
                       </View>
                     </View>
@@ -434,7 +446,19 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                           numberOfLines={1}
                           style={{ overflow: "hidden", width: "50%" }}
                         >
-                          distance: {4 + " " + "km"}
+                          {/* {calculateDistance(
+                            location?.coords.latitude as number,
+                            location?.coords.longitude as number,
+                            parseFloat(parkingLot.Coordinates.Latitude),
+                            parseFloat(parkingLot.Coordinates.Longitude)
+                          )} */}
+                          {calculateDistance1(
+                            location?.coords.latitude as number,
+                            location?.coords.longitude as number,
+                            parseFloat(parkingLot.Coordinates.Latitude),
+                            parseFloat(parkingLot.Coordinates.Longitude),
+                            "M"
+                          )}
                         </Text>
                         <Text
                           numberOfLines={1}
@@ -444,7 +468,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                           }}
                         >
                           slotAvailable:
-                          {parkingLot.Capacity - parkingLot.Occupancy}
+                          {parkingLot?.Capacity - parkingLot?.Occupancy}
                         </Text>
                       </View>
                     </View>
@@ -462,7 +486,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                       <TouchableOpacity
                         onPress={() => {
                           navigation.navigate("VehicleScreen", {
-                            parkingLot: null
+                            parkingLot: parkingLot
                           });
                         }}
                         style={{
@@ -489,7 +513,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                       <TouchableOpacity
                         onPress={() =>
                           navigation.navigate("ParkingLotDetailsScreen", {
-                            parkingLot: null
+                            parkingLot: parkingLot
                           })
                         }
                         style={{

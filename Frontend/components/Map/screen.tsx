@@ -457,7 +457,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                             location?.coords.longitude as number,
                             parseFloat(parkingLot.Coordinates.Latitude),
                             parseFloat(parkingLot.Coordinates.Longitude),
-                            "M"
+                            "K"
                           )}
                         </Text>
                         <Text

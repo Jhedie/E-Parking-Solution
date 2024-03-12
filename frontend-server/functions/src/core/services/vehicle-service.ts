@@ -48,10 +48,14 @@ class VehicleService {
     vehicleId: string,
     partialVehicle: Partial<Record<keyof Vehicle, any>>
   ): Promise<void> {
+    // Convert the partial vehicle data to a format suitable for updating the document
+
     const documentData =
       PartialVehicleFirebaseModel.fromPartialEntity(
         partialVehicle
       ).toDocumentData();
+    // Update the vehicle document with the new data
+
     await this.doc(vehicleId).update(documentData);
   }
 

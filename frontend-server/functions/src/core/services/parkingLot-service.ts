@@ -1,6 +1,7 @@
 import * as admin from "firebase-admin";
 import { firestore } from "firebase-admin";
 import { ParkingLotFirestoreModel } from "../data/models/parkingLot/firestore/parkingLot-firebase-model";
+import { PartialParkingLotFirestoreModel } from "../data/models/parkingLot/firestore/partial-parkingLot-firebase-model";
 import { ParkingLot } from "../data/parkingLot";
 import FieldValue = firestore.FieldValue;
 
@@ -64,6 +65,20 @@ class ParkingLotService {
       return null;
     }
     return ParkingLotFirestoreModel.fromDocumentData(parkingLotResult.data());
+  }
+
+  async updateParkingLotById(
+    parkingLotId: string,
+    partialParkingLot: Partial<Record<keyof ParkingLot, any>>
+  ): Promise<void> {
+    //convert the partial parking lot data to a format suitable for updating the document
+    const documentData =
+      PartialParkingLotFirestoreModel.fromPartialEntity(
+        partialParkingLot
+      ).toDocumentData();
+
+    // Update the parking lot document with the new data
+    await this.doc(parkingLotId).update(documentData);
   }
 }
 

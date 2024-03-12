@@ -7,6 +7,7 @@ import {
 } from "express-serve-static-core";
 import { ParsedQs } from "qs";
 import { ParkingLotClientModel } from "../../../core/data/models/parkingLot/client/parkingLot-client-model";
+import { PartialParkingLotClientModel } from "../../../core/data/models/parkingLot/client/partial-parkingLot-client-model";
 import { ParkingLot } from "../../../core/data/parkingLot";
 import { parkingLotService } from "../../../core/services/parkingLot-service";
 import { HttpResponseError } from "../../../core/utils/http-response-error";
@@ -36,6 +37,11 @@ export class ParkingLotController implements Controller {
       "driver",
       "admin",
       "parkingOwner",
+    ]);
+
+    httpServer.put("/parkingLot/:lotId", this.updateParkingLotById, [
+      "parkingOwner",
+      "admin",
     ]);
   }
 
@@ -116,4 +122,54 @@ export class ParkingLotController implements Controller {
     res.send(output);
     next();
   }
+
+  private readonly updateParkingLotById: RequestHandler = async (
+    req,
+    res,
+    next
+  ) => {
+    const parkingLotFromInput: ParkingLot = ParkingLotClientModel.validate(
+      req.body,
+      req.auth?.uid
+    );
+    if (!req.params["lotId"]?.length) {
+      throw new HttpResponseError(
+        400,
+        "BAD REQUEST",
+        "Please, inform a parking lot id on the route"
+      );
+    }
+
+    const partialParkingLot = PartialParkingLotClientModel.validate(req.body);
+
+    const parkingLot = await parkingLotService.getParkingLotById(
+      req.params["lotId"]
+    );
+
+    if (!parkingLot) {
+      throw new HttpResponseError(
+        404,
+        "NOT FOUND",
+        ` Parking lot ${req.params["lotId"]} not found`
+      );
+    }
+
+    // only admins or parking Owners can update parking lots
+    if (!req.claims!["admin"] && parkingLot.Owner !== req.auth?.uid) {
+      throw new HttpResponseError(
+        403,
+        "FORBIDDEN",
+        "You do not have permission to update this parking lot"
+      );
+    }
+
+    await parkingLotService.updateParkingLotById(
+      req.params["lotId"],
+      partialParkingLot
+    );
+
+    return this.handleGetParkingLotById(req, res, next, (parkingLot) =>
+      ParkingLotClientModel.fromEntity(parkingLot).toBodyFullParkingLot()
+    );
+  };
 }

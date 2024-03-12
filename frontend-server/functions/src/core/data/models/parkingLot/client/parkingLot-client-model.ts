@@ -45,11 +45,12 @@ export class ParkingLotClientModel extends ParkingLot {
     );
   }
 
+  //TODO: Add validation for parking lot data
   private static _validate(body: any) {
     // Here, validate the parking lot data
     console.log("Validating parking lot data to be done");
   }
-  //TODO: Add name and address to parking Lot
+
   static validate(body: any, parkingOwnerId: string): ParkingLotClientModel {
     this._validate(body);
     // Assuming 'body' has all necessary fields to construct a ParkingLotClientModel
@@ -81,7 +82,6 @@ export class ParkingLotClientModel extends ParkingLot {
       [ParkingLotClientModel.kLotId]: this.LotId,
       [ParkingLotClientModel.kOwner]: this.Owner,
       [ParkingLotClientModel.kCreatedAt]: this.createdAt,
-      
     };
   }
   /**

@@ -1,44 +1,36 @@
-import { GeoPoint } from "firebase-admin/firestore";
-import { Address, Facility, Rate } from "../../../parkingLot";
+import { ParkingLot } from "../../../parkingLot";
+import { ParkingLotClientModel } from "./parkingLot-client-model";
 
-export class ParkingLot {
-  constructor(
-    public readonly LotId: string | undefined,
-    public readonly LotName: string,
-    public readonly Coordinates: GeoPoint,
-    public readonly Owner: string,
-    public readonly Address: Address,
-    public readonly Capacity: number,
-    public readonly Occupancy: number,
-    public readonly LiveStatus: "Low" | "Medium" | "High",
-    public readonly Rate: string,
-    public readonly OperatingHours: string,
-    public readonly Facilities: Facility[],
-    public readonly Rates: Rate[],
-    public readonly createdAt: Date
-  ) {}
+export class PartialParkingLotClientModel {
+  private static _validate(body: any) {
+    // Add validation logic here if needed
+  }
 
-  static empty() {
-    return new ParkingLot(
-      undefined, // LotId is undefined for an empty object
-      "", // Empty LotName
-      new GeoPoint(0, 0), // Default Coordinates
-      "", // Empty owner
-      {
-        street: "",
-        city: "",
-        state: "",
-        country: "",
-        postalCode: "",
-      }, // Empty Address
-      0, // Capacity
-      0, // Occupancy
-      "Low", // Default LiveStatus
-      "", // Rate
-      "", // OperatingHours
-      [], // Facilities
-      [], // Rates
-      new Date() // Current date
-    );
+  static validate(body: any): Partial<Record<keyof ParkingLot, any>> {
+    this._validate(body);
+    const res: Partial<Record<keyof ParkingLot, any>> = {};
+    if (body[ParkingLotClientModel.kLotName])
+      res.LotName = body[ParkingLotClientModel.kLotName];
+    if (body[ParkingLotClientModel.kDescription])
+      res.Description = body[ParkingLotClientModel.kDescription];
+    if (body[ParkingLotClientModel.kCoordinates])
+      res.Coordinates = body[ParkingLotClientModel.kCoordinates];
+    if (body[ParkingLotClientModel.kOwner])
+      res.Owner = body[ParkingLotClientModel.kOwner];
+    if (body[ParkingLotClientModel.kAddress])
+      res.Address = body[ParkingLotClientModel.kAddress];
+    if (body[ParkingLotClientModel.kCapacity])
+      res.Capacity = body[ParkingLotClientModel.kCapacity];
+    if (body[ParkingLotClientModel.kOccupancy])
+      res.Occupancy = body[ParkingLotClientModel.kOccupancy];
+    if (body[ParkingLotClientModel.kLiveStatus])
+      res.LiveStatus = body[ParkingLotClientModel.kLiveStatus];
+    if (body[ParkingLotClientModel.kOperatingHours])
+      res.OperatingHours = body[ParkingLotClientModel.kOperatingHours];
+    if (body[ParkingLotClientModel.kFacilities])
+      res.Facilities = body[ParkingLotClientModel.kFacilities];
+    if (body[ParkingLotClientModel.kRates])
+      res.Rates = body[ParkingLotClientModel.kRates];
+    return res;
   }
 }

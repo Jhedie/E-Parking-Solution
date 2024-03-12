@@ -10,20 +10,19 @@ export class AccountController implements Controller {
     //TODO to be refined for admin user
     httpServer.post("/account", this.createAccount.bind(this));
     //TODO to be removed
-    httpServer.get("/account/hello", this.hello.bind(this));
-
     httpServer.post("/account/verify", this.verifyUser.bind(this));
     httpServer.post("/account/driver", this.createDriverAccount.bind(this));
     httpServer.post(
       "/account/parkingOwner",
       this.createParkingOwnerAccount.bind(this)
     );
+    httpServer.get("/account/driver/:uid", this.getDriver.bind(this));
   }
 
-  private readonly hello: RequestHandler = async (req, res, next) => {
-    res.send({
-      message: "Hello, World!",
-    });
+  private readonly getDriver: RequestHandler = async (req, res, next) => {
+    const uid = req.params.uid;
+    const user = await accountsService.getUser(uid);
+    res.send(UserClientModel.fromEntity(user).toBody());
     next();
   };
 

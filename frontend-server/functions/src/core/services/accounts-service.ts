@@ -131,6 +131,37 @@ class AccountsService {
     }
   }
 
+  async getUser(uid: string): Promise<User> {
+    const user = await admin
+      .auth()
+      .getUser(uid)
+      .catch((err) => {
+        throw new HttpResponseError(404, "USER_NOT_FOUND", "User not found");
+      });
+
+    const userFirestoreData = await admin
+      .firestore()
+      .collection("users")
+      .doc(uid)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          return doc.data();
+        } else {
+          throw new HttpResponseError(
+            404,
+            "USER_NOT_FOUND",
+            "User not found in firestore"
+          );
+        }
+      });
+
+    const userFirestore: UserFirestoreModel =
+      UserFirestoreModel.fromDocumentData(userFirestoreData);
+
+    return userFirestore.copyWith({ uid: user.uid });
+  }
+
   sendMail = async (user: UserRecord, link: string): Promise<any> => {
     const to: string = user.email;
     const from: string = "jeddiahawuku12@gmail.com";

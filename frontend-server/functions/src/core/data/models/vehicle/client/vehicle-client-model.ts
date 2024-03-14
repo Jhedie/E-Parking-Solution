@@ -1,4 +1,4 @@
-import { Vehicle } from "../../../vehicle";
+import { Vehicle } from "../../../Vehicle";
 import { validateRegistrationNumber, validateVehicleId } from "./validators";
 
 /**
@@ -8,7 +8,7 @@ import { validateRegistrationNumber, validateVehicleId } from "./validators";
 export class VehicleClientModel extends Vehicle {
   static kVehicleId = "vehicleId";
   static kRegistrationNumber = "registrationNumber";
-  static kImage = "image";
+  static kNickName = "nickName";
   static kDefaultVehicle = "defaultVehicle";
   static kUserId = "userId";
   static kCreatedAt = "createdAt";
@@ -21,7 +21,7 @@ export class VehicleClientModel extends Vehicle {
     return new VehicleClientModel(
       "", // vehicleId
       "", // registrationNumber
-      "", // image
+      "", // nickName
       false, // defaultVehicle
       "", // userId
       new Date() // createdAt
@@ -38,7 +38,7 @@ export class VehicleClientModel extends Vehicle {
     return new VehicleClientModel(
       null,
       body[this.kRegistrationNumber],
-      body[this.kImage],
+      body[this.kNickName],
       body[this.kDefaultVehicle],
       driverId,
       null
@@ -47,17 +47,17 @@ export class VehicleClientModel extends Vehicle {
 
   toBodyFullVehicle(): any {
     return {
-      ...this.toBodyPublicProduct(),
+      ...this.toBodyPublicVehicle(),
       [VehicleClientModel.kUserId]: this.userId,
       [VehicleClientModel.kCreatedAt]: this.createdAt,
     };
   }
 
-  toBodyPublicProduct() {
+  toBodyPublicVehicle() {
     return {
       [VehicleClientModel.kVehicleId]: this.vehicleId,
       [VehicleClientModel.kRegistrationNumber]: this.registrationNumber,
-      [VehicleClientModel.kImage]: this.image,
+      [VehicleClientModel.kNickName]: this.nickName,
       [VehicleClientModel.kDefaultVehicle]: this.defaultVehicle,
     };
   }

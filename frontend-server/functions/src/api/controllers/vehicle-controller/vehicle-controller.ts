@@ -1,40 +1,44 @@
 import { RequestHandler } from "express";
 import { NextFunction, Request, Response } from "express-serve-static-core";
+import { Vehicle } from "../../../core/data/Vehicle";
 import { PartialVehicleClientModel } from "../../../core/data/models/vehicle/client/partial-vehicle-client-model";
 import { VehicleClientModel } from "../../../core/data/models/vehicle/client/vehicle-client-model";
-import { VehicleFirestoreModel } from "../../../core/data/models/vehicle/firestore/vehicle-firebase-model";
-import { Vehicle } from "../../../core/data/vehicle";
 import { vehicleService } from "../../../core/services/vehicle-service";
 import { HttpResponseError } from "../../../core/utils/http-response-error";
 import { Controller, HttpServer } from "../index";
 
 export class VehicleController implements Controller {
   initialize(httpServer: HttpServer): void {
-    httpServer.post("/vehicle", this.createVehicle.bind(this), [
-      "driver",
-      "admin",
-      "parkingOwner",
-    ]);
-    httpServer.get("/vehicle", this.getVehiclesByUser.bind(this), [
+    httpServer.post("/vehicle", this.createVehicle.bind(this), ["driver"]);
+    httpServer.get("/all-vehicles", this.getAllVehicles.bind(this), [
       "driver",
       "admin",
       "parkingOwner",
     ]);
     httpServer.get(
+      "/all-user-vehicles",
+      this.getAllVehiclesByUserId.bind(this),
+      ["driver", "admin", "parkingOwner"]
+    );
+
+    httpServer.get(
       "/vehicle/:vehicleId",
       this.getVehicleByIdPublic.bind(this),
       ["driver", "admin", "parkingOwner"]
     );
-    httpServer.get("/vehicle/:vehicleId", this.getVehicleByIdFull.bind(this), [
-      "driver",
-      "admin",
-      "parkingOwner",
-    ]);
+
+    httpServer.get(
+      "/vehicle/:vehicleId/full-details",
+      this.getVehicleByIdFull.bind(this),
+      ["driver", "admin", "parkingOwner"]
+    );
+
     httpServer.put("/vehicle/:vehicleId", this.updateVehicleById.bind(this), [
       "driver",
       "admin",
       "parkingOwner",
     ]);
+
     httpServer.delete(
       "/vehicle/:vehicleId",
       this.deleteVehicleById.bind(this),
@@ -42,25 +46,52 @@ export class VehicleController implements Controller {
     );
   }
 
-  private readonly createVehicle: RequestHandler = async (req, res, next) => {
-    const vehicleFromInput: VehicleClientModel = VehicleClientModel.validate(
+  private readonly createVehicle: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    console.log("In the controller for creation");
+    const vehicleFromInput: Vehicle = VehicleClientModel.validate(
       req.body,
       req.auth.uid
     );
+    console.log("vehicleFromInput", vehicleFromInput);
     const vehicle = await vehicleService.createVehicle(vehicleFromInput);
     const output = VehicleClientModel.fromEntity(vehicle).toBodyFullVehicle();
     res.send(output);
     next();
   };
 
-  private readonly getVehiclesByUser: RequestHandler = async (
+  private readonly getAllVehicles: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const vehicles = await vehicleService.getVehicles();
+    const outputList = vehicles.map((vehicle) =>
+      VehicleClientModel.fromEntity(vehicle).toBodyPublicVehicle()
+    );
+    res.send({
+      vehicles: outputList,
+    });
+    next();
+  };
+
+  private readonly getAllVehiclesByUserId: RequestHandler = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
     const userId = req.auth.uid;
+    console.log("get vehicles by userId", userId);
     const vehicles = await vehicleService.getVehiclesByUserId(userId);
-    res.send(vehicles.map(VehicleFirestoreModel.fromEntity));
+    const outputList = vehicles.map((vehicle) =>
+      VehicleClientModel.fromEntity(vehicle).toBodyPublicVehicle()
+    );
+    res.send({
+      vehicles: outputList,
+    });
     next();
   };
 
@@ -88,7 +119,6 @@ export class VehicleController implements Controller {
       );
     }
     res.send(toOutput(vehicle));
-
     next();
   };
 
@@ -98,9 +128,10 @@ export class VehicleController implements Controller {
     next: NextFunction
   ) => {
     return this.handleGetVehicleById(req, res, next, (vehicle) =>
-      VehicleClientModel.fromEntity(vehicle).toBodyPublicProduct()
+      VehicleClientModel.fromEntity(vehicle).toBodyPublicVehicle()
     );
   };
+
   private readonly getVehicleByIdFull: RequestHandler = async (
     req: Request,
     res: Response,
@@ -155,7 +186,7 @@ export class VehicleController implements Controller {
     );
 
     return this.handleGetVehicleById(req, res, next, (vehicle) => {
-      return VehicleClientModel.fromEntity(vehicle).toBodyFullVehicle();
+      VehicleClientModel.fromEntity(vehicle).toBodyFullVehicle();
     });
   };
 
@@ -195,7 +226,7 @@ export class VehicleController implements Controller {
 
     await vehicleService.deleteVehicleById(req.params.vehicleId);
 
-    res.status(204).send();
+    res.status(204).send("deleted " + req.params.vehicleId + " successfully");
     next();
   };
 }

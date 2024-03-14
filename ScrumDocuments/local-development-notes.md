@@ -262,3 +262,6 @@ https://medium.com/@elijahobara/how-to-send-emails-using-python-django-and-googl
   https://www.geodatasource.com/developers/javascript
   https://en.wikipedia.org/wiki/Haversine_formula
   https://stackoverflow.com/questions/18883601/function-to-calculate-distance-between-two-coordinates
+
+- validating number plate:
+  https://gist.github.com/danielrbradley/7567269

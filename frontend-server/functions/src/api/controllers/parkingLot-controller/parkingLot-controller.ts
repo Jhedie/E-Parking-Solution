@@ -140,7 +140,8 @@ export class ParkingLotController implements Controller {
       );
     }
 
-    const partialParkingLot = PartialParkingLotClientModel.validate(req.body);
+    const partialParkingLot =
+      PartialParkingLotClientModel.validate(parkingLotFromInput);
 
     const parkingLot = await parkingLotService.getParkingLotById(
       req.params["lotId"]

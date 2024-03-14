@@ -57,7 +57,7 @@ export class ParkingSlotClientModel extends ParkingSlot {
     };
   }
 
-  toBodyPublicParkingLot(): any {
+  toBodyFullParkingSlot(): any {
     // Extend public representation with additional details suitable for public viewing
     return {
       ...this.toBodyPublicParkingSlot(),

@@ -15,22 +15,10 @@ export class PartialParkingSlotFirestoreModel {
       ...partialParkingSlot,
       toDocumentData(): Partial<Record<string, any>> {
         const res: Partial<Record<string, any>> = {};
-        if (partialParkingSlot.slotId !== undefined)
-          res[ParkingSlotFirestoreModel.kSlotId] = partialParkingSlot.slotId;
-        if (partialParkingSlot.lotId !== undefined)
-          res[ParkingSlotFirestoreModel.klotId] = partialParkingSlot.lotId;
         if (partialParkingSlot.type !== undefined)
           res[ParkingSlotFirestoreModel.kType] = partialParkingSlot.type;
         if (partialParkingSlot.status !== undefined)
           res[ParkingSlotFirestoreModel.kStatus] = partialParkingSlot.status;
-        if (partialParkingSlot.position !== undefined) {
-          const position = partialParkingSlot.position;
-          res[ParkingSlotFirestoreModel.kPosition] = position;
-        }
-        if (partialParkingSlot.createdAt !== undefined)
-          res[ParkingSlotFirestoreModel.kCreatedAt] =
-            partialParkingSlot.createdAt;
-
         return res;
       },
     };

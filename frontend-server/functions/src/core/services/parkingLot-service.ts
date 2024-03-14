@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
 import { firestore } from "firebase-admin";
-import { ParkingLotFirestoreModel } from "../data/models/parkingLot/firestore/parkingLot-firebase-model";
-import { PartialParkingLotFirestoreModel } from "../data/models/parkingLot/firestore/partial-parkingLot-firebase-model";
+import { ParkingLotFirestoreModel } from "../data/models/parkingLot/firestore/parkingLot-firestore-model";
+import { PartialParkingLotFirestoreModel } from "../data/models/parkingLot/firestore/partial-parkingLot-firestore-model";
 import { ParkingLot } from "../data/parkingLot";
 import FieldValue = firestore.FieldValue;
 

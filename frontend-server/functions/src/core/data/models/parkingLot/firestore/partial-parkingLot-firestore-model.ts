@@ -1,6 +1,6 @@
 import { firestore } from "firebase-admin";
 import { ParkingLot } from "../../../parkingLot";
-import { ParkingLotFirestoreModel } from "./parkingLot-firebase-model";
+import { ParkingLotFirestoreModel } from "./parkingLot-firestore-model";
 import GeoPoint = firestore.GeoPoint;
 
 export class PartialParkingLotFirestoreModel {

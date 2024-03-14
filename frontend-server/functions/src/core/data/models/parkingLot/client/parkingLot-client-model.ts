@@ -47,8 +47,7 @@ export class ParkingLotClientModel extends ParkingLot {
 
   //TODO: Add validation for parking lot data
   private static _validate(body: any) {
-    // Here, validate the parking lot data
-    console.log("Validating parking lot data to be done");
+    //Validation logic to be done here
   }
 
   static validate(body: any, parkingOwnerId: string): ParkingLotClientModel {

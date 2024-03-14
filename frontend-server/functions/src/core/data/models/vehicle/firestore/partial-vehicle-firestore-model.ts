@@ -1,5 +1,5 @@
 import { Vehicle } from "../../../Vehicle";
-import { VehicleFirestoreModel } from "./vehicle-firebase-model";
+import { VehicleFirestoreModel } from "./vehicle-firestore-model";
 
 export class PartialVehicleFirebaseModel {
   static fromPartialEntity(

@@ -1,9 +1,11 @@
 import { Vehicle } from "../../../Vehicle";
+import { validateRegistrationNumber, validateVehicleId } from "./validators";
 import { VehicleClientModel } from "./vehicle-client-model";
 
 export class PartialVehicleClientModel {
   private static _validate(body: any) {
-    // Add validation logic here if needed
+    validateVehicleId(body[VehicleClientModel.kVehicleId]);
+    validateRegistrationNumber(body[VehicleClientModel.kRegistrationNumber]);
   }
 
   static validate(body: any): Partial<Record<keyof Vehicle, any>> {

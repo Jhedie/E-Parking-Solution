@@ -1,0 +1,326 @@
+[
+  {
+    "type": "regular",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Occupied",
+    "position": {
+      "row": "A",
+      "column": 1
+    }
+  },
+  {
+    "type": "handicapped",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Available",
+    "position": {
+      "row": "A",
+      "column": 2
+    }
+  },
+  {
+    "type": "electric",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Reserved",
+    "position": {
+      "row": "A",
+      "column": 3
+    }
+  },
+  {
+    "type": "motorcycle",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Occupied",
+    "position": {
+      "row": "A",
+      "column": 4
+    }
+  },
+  {
+    "type": "regular",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Available",
+    "position": {
+      "row": "A",
+      "column": 5
+    }
+  },
+  {
+    "type": "handicapped",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Reserved",
+    "position": {
+      "row": "A",
+      "column": 6
+    }
+  },
+  {
+    "type": "regular",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Occupied",
+    "position": {
+      "row": "B",
+      "column": 1
+    }
+  },
+  {
+    "type": "handicapped",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Available",
+    "position": {
+      "row": "B",
+      "column": 2
+    }
+  },
+  {
+    "type": "electric",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Reserved",
+    "position": {
+      "row": "B",
+      "column": 3
+    }
+  },
+  {
+    "type": "motorcycle",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Occupied",
+    "position": {
+      "row": "B",
+      "column": 4
+    }
+  },
+  {
+    "type": "regular",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Available",
+    "position": {
+      "row": "B",
+      "column": 5
+    }
+  },
+  {
+    "type": "handicapped",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Reserved",
+    "position": {
+      "row": "B",
+      "column": 6
+    }
+  },
+  {
+    "type": "regular",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Occupied",
+    "position": {
+      "row": "C",
+      "column": 1
+    }
+  },
+  {
+    "type": "handicapped",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Available",
+    "position": {
+      "row": "C",
+      "column": 2
+    }
+  },
+  {
+    "type": "electric",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Reserved",
+    "position": {
+      "row": "C",
+      "column": 3
+    }
+  },
+  {
+    "type": "motorcycle",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Occupied",
+    "position": {
+      "row": "C",
+      "column": 4
+    }
+  },
+  {
+    "type": "regular",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Available",
+    "position": {
+      "row": "C",
+      "column": 5
+    }
+  },
+  {
+    "type": "handicapped",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Reserved",
+    "position": {
+      "row": "C",
+      "column": 6
+    }
+  },
+  {
+    "type": "regular",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Occupied",
+    "position": {
+      "row": "D",
+      "column": 1
+    }
+  },
+  {
+    "type": "handicapped",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Available",
+    "position": {
+      "row": "D",
+      "column": 2
+    }
+  },
+  {
+    "type": "electric",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Reserved",
+    "position": {
+      "row": "D",
+      "column": 3
+    }
+  },
+  {
+    "type": "motorcycle",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Occupied",
+    "position": {
+      "row": "D",
+      "column": 4
+    }
+  },
+  {
+    "type": "regular",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Available",
+    "position": {
+      "row": "D",
+      "column": 5
+    }
+  },
+  {
+    "type": "handicapped",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Reserved",
+    "position": {
+      "row": "D",
+      "column": 6
+    }
+  },
+  {
+    "type": "regular",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Occupied",
+    "position": {
+      "row": "E",
+      "column": 1
+    }
+  },
+  {
+    "type": "handicapped",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Available",
+    "position": {
+      "row": "E",
+      "column": 2
+    }
+  },
+  {
+    "type": "electric",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Reserved",
+    "position": {
+      "row": "E",
+      "column": 3
+    }
+  },
+  {
+    "type": "motorcycle",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Occupied",
+    "position": {
+      "row": "E",
+      "column": 4
+    }
+  },
+  {
+    "type": "regular",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Available",
+    "position": {
+      "row": "E",
+      "column": 5
+    }
+  },
+  {
+    "type": "handicapped",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Reserved",
+    "position": {
+      "row": "E",
+      "column": 6
+    }
+  },
+  {
+    "type": "regular",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Occupied",
+    "position": {
+      "row": "F",
+      "column": 1
+    }
+  },
+  {
+    "type": "handicapped",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Available",
+    "position": {
+      "row": "F",
+      "column": 2
+    }
+  },
+  {
+    "type": "electric",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Reserved",
+    "position": {
+      "row": "F",
+      "column": 3
+    }
+  },
+  {
+    "type": "motorcycle",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Occupied",
+    "position": {
+      "row": "F",
+      "column": 4
+    }
+  },
+  {
+    "type": "regular",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Available",
+    "position": {
+      "row": "F",
+      "column": 5
+    }
+  },
+  {
+    "type": "handicapped",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "status": "Reserved",
+    "position": {
+      "row": "F",
+      "column": 6
+    }
+  }
+]

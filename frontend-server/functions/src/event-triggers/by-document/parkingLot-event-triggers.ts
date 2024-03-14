@@ -3,7 +3,7 @@ import {
   onDocumentUpdated,
 } from "firebase-functions/v2/firestore";
 import { DbChangedRecord } from "../../core/data/db-changed-record";
-import { ParkingLotFirestoreModel } from "../../core/data/models/parkingLot/firestore/parkingLot-firebase-model";
+import { ParkingLotFirestoreModel } from "../../core/data/models/parkingLot/firestore/parkingLot-firestore-model";
 import { ParkingLot } from "../../core/data/parkingLot";
 import { dbChangesService } from "../../core/services/db-changes-service";
 import {

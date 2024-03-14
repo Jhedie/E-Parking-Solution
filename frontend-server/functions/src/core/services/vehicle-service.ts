@@ -1,8 +1,8 @@
 import * as admin from "firebase-admin";
 import { firestore } from "firebase-admin";
 import { Vehicle } from "../data/Vehicle";
-import { PartialVehicleFirebaseModel } from "../data/models/vehicle/firestore/partial-vehicle-firebase-model";
-import { VehicleFirestoreModel } from "../data/models/vehicle/firestore/vehicle-firebase-model";
+import { PartialVehicleFirebaseModel } from "../data/models/vehicle/firestore/partial-vehicle-firestore-model";
+import { VehicleFirestoreModel } from "../data/models/vehicle/firestore/vehicle-firestore-model";
 import FieldValue = firestore.FieldValue;
 
 class VehicleService {

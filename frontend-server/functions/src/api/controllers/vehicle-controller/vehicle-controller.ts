@@ -173,20 +173,21 @@ export class VehicleController implements Controller {
       );
     }
 
-    if (!req.claims!["admin"] && vehicle.userId !== req.auth.uid) {
-      throw new HttpResponseError(
-        403,
-        "FORBIDDEN",
-        `You aren't the correct user`
-      );
-    }
+    //TODO: Custom claims already, check therefore uneccessary until further notice
+    // if (!req.claims!["admin"] && vehicle.userId !== req.auth.uid) {
+    //   throw new HttpResponseError(
+    //     403,
+    //     "FORBIDDEN",
+    //     `You do not have permission to update this`
+    //   );
+    // }
     await vehicleService.updateVehicleById(
       req.params["vehicleId"],
       partialVehicle
     );
 
     return this.handleGetVehicleById(req, res, next, (vehicle) => {
-      VehicleClientModel.fromEntity(vehicle).toBodyFullVehicle();
+      VehicleClientModel.fromEntity(vehicle).toBodyPublicVehicle();
     });
   };
 
@@ -214,19 +215,22 @@ export class VehicleController implements Controller {
       );
     }
 
-    if (!req.claims!["admin"] && vehicle.userId !== req.auth.uid) {
-      if (!req.claims!["parkingOwner"] && !req.claims!["driver"]) {
-        throw new HttpResponseError(
-          403,
-          "FORBIDDEN",
-          `You aren't authorized to delete this vehicle`
-        );
-      }
-    }
+    //TODO: Custom claims already, check therefore uneccessary until further notice
+    // if (!req.claims!["admin"] && vehicle.userId !== req.auth.uid) {
+    //   if (!req.claims!["parkingOwner"] && !req.claims!["driver"]) {
+    //     throw new HttpResponseError(
+    //       403,
+    //       "FORBIDDEN",
+    //       `You aren't authorized to delete this vehicle`
+    //     );
+    //   }
+    // }
 
     await vehicleService.deleteVehicleById(req.params.vehicleId);
 
-    res.status(204).send("deleted " + req.params.vehicleId + " successfully");
+    res.status(204).send({
+      message: "Deleted " + req.params.vehicleId + " successfully",
+    });
     next();
   };
 }

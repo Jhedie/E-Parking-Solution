@@ -29,8 +29,21 @@ export type BookingDetails = {
   rateType?: string;
   rateNumber?: number;
 };
-
+//TODO: API call here
 const rates = [
+  {
+    RateType: "minute",
+    Rate: 0.5,
+    minimum: 30,
+    maximum: 60,
+    discount: 0, // data ideas regarding discounts may be added here
+    dynamicPricing: {
+      baseRate: 5,
+      peakRate: 10,
+      offPeakRate: 3,
+      peakTimes: ["08:00", "18:00"]
+    } // data ideas regarding dynamic pricing may be added here
+  },
   {
     RateType: "hour",
     Rate: 5,
@@ -119,6 +132,11 @@ export const BookParkingDetailsScreen: React.FC<
     // Calculate the new end date based on the selected rate type and number
     let newEndDateTime: Date = new Date();
     switch (selectedRateType) {
+      case "minute":
+        newEndDateTime = dayjs(startDateTime)
+          .add(selectedRateNumber, "minute")
+          .toDate();
+        break;
       case "hour":
         newEndDateTime = dayjs(startDateTime)
           .add(selectedRateNumber, "hour")

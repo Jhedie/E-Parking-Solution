@@ -1,0 +1,39 @@
+{
+  "rates": [
+    {
+      "lotId": "Tr4niu3KiKDAemUi7zMZ",
+      "rateType": "minute",
+      "rate": 0.5,
+      "minimum": 30,
+      "maximum": 60
+    },
+    {
+      "lotId": "Tr4niu3KiKDAemUi7zMZ",
+      "rateType": "hour",
+      "rate": 5,
+      "minimum": 1,
+      "maximum": 24
+    },
+    {
+      "lotId": "Tr4niu3KiKDAemUi7zMZ",
+      "rateType": "day",
+      "rate": 30,
+      "minimum": 1,
+      "maximum": 7
+    },
+    {
+      "lotId": "Tr4niu3KiKDAemUi7zMZ",
+      "rateType": "week",
+      "rate": 150,
+      "minimum": 1,
+      "maximum": 4
+    },
+    {
+      "lotId": "Tr4niu3KiKDAemUi7zMZ",
+      "rateType": "month",
+      "rate": 500,
+      "minimum": 1,
+      "maximum": 12
+    }
+  ]
+}

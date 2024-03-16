@@ -59,11 +59,7 @@ class ParkingSlotService {
       const data = doc.data();
       // Convert the document data to a ParkingSlot object
       // Ensure your fromDocumentData method properly handles the conversion, including the timestamp
-      return ParkingSlotFirestoreModel.fromDocumentData({
-        ...data,
-        slotId: doc.id, // Use the document ID as the slotId
-        // The createdAt field will be automatically handled if fromDocumentData is implemented correctly
-      });
+      return ParkingSlotFirestoreModel.fromDocumentData(data);
     });
 
     return createdParkingSlots;
@@ -91,7 +87,6 @@ class ParkingSlotService {
     const db = admin.firestore();
     await db.runTransaction(async (transaction) => {
       const parkingSlotRef = this.doc(slotId);
-      // Example logic here: Update the parking slot document with the new data
       const documentData =
         PartialParkingSlotFirestoreModel.fromPartialEntity(
           partialParkingSlot

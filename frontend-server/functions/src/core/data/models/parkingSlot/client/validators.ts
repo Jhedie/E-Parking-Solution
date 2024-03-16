@@ -36,3 +36,29 @@ export function validatePosition(body: any) {
     throw new Error("position row and column is required");
   }
 }
+
+export function validateNoDuplicatePositionsInList(parkingSlots: any[]) {
+  const positionMap = new Map();
+
+  for (const slot of parkingSlots) {
+    const lotId = slot["lotId"];
+    const position = slot["position"];
+    if (position && lotId) {
+      const row = position["row"];
+      const column = position["column"];
+      const key = `${lotId}-${row}-${column}`;
+
+      if (positionMap.has(key)) {
+        throw new Error(
+          `Duplicate slot position found for lotId: ${lotId}, row: ${row}, column: ${column}`
+        );
+      }
+
+      positionMap.set(key, true);
+    } else {
+      throw new Error(
+        "Invalid values for lotId, row, or column in one of the parking slots"
+      );
+    }
+  }
+}

@@ -418,6 +418,505 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete Parking Lot by Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{idToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/parkingLot/:lotId",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"parkingLot",
+								":lotId"
+							],
+							"variable": [
+								{
+									"key": "lotId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Parking Slot",
+			"item": [
+				{
+					"name": "Create parking Slot",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"Electric\",\n    \"lotId\": \"Eynm9IpyLYGCHsEHGeRr\",\n    \"status\": \"Available\",\n    \"position\": {\n        \"row\": \"A\",\n        \"column\": 1\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/parkingSlot",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"parkingSlot"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create multiple parking Slots",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"slots\": [\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 6\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 6\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 6\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 6\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 6\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 6\n            }\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/parkingSlots/multiple",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"parkingSlots",
+								"multiple"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Parking Slots",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/all-parkingSlots",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"all-parkingSlots"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get parking Slot by Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/parkingSlot/:slotId",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"parkingSlot",
+								":slotId"
+							],
+							"variable": [
+								{
+									"key": "slotId",
+									"value": "2FsODdheeQ2gLwiFrNZb"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Parking Slot",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"Standard\",\n    \"lotId\": \"Eynm9IpyLYGCHsEHGeRr\",\n    \"status\": \"Occupied\",\n    \"position\": {\n        \"row\": \"G\",\n        \"column\": 1\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/parkingSlot/:slotId",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"parkingSlot",
+								":slotId"
+							],
+							"variable": [
+								{
+									"key": "slotId",
+									"value": "2FsODdheeQ2gLwiFrNZb"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get parking slots by parking Lot ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/parkingSlots/:lotId",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"parkingSlots",
+								":lotId"
+							],
+							"variable": [
+								{
+									"key": "lotId",
+									"value": "Eynm9IpyLYGCHsEHGeRr"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete all Parking slots",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/all-parkingSlots",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"all-parkingSlots"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Parking slot by Lot ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/all-parkingSlots/:lotId",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"all-parkingSlots",
+								":lotId"
+							],
+							"variable": [
+								{
+									"key": "lotId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Parking Lot Rates",
+			"item": [
+				{
+					"name": "Create Parking Lot Rate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n      \"lotId\": \"Tr4niu3KiKDAemUi7zMZ\",\n      \"rateType\": \"biweekly\",\n      \"rate\": 500,\n      \"minimum\": 1,\n      \"maximum\": 12\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/parkingLotRates",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"parkingLotRates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Parking Lot Rates",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/all-parkingLotRates",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"all-parkingLotRates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Parking Lot Rate By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/parkingLotRates/:rateId",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"parkingLotRates",
+								":rateId"
+							],
+							"variable": [
+								{
+									"key": "rateId",
+									"value": "eTAIoivkXCXylKIQJ3ln"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Parking Lot Rate By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"rate\": 0.1,\n    \"nightRate\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/parkingLotRates/:rateId",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"parkingLotRates",
+								":rateId"
+							],
+							"variable": [
+								{
+									"key": "rateId",
+									"value": "eTAIoivkXCXylKIQJ3ln"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Parking Lot Rate By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/parkingLotRate/:rateId",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"parkingLotRate",
+								":rateId"
+							],
+							"variable": [
+								{
+									"key": "rateId",
+									"value": "NTkVpOjocCaULJq7BWbP"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -510,7 +1009,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\":\"Jedidiah\",\n    \"role\":\"parkingOwner\",\n    \"email\": \"jedidiahawuku12@gmail.com\",\n    \"password\": \"password54321?\",\n    \"birthDateMillisecondsSinceEpoch\": 922354800000\n}\n",
+					"raw": "{\n    \"name\":\"Emmanuel Lots\",\n    \"role\":\"parkingOwner\",\n    \"email\": \"jedidiahawuku12@gmail.com\",\n    \"password\": \"password54321?\",\n    \"birthDateMillisecondsSinceEpoch\": 922354800000\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -606,7 +1105,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\": \"jeddiahawuku12@gmail.com\",\n    \"password\": \"password\",\n    \"returnSecureToken\":true\n}\n\n\n",
+					"raw": "{\n    \"email\": \"eparksuperuser@gmail.com\",\n    \"password\": \"password123?\",\n    \"returnSecureToken\": true\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -729,7 +1228,7 @@
 	"variable": [
 		{
 			"key": "idToken",
-			"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjYwOWY4ZTMzN2ZjNzg1NTE0ZTExMGM2ZDg0N2Y0M2M3NDM1M2U0YWYiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiSmVkaWRpYWhUZXN0IiwiZHJpdmVyIjp0cnVlLCJwYXJraW5nT3duZXIiOmZhbHNlLCJhZG1pbiI6ZmFsc2UsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9lLXBhcmtpbmctYXBwLWIyMmNiIiwiYXVkIjoiZS1wYXJraW5nLWFwcC1iMjJjYiIsImF1dGhfdGltZSI6MTcxMDQxMjY4NCwidXNlcl9pZCI6IlY5SVE1ZWJtMEpnTzg0NWM0eGQ0YVlvdnJLMDMiLCJzdWIiOiJWOUlRNWVibTBKZ084NDVjNHhkNGFZb3ZySzAzIiwiaWF0IjoxNzEwNDEyNjg0LCJleHAiOjE3MTA0MTYyODQsImVtYWlsIjoiamVkaWRpYWhhd3VrdTEyQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJqZWRpZGlhaGF3dWt1MTJAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.lYAXXTrB41RVKSgMUZcZQ85N6AMTquWDMSlIUwVQbLmtgllhB2PCrpiT-9WE0xxD-MAJM4rQzY7A2em2tucVfu1opi8IJl5AeO3TI98ECPWl3pcsYCW_wNHWuoMq7hAaMOjfDCawBAJUlA4kd1ICMOhXgSNjx60nUGsuZNZzVKpAAp0teMYoOjirUHT_laO-Sq8K2dOTi0-E1t5_G2obutcdZExEv70PHpZIuLw19-TO9PBwQTj26clR13TptEMmefscLU_NYih5Eht27Oyur60Dvomh-SPIWgKW-McmINGmgWH_Xqg67-0RoU1qZ8FLMbzmdpWjSaxHwbNEVBVMxw",
+			"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImViYzIwNzkzNTQ1NzExODNkNzFjZWJlZDI5YzU1YmVmMjdhZDJjY2IiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoic3VwZXJ1c2VyIiwiZHJpdmVyIjpmYWxzZSwicGFya2luZ093bmVyIjpmYWxzZSwiYWRtaW4iOnRydWUsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9lLXBhcmtpbmctYXBwLWIyMmNiIiwiYXVkIjoiZS1wYXJraW5nLWFwcC1iMjJjYiIsImF1dGhfdGltZSI6MTcxMDQyNjkwMSwidXNlcl9pZCI6IkoxUzF1Q25Dc3BjRlF2bzNHNmNORkVmcFlvcDIiLCJzdWIiOiJKMVMxdUNuQ3NwY0ZRdm8zRzZjTkZFZnBZb3AyIiwiaWF0IjoxNzEwNDI2OTAxLCJleHAiOjE3MTA0MzA1MDEsImVtYWlsIjoiZXBhcmtzdXBlcnVzZXJAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImVwYXJrc3VwZXJ1c2VyQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.tBMLGVRNMP2LCD9t7HfqqvpGpjevao8e-GZRpUtJIc6d5LGqVy-KlUWoYpxBPmdVam7svtk2CGfOH6Z7F0Em1TUggsAZjTiIYFzFVG-Ln3PHZgXDdJTmXXfdTYH1-XMcZRO00zZU3EvkHlnyIhUeB-ACieiN9ih-RopPdb5TmZRbzixswPhGiLCSKK0GKA-zvRNa3vgcJnfUjpStNETr-bdyd2zObsv1e_MnqT_ZQtP9xI7W1gshzGGQZioNf6Rlm-tcC5eHlhNOT_ESxPt-1erjfe4bMJyBPbOlC2-sfZrZ5W_5GRLUjcMxWfzG6thCaGV11okbhMO56ZyC43ROGw",
 			"type": "string"
 		},
 		{
@@ -740,6 +1239,21 @@
 		{
 			"key": "local",
 			"value": "http://127.0.0.1:5001/e-parking-app-b22cb/us-central1/api",
+			"type": "string"
+		},
+		{
+			"key": "adminToken",
+			"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImViYzIwNzkzNTQ1NzExODNkNzFjZWJlZDI5YzU1YmVmMjdhZDJjY2IiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoic3VwZXJ1c2VyIiwiZHJpdmVyIjpmYWxzZSwicGFya2luZ093bmVyIjpmYWxzZSwiYWRtaW4iOnRydWUsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9lLXBhcmtpbmctYXBwLWIyMmNiIiwiYXVkIjoiZS1wYXJraW5nLWFwcC1iMjJjYiIsImF1dGhfdGltZSI6MTcxMDU3OTMwMywidXNlcl9pZCI6IkoxUzF1Q25Dc3BjRlF2bzNHNmNORkVmcFlvcDIiLCJzdWIiOiJKMVMxdUNuQ3NwY0ZRdm8zRzZjTkZFZnBZb3AyIiwiaWF0IjoxNzEwNTc5MzAzLCJleHAiOjE3MTA1ODI5MDMsImVtYWlsIjoiZXBhcmtzdXBlcnVzZXJAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImVwYXJrc3VwZXJ1c2VyQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.qv3rGj7CJ-j7UhglALjQHWLATdV0594N6fSb1_N6gvOpok3MZlrJQ_ry7g91FpJUL-A27K-up6GNxiRz2DLkUYaSVZuNIuy74JZyZ5p8leD6-My2kHluLZYsKiKVStOjmwYD3avNaw061I1rEN0cEg6YKNHz_1ZrMLCP1brdO-jGIJ1Sz59LsRpOy9pb5ep9MBlnpHiEDZOaREgbB26YxmsgqZ9CTQA_r4_SM0sY701QwMobBvMeWS04d68xEFPot-wKFnILBCETWGTL9cHHHEQ3mYDzX1Itm287DAOMDdwY9wNQ1Q1A3e9HhVbZ5q4uKc8rqGU6-6CXupx3jPZq0w",
+			"type": "string"
+		},
+		{
+			"key": "parkingOwnerToken ",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "driverToken",
+			"value": "",
 			"type": "string"
 		}
 	]

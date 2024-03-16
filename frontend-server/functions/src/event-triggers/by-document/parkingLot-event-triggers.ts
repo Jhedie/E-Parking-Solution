@@ -1,5 +1,6 @@
 import {
   onDocumentCreated,
+  onDocumentDeleted,
   onDocumentUpdated,
 } from "firebase-functions/v2/firestore";
 import { DbChangedRecord } from "../../core/data/db-changed-record";
@@ -24,6 +25,7 @@ export class ParkingLotEventTriggers implements InitializeEventTriggers {
   initialize(add: AddEventTrigger): void {
     add(this.onCreated);
     add(this.onUpdated);
+    add(this.onDeleted);
   }
 
   /**
@@ -62,6 +64,22 @@ export class ParkingLotEventTriggers implements InitializeEventTriggers {
       const record = new DbChangedRecord(
         "PARKING_LOT_UPDATED",
         `Parking lot ${parkingLot.LotName} has been updated`,
+        parkingLot.Owner
+      );
+
+      await dbChangesService.addRecord(record);
+    }),
+  };
+
+  private readonly onDeleted: EventTriggerV2Function = {
+    name: "onParkingLotDeleted",
+    handler: onDocumentDeleted("parkingLots/{lotId}", async (document) => {
+      const parkingLot: ParkingLot = ParkingLotFirestoreModel.fromDocumentData(
+        document.data.data()
+      );
+      const record = new DbChangedRecord(
+        "PARKING_LOT_DELETED",
+        `Parking lot ${parkingLot.LotName} has been deleted`,
         parkingLot.Owner
       );
 

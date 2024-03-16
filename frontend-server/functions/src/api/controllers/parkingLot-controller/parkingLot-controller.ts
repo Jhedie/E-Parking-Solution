@@ -43,6 +43,11 @@ export class ParkingLotController implements Controller {
       "parkingOwner",
       "admin",
     ]);
+
+    httpServer.delete("/parkingLot/:lotId", this.deleteParkingLotById, [
+      "parkingOwner",
+      "admin",
+    ]);
   }
 
   private readonly createParkingLot: RequestHandler = async (
@@ -172,5 +177,47 @@ export class ParkingLotController implements Controller {
     return this.handleGetParkingLotById(req, res, next, (parkingLot) =>
       ParkingLotClientModel.fromEntity(parkingLot).toBodyFullParkingLot()
     );
+  };
+
+  private readonly deleteParkingLotById: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    console.log("Deleting parking lot by ID...");
+    if (!req.params["lotId"]?.length) {
+      throw new HttpResponseError(
+        400,
+        "BAD REQUEST",
+        "Please, inform a parking lot id on the route"
+      );
+    }
+
+    const parkingLot = await parkingLotService.getParkingLotById(
+      req.params["lotId"]
+    );
+
+    if (!parkingLot) {
+      throw new HttpResponseError(
+        404,
+        "NOT FOUND",
+        ` Parking lot ${req.params["lotId"]} not found`
+      );
+    }
+
+    // only admins or parking Owners can delete parking lots
+    if (!req.claims!["admin"] && parkingLot.Owner !== req.auth?.uid) {
+      throw new HttpResponseError(
+        403,
+        "FORBIDDEN",
+        "You do not have permission to delete this parking lot"
+      );
+    }
+
+    await parkingLotService.deleteParkingLotById(req.params["lotId"]);
+    res.status(204).send({
+      message: `Parking lot with id ${req.params["lotId"]} has been deleted successfully.`,
+    });
+    next();
   };
 }

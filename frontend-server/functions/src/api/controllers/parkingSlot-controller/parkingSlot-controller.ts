@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import { NextFunction, Request, Response } from "express-serve-static-core";
 import { ParkingSlotClientModel } from "../../../core/data/models/parkingSlot/client/parkingSlot-client-model";
 import { PartialParkingSlotClientModel } from "../../../core/data/models/parkingSlot/client/partial-parkingSlot-client-model";
+import { validateNoDuplicatePositionsInList } from "../../../core/data/models/parkingSlot/client/validators";
 import { ParkingSlot } from "../../../core/data/parkingSlot";
 import { parkingSlotService } from "../../../core/services/parkingSlot-service";
 import { HttpResponseError } from "../../../core/utils/http-response-error";
@@ -64,18 +65,17 @@ export class ParkingSlotController implements Controller {
     res: Response,
     next: NextFunction
   ) => {
-    console.log("creating parking slot with", req.body);
+console.log("creating parking slot with", req.body);
     const parkingSlotFromInput: ParkingSlot = ParkingSlotClientModel.validate(
       req.body
     );
-    console.log(parkingSlotFromInput);
+console.log(parkingSlotFromInput);
     const parkingSlot = await parkingSlotService.createParkingSlot(
       parkingSlotFromInput
     );
     const output =
       ParkingSlotClientModel.fromEntity(parkingSlot).toBodyPublicParkingSlot();
     res.send(output);
-    next();
   };
 
   private readonly createMultipleParkingSlots: RequestHandler = async (
@@ -92,6 +92,7 @@ export class ParkingSlotController implements Controller {
         "Expected an array of parking slots."
       );
     }
+    validateNoDuplicatePositionsInList(parkingSlotsData);
 
     const validatedParkingSlots = parkingSlotsData.map((slotData) =>
       ParkingSlotClientModel.validate(slotData)
@@ -108,7 +109,6 @@ export class ParkingSlotController implements Controller {
     );
 
     res.status(201).send({ parkingSlots: outputList });
-    next();
   };
 
   private readonly getAllParkingSlots: RequestHandler = async (
@@ -121,7 +121,6 @@ export class ParkingSlotController implements Controller {
       ParkingSlotClientModel.fromEntity(parkingSlot).toBodyPublicParkingSlot()
     );
     res.send({ parkingSlots: outputList });
-    next();
   };
 
   private readonly getParkingSlotById: RequestHandler = async (
@@ -138,7 +137,6 @@ export class ParkingSlotController implements Controller {
     const output =
       ParkingSlotClientModel.fromEntity(parkingSlot).toBodyPublicParkingSlot();
     res.send(output);
-    next();
   };
 
   private readonly updateParkingSlotById: RequestHandler = async (
@@ -154,7 +152,6 @@ export class ParkingSlotController implements Controller {
     res.status(204).send({
       message: "Parking slot " + req.params.slotId + " successfully updated",
     });
-    next();
   };
 
   private readonly deleteParkingSlotById: RequestHandler = async (
@@ -166,7 +163,6 @@ export class ParkingSlotController implements Controller {
     res.status(204).send({
       message: "Parking slot " + req.params.slotId + " successfully deleted",
     });
-    next();
   };
 
   private readonly getParkingSlotsByLotId: RequestHandler = async (
@@ -181,7 +177,6 @@ export class ParkingSlotController implements Controller {
       ParkingSlotClientModel.fromEntity(parkingSlot).toBodyPublicParkingSlot()
     );
     res.send({ parkingSlots: outputList });
-    next();
   };
 
   private readonly deleteAllParkingSlots: RequestHandler = async (
@@ -191,7 +186,6 @@ export class ParkingSlotController implements Controller {
   ) => {
     await parkingSlotService.deleteAllParkingSlots();
     res.status(204).send({ message: "All parking slots successfully deleted" });
-    next();
   };
 
   private readonly deleteParkingSlotsByLotId: RequestHandler = async (
@@ -206,6 +200,5 @@ export class ParkingSlotController implements Controller {
         req.params.lotId +
         " successfully deleted",
     });
-    next();
   };
 }

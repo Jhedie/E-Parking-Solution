@@ -9,9 +9,12 @@ import { Controller, HttpServer } from "../index";
 
 export class VehicleController implements Controller {
   initialize(httpServer: HttpServer): void {
-    httpServer.post("/vehicle", this.createVehicle.bind(this), ["driver"]);
-    httpServer.get("/all-vehicles", this.getAllVehicles.bind(this), [
+    httpServer.post("/vehicle", this.createVehicle.bind(this), [
       "driver",
+      "admin",
+      "parkingOwner",
+    ]);
+    httpServer.get("/all-vehicles", this.getAllVehicles.bind(this), [
       "admin",
       "parkingOwner",
     ]);
@@ -52,15 +55,23 @@ export class VehicleController implements Controller {
     next: NextFunction
   ) => {
     console.log("In the controller for creation");
-    const vehicleFromInput: Vehicle = VehicleClientModel.validate(
-      req.body,
-      req.auth.uid
-    );
-    console.log("vehicleFromInput", vehicleFromInput);
-    const vehicle = await vehicleService.createVehicle(vehicleFromInput);
-    const output = VehicleClientModel.fromEntity(vehicle).toBodyFullVehicle();
-    res.send(output);
-    next();
+    try {
+      const vehicleFromInput: Vehicle = VehicleClientModel.validate(
+        req.body,
+        req.auth.uid
+      );
+
+      console.log("vehicleFromInput", vehicleFromInput);
+      const vehicle = await vehicleService.createVehicle(vehicleFromInput);
+      const output = VehicleClientModel.fromEntity(vehicle).toBodyFullVehicle();
+      res.send(output);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).send({ error: error.message });
+      } else {
+        next(error);
+      }
+    }
   };
 
   private readonly getAllVehicles: RequestHandler = async (
@@ -117,8 +128,9 @@ export class VehicleController implements Controller {
         "NOT_FOUND",
         "Vehicle not found or you do not have permission to view it"
       );
+    } else {
+      res.send(toOutput(vehicle));
     }
-    res.send(toOutput(vehicle));
     next();
   };
 

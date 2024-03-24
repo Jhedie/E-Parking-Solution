@@ -1,5 +1,5 @@
 import { Vehicle } from "../../../Vehicle";
-import { validateRegistrationNumber, validateVehicleId } from "./validators";
+import { validateRegistrationNumber } from "./validators";
 
 /**
  * A class representing a vehicle client model.
@@ -29,7 +29,6 @@ export class VehicleClientModel extends Vehicle {
   }
 
   private static _validate(body: any) {
-    validateVehicleId(body[this.kVehicleId]);
     validateRegistrationNumber(body[this.kRegistrationNumber]);
   }
 

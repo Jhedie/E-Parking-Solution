@@ -1,8 +1,20 @@
 import { Formik, FormikHelpers } from "formik";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AwesomeButton from "react-native-really-awesome-button";
 
-import { StyleSheet, Switch, Text, TextInput, View } from "react-native";
+import { useAuth } from "@providers/Authentication/AuthProvider";
+import { useConfig } from "@providers/Config/ConfigProvider";
+import { useToastController } from "@tamagui/toast";
+import { useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  View
+} from "react-native";
 import { YStack } from "tamagui";
 import { ZodError, z } from "zod";
 import { StackNavigation } from "../../../../app/(auth)/home";
@@ -15,16 +27,34 @@ interface AddVehicleScreenProps {
 export const AddVehicleScreen: React.FC<AddVehicleScreenProps> = ({
   navigation
 }) => {
+  const { BASE_URL } = useConfig();
+  const { user } = useAuth();
+  const toaster = useToastController();
+  const queryClient = useQueryClient();
+
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      if (user) {
+        const token = await user.getIdToken();
+        setToken(token);
+      }
+    };
+
+    fetchToken();
+  }, [user]);
+
   const vehicleValidationSchema = z.object({
-    RegistrationNumber: z
+    registrationNumber: z
       .string()
       .min(1, "Please enter a valid registration number, e.g. AB12 CDE"),
-    DefaultVehicle: z.boolean().optional()
+    defaultVehicle: z.boolean().optional()
   });
   const initialValues: Vehicle = {
-    RegistrationNumber: "",
-    Nickname: "",
-    DefaultVehicle: false
+    registrationNumber: "",
+    nickName: "",
+    defaultVehicle: false
   };
 
   type FormValues = z.infer<typeof vehicleValidationSchema>;
@@ -50,11 +80,30 @@ export const AddVehicleScreen: React.FC<AddVehicleScreenProps> = ({
             values: Vehicle,
             { setSubmitting }: FormikHelpers<Vehicle>
           ) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
-              setSubmitting(false);
-              navigation.goBack();
-            }, 500);
+            axios
+              .post(`${BASE_URL}/vehicle`, values, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json"
+                }
+              })
+              .then((response) => {
+                console.log("Vehicle added successfully", response.data);
+                toaster.show("Vehicle added successfully", {
+                  type: "success"
+                });
+                queryClient.invalidateQueries({ queryKey: ["userVehicles"] });
+                navigation.goBack();
+              })
+              .catch((error) => {
+                toaster.show("Error adding vehicle", {
+                  type: "error"
+                });
+                console.error("Error adding vehicle", error);
+              })
+              .finally(() => {
+                setSubmitting(false);
+              });
           }}
         >
           {({
@@ -64,7 +113,8 @@ export const AddVehicleScreen: React.FC<AddVehicleScreenProps> = ({
             setFieldValue,
             values,
             errors,
-            touched
+            touched,
+            isSubmitting
           }) => (
             <View>
               <View
@@ -82,10 +132,10 @@ export const AddVehicleScreen: React.FC<AddVehicleScreenProps> = ({
                 </Text>
                 <TextInput
                   onChangeText={(text) =>
-                    handleChange("RegistrationNumber")(text.toUpperCase())
+                    handleChange("registrationNumber")(text.toUpperCase())
                   }
-                  onBlur={handleBlur("RegistrationNumber")}
-                  value={values.RegistrationNumber}
+                  onBlur={handleBlur("registrationNumber")}
+                  value={values.registrationNumber}
                   placeholder="AB12 CDE"
                   style={{
                     textAlign: "center",
@@ -100,15 +150,15 @@ export const AddVehicleScreen: React.FC<AddVehicleScreenProps> = ({
                     letterSpacing: 10
                   }}
                 />
-                {touched.RegistrationNumber && errors.RegistrationNumber && (
-                  <Text style={styles.error}>{errors.RegistrationNumber}</Text>
+                {touched.registrationNumber && errors.registrationNumber && (
+                  <Text style={styles.error}>{errors.registrationNumber}</Text>
                 )}
               </View>
               <View style={{ marginBottom: 20 }}>
                 <TextInput
-                  onChangeText={handleChange("Nickname")}
+                  onChangeText={handleChange("nickName")}
                   onBlur={handleBlur("Nickname")}
-                  value={values.Nickname}
+                  value={values.nickName}
                   placeholder="Nickname"
                   style={{
                     textAlign: "center",
@@ -120,8 +170,8 @@ export const AddVehicleScreen: React.FC<AddVehicleScreenProps> = ({
                     height: 50
                   }}
                 />
-                {touched.Nickname && errors.Nickname && (
-                  <Text style={styles.error}>{errors.Nickname}</Text>
+                {touched.nickName && errors.nickName && (
+                  <Text style={styles.error}>{errors.nickName}</Text>
                 )}
               </View>
 
@@ -140,10 +190,10 @@ export const AddVehicleScreen: React.FC<AddVehicleScreenProps> = ({
                 </Text>
                 <Switch
                   trackColor={{ false: "white", true: "black" }}
-                  thumbColor={values.DefaultVehicle ? "white" : "black"}
-                  value={values.DefaultVehicle}
+                  thumbColor={values.defaultVehicle ? "white" : "black"}
+                  value={values.defaultVehicle}
                   onValueChange={() => {
-                    setFieldValue("DefaultVehicle", !values.DefaultVehicle);
+                    setFieldValue("defaultVehicle", !values.defaultVehicle);
                   }}
                 />
               </View>
@@ -161,12 +211,19 @@ export const AddVehicleScreen: React.FC<AddVehicleScreenProps> = ({
                   backgroundColor="black"
                   backgroundShadow="black"
                 >
-                  <Text
-                    numberOfLines={1}
-                    style={{ overflow: "hidden", color: "white" }}
-                  >
-                    Next
-                  </Text>
+                  {isSubmitting ? (
+                    <ActivityIndicator
+                      size="small"
+                      color="white"
+                    />
+                  ) : (
+                    <Text
+                      numberOfLines={1}
+                      style={{ overflow: "hidden", color: "white" }}
+                    >
+                      Next
+                    </Text>
+                  )}
                 </AwesomeButton>
               </View>
             </View>

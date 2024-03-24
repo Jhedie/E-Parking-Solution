@@ -8,6 +8,7 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
   static kReservationId = "reservationId";
   static kUserId = "userId";
   static kSlotId = "slotId";
+  static kLotId = "lotId";
   static kStartTime = "startTime";
   static kEndTime = "endTime";
   static kRateNumber = "rateNumber";
@@ -26,6 +27,7 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
       "", // reservationId
       "", // userId
       "", // slotId
+      "", // lotId
       null, // startTime
       null, // endTime
       0, // rateNumber
@@ -65,6 +67,7 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
         reservationId ?? this.reservationId,
       [ParkingReservationFirestoreModel.kUserId]: this.userId,
       [ParkingReservationFirestoreModel.kSlotId]: this.slotId,
+      [ParkingReservationFirestoreModel.kLotId]: this.lotId,
       [ParkingReservationFirestoreModel.kStartTime]:
         firestore.Timestamp.fromDate(this.startTime),
       [ParkingReservationFirestoreModel.kEndTime]: firestore.Timestamp.fromDate(
@@ -94,6 +97,7 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
       data[ParkingReservationFirestoreModel.kReservationId],
       data[ParkingReservationFirestoreModel.kUserId],
       data[ParkingReservationFirestoreModel.kSlotId],
+      data[ParkingReservationFirestoreModel.kLotId],
       (data[ParkingReservationFirestoreModel.kStartTime] as Timestamp).toDate(),
       (data[ParkingReservationFirestoreModel.kEndTime] as Timestamp).toDate(),
       data[ParkingReservationFirestoreModel.kRateNumber],

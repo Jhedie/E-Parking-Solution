@@ -11,35 +11,42 @@ export class ParkingReservationController implements Controller {
   initialize(httpServer: HttpServer): void {
     httpServer.post(
       "/parkingReservations",
-      this.createParkingReservation.bind(this)
+      this.createParkingReservation.bind(this),
+      ["driver", "parkingOwner", "admin"]
     );
     httpServer.get(
-      "/parkingReservations",
-      this.getAllParkingReservations.bind(this)
+      "/all-parkingReservations",
+      this.getAllParkingReservations.bind(this),
+      ["driver", "parkingOwner", "admin"]
     );
 
     httpServer.get(
-      "/parkingReservations",
-      this.getParkingReservationByUserId.bind(this)
+      "/all-user-parkingReservations",
+      this.getParkingReservationByUserId.bind(this),
+      ["driver", "parkingOwner", "admin"]
     );
 
     httpServer.get(
       "/parkingReservations/:reservationId/full-details",
-      this.getParkingReservationByIdFull.bind(this)
+      this.getParkingReservationByIdFull.bind(this),
+      ["driver", "parkingOwner", "admin"]
     );
 
     httpServer.get(
       "/parkingReservations/:reservationId/",
-      this.getParkingReservationByIdPublic.bind(this)
+      this.getParkingReservationByIdPublic.bind(this),
+      ["driver", "parkingOwner", "admin"]
     );
 
     httpServer.put(
       "/parkingReservations/:reservationId",
-      this.updateParkingReservation.bind(this)
+      this.updateParkingReservation.bind(this),
+      ["driver", "parkingOwner", "admin"]
     );
     httpServer.delete(
       "/parkingReservations/:reservationId",
-      this.deleteParkingReservation.bind(this)
+      this.deleteParkingReservation.bind(this),
+      ["driver", "parkingOwner", "admin"]
     );
   }
 
@@ -53,7 +60,10 @@ export class ParkingReservationController implements Controller {
       const parkingReservationDataInput: ParkingReservation =
         ParkingReservationClientModel.validate(req.body, req.auth.uid);
 
-      console.log("parkingReservationDataInput", parkingReservationDataInput);
+      console.log(
+        "parkingReservationDataInput validated",
+        parkingReservationDataInput
+      );
       const createdReservation =
         await parkingReservationService.createParkingReservation(
           parkingReservationDataInput
@@ -61,7 +71,7 @@ export class ParkingReservationController implements Controller {
       const output =
         ParkingReservationClientModel.fromEntity(
           createdReservation
-        ).toBodyPublicReservation();
+        ).toBodyFullReservation();
       res.status(201).send(output);
     } catch (error) {
       next(
@@ -126,8 +136,9 @@ export class ParkingReservationController implements Controller {
           "NOT_FOUND",
           "Parking reservation not found"
         );
+      } else {
+        res.send(toOutput(reservation));
       }
-      res.send(toOutput(reservation));
     } catch (error) {
       next(error);
     }
@@ -189,54 +200,38 @@ export class ParkingReservationController implements Controller {
     res: Response,
     next: NextFunction
   ) => {
-    try {
-      if (!req.params.reservationId?.length) {
-        throw new HttpResponseError(
-          400,
-          "BAD_REQUEST",
-          "Please inform a reservation ID on the route."
-        );
-      }
-
-      const reservationId = req.params.reservationId;
-      const partialReservationData =
-        PartialParkingReservationClientModel.validate(req.body);
-
-      const reservation =
-        await parkingReservationService.getParkingReservationById(
-          reservationId
-        );
-
-      if (!reservation || reservation.userId !== req.auth.uid) {
-        throw new HttpResponseError(
-          404,
-          "NOT_FOUND",
-          "You do not have permission to update this reservation."
-        );
-      }
-
-      await parkingReservationService.updateParkingReservationById(
-        reservationId,
-        partialReservationData
-      );
-      return this.handleGetParkingReservationById(
-        req,
-        res,
-        next,
-        (reservation) =>
-          ParkingReservationClientModel.fromEntity(
-            reservation
-          ).toBodyPublicReservation()
-      );
-    } catch (error) {
-      next(
-        new HttpResponseError(
-          400,
-          "BAD_REQUEST",
-          "Error updating parking reservation."
-        )
+    if (!req.params.reservationId?.length) {
+      throw new HttpResponseError(
+        400,
+        "BAD_REQUEST",
+        "Please inform a reservation ID on the route."
       );
     }
+
+    const reservationId = req.params.reservationId;
+    const partialReservationData =
+      PartialParkingReservationClientModel.validate(req.body);
+
+    const reservation =
+      await parkingReservationService.getParkingReservationById(reservationId);
+
+    if (!reservation || reservation.userId !== req.auth.uid) {
+      throw new HttpResponseError(
+        404,
+        "NOT_FOUND",
+        "You do not have permission to update this reservation."
+      );
+    }
+
+    await parkingReservationService.updateParkingReservationById(
+      reservationId,
+      partialReservationData
+    );
+    return this.handleGetParkingReservationById(req, res, next, (reservation) =>
+      ParkingReservationClientModel.fromEntity(
+        reservation
+      ).toBodyPublicReservation()
+    );
   };
 
   private readonly deleteParkingReservation: RequestHandler = async (
@@ -244,43 +239,29 @@ export class ParkingReservationController implements Controller {
     res: Response,
     next: NextFunction
   ) => {
-    try {
-      const reservationId = req.params.reservationId;
+    const reservationId = req.params.reservationId;
 
-      if (!reservationId?.length) {
-        throw new HttpResponseError(
-          400,
-          "BAD_REQUEST",
-          "Please inform a reservation ID on the route."
-        );
-      }
-      const reservation =
-        await parkingReservationService.getParkingReservationById(
-          reservationId
-        );
-      if (!reservation || reservation.userId !== req.auth.uid) {
-        throw new HttpResponseError(
-          404,
-          "NOT_FOUND",
-          "Reservation " + reservationId + " not found."
-        );
-      }
-
-      await parkingReservationService.deleteParkingReservationById(
-        reservationId
-      );
-      res.status(204).send({
-        message:
-          "Reservation " + reservationId + " has been deleted successfully.",
-      });
-    } catch (error) {
-      next(
-        new HttpResponseError(
-          404,
-          "NOT_FOUND",
-          "Error deleting parking reservation or reservation not found."
-        )
+    if (!reservationId?.length) {
+      throw new HttpResponseError(
+        400,
+        "BAD_REQUEST",
+        "Please inform a reservation ID on the route."
       );
     }
+    const reservation =
+      await parkingReservationService.getParkingReservationById(reservationId);
+    if (!reservation || reservation.userId !== req.auth.uid) {
+      throw new HttpResponseError(
+        404,
+        "NOT_FOUND",
+        "Reservation " + reservationId + " not found."
+      );
+    }
+
+    await parkingReservationService.deleteParkingReservationById(reservationId);
+    res.status(204).send({
+      message:
+        "Reservation " + reservationId + " has been deleted successfully.",
+    });
   };
 }

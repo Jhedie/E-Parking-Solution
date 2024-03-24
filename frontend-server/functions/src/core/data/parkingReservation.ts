@@ -12,6 +12,7 @@ class ParkingReservation {
   public readonly reservationId: string;
   public readonly userId: string;
   public readonly slotId: string;
+  public readonly lotId: string;
   public readonly startTime: Date;
   public readonly endTime: Date;
   public readonly rateNumber: number;
@@ -25,6 +26,7 @@ class ParkingReservation {
     reservationId: string,
     userId: string,
     slotId: string,
+    lotId: string,
     startTime: Date,
     endTime: Date,
     rateNumber: number,
@@ -37,6 +39,7 @@ class ParkingReservation {
     this.reservationId = reservationId;
     this.userId = userId;
     this.slotId = slotId;
+    this.lotId = lotId;
     this.startTime = startTime;
     this.endTime = endTime;
     this.rateNumber = rateNumber;
@@ -52,6 +55,7 @@ class ParkingReservation {
       "", // reservationId
       "", // userId
       "", // slotId
+      "", // lotId
       null, // startTime
       null, // endTime
       0, // rateNumber

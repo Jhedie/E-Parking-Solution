@@ -1,35 +1,35 @@
 {
   "rates": [
     {
-      "lotId": "Tr4niu3KiKDAemUi7zMZ",
+      "lotId": "4VIn9YyAfzY7pDX8tBjv",
       "rateType": "minute",
       "rate": 0.5,
       "minimum": 30,
       "maximum": 60
     },
     {
-      "lotId": "Tr4niu3KiKDAemUi7zMZ",
+      "lotId": "4VIn9YyAfzY7pDX8tBjv",
       "rateType": "hour",
       "rate": 5,
       "minimum": 1,
       "maximum": 24
     },
     {
-      "lotId": "Tr4niu3KiKDAemUi7zMZ",
+      "lotId": "4VIn9YyAfzY7pDX8tBjv",
       "rateType": "day",
       "rate": 30,
       "minimum": 1,
       "maximum": 7
     },
     {
-      "lotId": "Tr4niu3KiKDAemUi7zMZ",
+      "lotId": "4VIn9YyAfzY7pDX8tBjv",
       "rateType": "week",
       "rate": 150,
       "minimum": 1,
       "maximum": 4
     },
     {
-      "lotId": "Tr4niu3KiKDAemUi7zMZ",
+      "lotId": "4VIn9YyAfzY7pDX8tBjv",
       "rateType": "month",
       "rate": 500,
       "minimum": 1,

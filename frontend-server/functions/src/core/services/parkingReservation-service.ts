@@ -19,11 +19,9 @@ class ParkingReservationService {
     reservation: ParkingReservation
   ): Promise<ParkingReservation> {
     const reservationRef = this.doc();
-    const documentData =
-      ParkingReservationFirestoreModel.fromEntity(reservation).toDocumentData();
-
-    // Set createdAt timestamp
-    documentData.createdAt = FieldValue.serverTimestamp();
+    const documentData = ParkingReservationFirestoreModel.fromEntity(
+      reservation
+    ).toDocumentData(reservationRef.id, FieldValue.serverTimestamp());
 
     await reservationRef.set(documentData);
 

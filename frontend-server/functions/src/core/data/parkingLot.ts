@@ -43,7 +43,6 @@ export class ParkingLot {
     public readonly LiveStatus: "Low" | "Medium" | "High",
     public readonly OperatingHours: string,
     public readonly Facilities: Facility[],
-    public readonly Rates: Rate[],
     public readonly createdAt: Date
   ) {}
 
@@ -66,7 +65,6 @@ export class ParkingLot {
       "Low", // Default LiveStatus
       "", // Operating Hours
       [], // No Facilities
-      [], // No Rates
       new Date() // Current date
     );
   }

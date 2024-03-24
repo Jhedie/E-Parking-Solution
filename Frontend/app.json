@@ -25,6 +25,9 @@
         "backgroundColor": "#1d1f1d",
         "image": "./assets/expo-splash/splash.png",
         "resizeMode": "contain"
+      },
+      "entitlements": {
+        "com.apple.developer.networking.wifi-info": true
       }
     },
     "android": {

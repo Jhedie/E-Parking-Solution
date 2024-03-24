@@ -3,9 +3,9 @@ import * as admin from "firebase-admin";
 // Checks if a parking slot with the same position already exists in the database
 // based on the provided body object, and throws an error if a duplicate is found
 export function validateDuplicateSlotPosition(body: any) {
-  const lotId = body["lotId"];
-  const row = body["position"] ? body["position"]["row"] : undefined;
-  const column = body["position"] ? body["position"]["column"] : undefined;
+  let lotId = body["lotId"];
+  let row = body["position"] ? body["position"]["row"] : undefined;
+  let column = body["position"] ? body["position"]["column"] : undefined;
 
   if (lotId !== undefined && row !== undefined && column !== undefined) {
     admin
@@ -14,9 +14,14 @@ export function validateDuplicateSlotPosition(body: any) {
       .where("lotId", "==", lotId)
       .where("position.row", "==", row)
       .where("position.column", "==", column)
+      .select()
       .get()
       .then((querySnapshot) => {
         if (!querySnapshot.empty) {
+          console.log(
+            "Duplicate slot position found",
+            querySnapshot.docs[0].data()
+          );
           throw new Error("Slot position already exists");
         }
       });

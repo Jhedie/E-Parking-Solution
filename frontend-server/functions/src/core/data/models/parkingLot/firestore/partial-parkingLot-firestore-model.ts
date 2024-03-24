@@ -51,8 +51,7 @@ export class PartialParkingLotFirestoreModel {
         if (partialParkingLot.Facilities)
           res[ParkingLotFirestoreModel.kFacilities] =
             partialParkingLot.Facilities;
-        if (partialParkingLot.Rates)
-          res[ParkingLotFirestoreModel.kRates] = partialParkingLot.Rates;
+
         return res;
       },
     };

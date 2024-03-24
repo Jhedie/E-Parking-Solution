@@ -80,7 +80,7 @@ export const ParkingLotDetailsScreen: React.FC<
 
             <View style={{ marginTop: 10 }}>
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>Price</Text>
-              <Text style={{ fontSize: 16 }}>{parkingLot.Rates[0][0]}</Text>
+              <Text style={{ fontSize: 16 }}>Rate to be added</Text>
             </View>
             <View style={{ marginTop: 10 }}>
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>Capacity</Text>

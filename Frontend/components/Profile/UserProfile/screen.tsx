@@ -1,10 +1,8 @@
 import { Car, Sun, User } from "@tamagui/lucide-icons";
-import { GestureResponderEvent, Text } from "react-native";
+import { Text, View } from "react-native";
+import AwesomeButton from "react-native-really-awesome-button";
 import {
   Avatar,
-  Button,
-  ButtonText,
-  H3,
   ListItem,
   XStack,
   YGroup,
@@ -14,10 +12,6 @@ import { useAuth } from "../../../providers/Authentication/AuthProvider";
 
 const ProfileScreen = () => {
   const { user, signOut } = useAuth();
-  function handleSignOutButtonPress(event: GestureResponderEvent): void {
-    event.preventDefault();
-    signOut();
-  }
 
   return (
     <YStack
@@ -42,8 +36,6 @@ const ProfileScreen = () => {
         </Avatar>
       </XStack>
 
-      <Text>Name: {user?.email}</Text>
-
       <YGroup
         alignSelf="center"
         bordered
@@ -55,7 +47,7 @@ const ProfileScreen = () => {
             hoverTheme
             icon={User}
             title="Name"
-            subTitle="John Doe"
+            subTitle={user?.displayName}
           />
         </YGroup.Item>
         <YGroup.Item>
@@ -74,18 +66,33 @@ const ProfileScreen = () => {
             subTitle="ABC-123"
           />
         </YGroup.Item>
-        <YGroup.Item>
-          <ListItem
-            hoverTheme
-            title="Parking Spot"
-            subTitle="B3"
-          />
-        </YGroup.Item>
       </YGroup>
       <XStack>
-        <Button onPress={handleSignOutButtonPress}>
-          <ButtonText>Sign Out</ButtonText>
-        </Button>
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 30,
+            marginTop: 30
+          }}
+        >
+          <AwesomeButton
+            height={50}
+            width={200}
+            onPress={() => signOut()}
+            raiseLevel={1}
+            borderRadius={10}
+            backgroundColor="black"
+            backgroundShadow="black"
+          >
+            <Text
+              numberOfLines={1}
+              style={{ overflow: "hidden", color: "white" }}
+            >
+              Sign Out
+            </Text>
+          </AwesomeButton>
+        </View>
       </XStack>
     </YStack>
   );

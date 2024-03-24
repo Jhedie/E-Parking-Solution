@@ -1,7 +1,12 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useAuth } from "@providers/Authentication/AuthProvider";
+import { useConfig } from "@providers/Config/ConfigProvider";
 import { Picker } from "@react-native-picker/picker";
 import { RouteProp, useRoute } from "@react-navigation/native";
+import { useToastController } from "@tamagui/toast";
+import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import useToken from "hooks/useToken";
 import React, { useEffect, useState } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -29,7 +34,46 @@ export type BookingDetails = {
   rateType?: string;
   rateNumber?: number;
 };
-//TODO: API call here
+
+//TODO: Revising rates
+const ratesRevised = [
+  {
+    RateType: "minute",
+    Rate: 10,
+    duration: 30
+  },
+  {
+    RateType: "minute",
+    Rate: 9.5,
+    duration: 45
+  },
+  {
+    RateType: "hour",
+    Rate: 5,
+    duration: 1
+  },
+  {
+    RateType: "hour",
+    Rate: 4.5,
+    duration: 2
+  },
+  {
+    RateType: "day",
+    Rate: 30,
+    duration: 1
+  },
+  {
+    RateType: "week",
+    Rate: 150,
+    duration: 1
+  },
+  {
+    RateType: "month",
+    Rate: 500,
+    duration: 1
+  }
+];
+
 const rates = [
   {
     RateType: "minute",
@@ -101,6 +145,12 @@ export const BookParkingDetailsScreen: React.FC<
   BookParkingDetailsScreenProps
 > = ({ navigation }) => {
   const route = useRoute<RouteProp<RouteParams, "BookParkingDetailsScreen">>();
+  const queryClient = useQueryClient();
+  const toaster = useToastController();
+  const { user } = useAuth();
+  const { BASE_URL } = useConfig();
+
+  const token = useToken();
 
   const [startDateTime, setStartDateTime] = useState<Date>(new Date());
   const [endDateTime, setEndDateTime] = useState<Date>();
@@ -434,7 +484,7 @@ export const BookParkingDetailsScreen: React.FC<
           backgroundDarker="#fff"
           backgroundColor="#fff"
         >
-          <Text style={{}}>Select Slot</Text>
+          <Text style={{}}>Finish Booking Details</Text>
         </AwesomeButton>
       </View>
     </YStack>

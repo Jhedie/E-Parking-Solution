@@ -1,5 +1,6 @@
 import { Formik, FormikErrors } from "formik";
 import { Image, StyleSheet, Text, View } from "react-native";
+import AwesomeButton from "react-native-really-awesome-button";
 import { Button, Input, Spinner, YStack } from "tamagui";
 import { ZodError, z } from "zod";
 
@@ -143,12 +144,37 @@ export default function ResetPasswordInternalScreen() {
             {formikProps.isSubmitting ? (
               <Spinner />
             ) : (
-              <Button
-                themeInverse
-                onPress={() => formikProps.handleSubmit()}
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 30,
+                  marginTop: 30
+                }}
               >
-                Reset Password
-              </Button>
+                <AwesomeButton
+                  height={50}
+                  width={200}
+                  onPress={() => formikProps.handleSubmit()}
+                  raiseLevel={1}
+                  borderRadius={10}
+                  backgroundColor="black"
+                  backgroundShadow="black"
+                >
+                  <Text
+                    numberOfLines={1}
+                    style={{ overflow: "hidden", color: "white" }}
+                  >
+                    Reset Password
+                  </Text>
+                </AwesomeButton>
+              </View>
+              // <Button
+              //   themeInverse
+              //   onPress={() => formikProps.handleSubmit()}
+              // >
+              //   Reset Password
+              // </Button>
             )}
           </YStack>
         )}

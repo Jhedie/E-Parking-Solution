@@ -12,6 +12,7 @@ export const WelcomeScreen: React.FC = () => {
       justifyContent="space-around"
       alignItems="center"
       gap="$3"
+      backgroundColor="white"
     >
       <View
         style={{

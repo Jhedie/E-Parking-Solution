@@ -276,7 +276,9 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
           backgroundDarker="#fff"
           backgroundColor="black"
         >
-          <Text style={{ fontWeight: "500", color: "white" }}>Continue</Text>
+          <Text style={{ fontWeight: "500", color: "white" }}>
+            Select Booking Details
+          </Text>
         </AwesomeButton>
       </View>
     </YStack>

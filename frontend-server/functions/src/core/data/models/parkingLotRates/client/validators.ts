@@ -13,7 +13,7 @@ export function rateTypePresent(body: any) {
 }
 
 export function validateTimeRange(body: any) {
-  const minutes = body["minutes"];
+  const minutes = body["minute"];
   const day = body["day"];
   const week = body["week"];
   const month = body["month"];

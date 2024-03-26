@@ -4,10 +4,11 @@
 
 <details>
 <summary>Authentication</summary>
-  <img src="Frontend/docs/Screens/authentication/welcome.png" alt="alt text" width="100"/>
-  <img src="Frontend/docs/Screens/authentication/signup-screen.png" alt="alt text" width="100"/>
-  <img src="Frontend/docs/Screens/authentication/signin-screen.png" alt="alt text" width="100"/>
-  <img src="Frontend/docs/Screens/authentication/resetPassword.png" alt="alt text" width="100"/>
+  <img src="Frontend/docs/Screens/authentication/welcome.png" alt="welcome" width="100"/>
+  <img src="Frontend/docs/Screens/authentication/signup-screen.png"
+  alt="sign-up" width="100"/>
+  <img src="Frontend/docs/Screens/authentication/signin-screen.png" alt="sign-in" width="100"/>
+  <img src="Frontend/docs/Screens/authentication/resetPassword.png" alt="resetPassword" width="100"/>
 </details>
 <details>
 <summary>Onboarding</summary>
@@ -29,7 +30,7 @@
 </details>
 <details>
 <summary>Booking Details</summary>
-  <img src="Frontend/docs/Screens/bookingDetails/BookingDetailsV1.png" alt="Booking Details" width="100"/>
+  <img src="Frontend/docs/Screens/bookingDetails/bookingDetailsV1.png" alt="Booking Details" width="100"/>
   <img src="Frontend/docs/Screens/bookingDetails/bookingDetailsV2.png" alt="Booking Details V2" width="100"/>
 </details>
 <details>

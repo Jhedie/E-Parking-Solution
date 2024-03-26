@@ -2,7 +2,7 @@
 
 ## Date and Participants
 
-- **Date**: 22/03/2024
+- **Date**: 22/02/2024 - 21/03/2024
 - **Participants**: Jedidiah
 
 ## Sprint Goal

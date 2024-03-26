@@ -33,10 +33,6 @@ To achieve an MVP some tickets will be picked up later once the core functionali
 
 No issues raised
 
-<!-- - Any issues or concerns that were raised during the meeting. Include how (or if) they were resolved, or what the next steps are for addressing them like involving supervisor. -->
-
 ## Next Steps
-
-<!-- plans to do next, such as start work on the sprint backlog items, hold a follow-up meeting, etc. -->
 
 - Start work on the issues mentioned above.

@@ -30,7 +30,8 @@ class ParkingLotRatesService {
 
     const rateTypeExists = await this.checkRateTypeExists(
       parkingLotRate.lotId,
-      parkingLotRate.rateType
+      parkingLotRate.rateType,
+      parkingLotRate.duration
     );
     if (rateTypeExists) {
       throw new Error(
@@ -94,6 +95,20 @@ class ParkingLotRatesService {
     return ParkingLotRateFirestoreModel.fromDocumentData(rateRes.data());
   }
 
+  // getAllParkingLotRatesByParkingLotId
+  async getAllParkingLotRatesByParkingLotId(
+    lotId: string
+  ): Promise<ParkingLotRate[]> {
+    const snapshot = await this.collection().where("lotId", "==", lotId).get();
+
+    if (snapshot.empty) {
+      return [];
+    }
+    return snapshot.docs.map((doc) =>
+      ParkingLotRateFirestoreModel.fromDocumentData(doc.data())
+    );
+  }
+
   async getAllParkingLotRates(): Promise<ParkingLotRate[]> {
     const snapshot = await this.collection().get();
     return snapshot.docs.map((doc) =>
@@ -124,12 +139,17 @@ class ParkingLotRatesService {
     return lotSnapshot.exists;
   }
 
-  async checkRateTypeExists(lotId: string, rateType: string): Promise<boolean> {
+  async checkRateTypeExists(
+    lotId: string,
+    rateType: string,
+    duration: number
+  ): Promise<boolean> {
     const ratesRef = admin
       .firestore()
       .collection("parkingLotRates")
       .where("lotId", "==", lotId)
-      .where("rateType", "==", rateType);
+      .where("rateType", "==", rateType)
+      .where("duration", "==", duration);
     const snapshot = await ratesRef.get();
     return !snapshot.empty;
   }

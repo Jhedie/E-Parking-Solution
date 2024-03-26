@@ -10,11 +10,7 @@ export class ParkingLotRateFirestoreModel extends ParkingLotRate {
   static kLotId = "lotId";
   static kRateType = "rateType";
   static kRate = "rate";
-  static kNightRate = "nightRate";
-  static kMinimum = "minimum";
-  static kMaximum = "maximum";
-  static kDiscount = "discount";
-  static kDynamicPricing = "dynamicPricing";
+  static kDuration = "duration";
   static kCreatedAt = "createdAt";
 
   /**
@@ -27,11 +23,7 @@ export class ParkingLotRateFirestoreModel extends ParkingLotRate {
       "", // lotId
       null, // rateType
       0, // rate
-      undefined, // nightRate
-      0, // minimum
-      0, // maximum
-      undefined, // discount
-      undefined, // dynamicPricing
+      0, // duration
       new Date() // createdAt
     );
   }
@@ -61,18 +53,12 @@ export class ParkingLotRateFirestoreModel extends ParkingLotRate {
       [ParkingLotRateFirestoreModel.kLotId]: this.lotId,
       [ParkingLotRateFirestoreModel.kRateType]: this.rateType,
       [ParkingLotRateFirestoreModel.kRate]: this.rate,
-      [ParkingLotRateFirestoreModel.kMinimum]: this.minimum,
-      [ParkingLotRateFirestoreModel.kMaximum]: this.maximum,
+      [ParkingLotRateFirestoreModel.kDuration]: this.duration,
       [ParkingLotRateFirestoreModel.kCreatedAt]: createdAt ?? this.createdAt,
     };
 
-    // Optional fields
-    if (this.nightRate !== undefined)
-      data[ParkingLotRateFirestoreModel.kNightRate] = this.nightRate;
-    if (this.discount !== undefined)
-      data[ParkingLotRateFirestoreModel.kDiscount] = this.discount;
-    if (this.dynamicPricing !== undefined)
-      data[ParkingLotRateFirestoreModel.kDynamicPricing] = this.dynamicPricing;
+    if (this.duration !== undefined)
+      data[ParkingLotRateFirestoreModel.kDuration] = this.duration;
 
     return data;
   }
@@ -88,11 +74,7 @@ export class ParkingLotRateFirestoreModel extends ParkingLotRate {
       data[ParkingLotRateFirestoreModel.kLotId],
       data[ParkingLotRateFirestoreModel.kRateType],
       data[ParkingLotRateFirestoreModel.kRate],
-      data[ParkingLotRateFirestoreModel.kNightRate],
-      data[ParkingLotRateFirestoreModel.kMinimum],
-      data[ParkingLotRateFirestoreModel.kMaximum],
-      data[ParkingLotRateFirestoreModel.kDiscount],
-      data[ParkingLotRateFirestoreModel.kDynamicPricing],
+      data[ParkingLotRateFirestoreModel.kDuration],
       (data[ParkingLotRateFirestoreModel.kCreatedAt] as Timestamp).toDate()
     );
   }

@@ -1,0 +1,50 @@
+[
+  {
+    "rateId": 1,
+    "RateType": "minute",
+    "Rate": 10,
+    "duration": 30
+  },
+  {
+    "rateId": 2,
+    "RateType": "minute",
+    "Rate": 9.5,
+    "duration": 45
+  },
+  {
+    "rateId": 3,
+    "RateType": "hour",
+    "Rate": 5,
+    "duration": 1
+  },
+  {
+    "rateId": 4,
+    "RateType": "hour",
+    "Rate": 4.5,
+    "duration": 2
+  },
+  {
+    "rateId": 5,
+    "RateType": "day",
+    "Rate": 30,
+    "duration": 1
+  },
+  {
+    "rateId": 6,
+    "RateType": "week",
+    "Rate": 150,
+    "duration": 1
+  },
+  {
+    "rateId": 7,
+    "RateType": "month",
+    "Rate": 500,
+    "duration": 1
+  },
+  {
+    "rateId": 8,
+    "RateType": "Years",
+    "Rate": 450,
+    "duration": 3
+  }
+]

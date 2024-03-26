@@ -20,6 +20,12 @@ export class ParkingLotRatesController implements Controller {
       this.getAllParkingLotRates.bind(this),
       ["admin", "driver", "parkingOwner"]
     );
+    // parkingLotrates by parkingLotId
+    httpServer.get(
+      "/all-parkingLotRates/:parkingLotId",
+      this.getAllParkingLotRatesByParkingLotId.bind(this),
+      ["admin", "driver", "parkingOwner"]
+    );
     httpServer.get(
       "/parkingLotRates/:rateId",
       this.getParkingLotRateById.bind(this),
@@ -112,6 +118,37 @@ export class ParkingLotRatesController implements Controller {
     }
   };
 
+  private readonly getAllParkingLotRatesByParkingLotId: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      console.log("Getting all parking lot rates by parking lot ID...");
+
+      const parkingLotId = req.params.parkingLotId;
+      console.log("Requested parking lot ID:", parkingLotId);
+
+      const rates =
+        await parkingLotRatesService.getAllParkingLotRatesByParkingLotId(
+          parkingLotId
+        );
+      console.log("Retrieved rates:", rates);
+
+      const parkingLotRates = rates.map((rate) =>
+        ParkingLotRatesClientModel.fromEntity(rate).toBodyPublicRate()
+      );
+      console.log("Mapped parking lot rates:", parkingLotRates);
+
+      res.send({ parkingLotRates: parkingLotRates });
+    } catch (error) {
+      console.error(
+        "Error getting parking lot rates by parking lot ID:",
+        error
+      );
+      res.status(500).send({ error: (error as Error).message });
+    }
+  };
   private readonly updateParkingLotRateById: RequestHandler = async (
     req: Request,
     res: Response,

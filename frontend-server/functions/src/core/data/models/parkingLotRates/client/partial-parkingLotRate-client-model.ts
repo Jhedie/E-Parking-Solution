@@ -14,20 +14,8 @@ export class PartialParkingLotRatesClientModel {
     if (body[ParkingLotRatesClientModel.kRate] !== undefined) {
       res.rate = body[ParkingLotRatesClientModel.kRate];
     }
-    if (body[ParkingLotRatesClientModel.kNightRate] !== undefined) {
-      res.nightRate = body[ParkingLotRatesClientModel.kNightRate];
-    }
-    if (body[ParkingLotRatesClientModel.kMinimum] !== undefined) {
-      res.minimum = body[ParkingLotRatesClientModel.kMinimum];
-    }
-    if (body[ParkingLotRatesClientModel.kMaximum] !== undefined) {
-      res.maximum = body[ParkingLotRatesClientModel.kMaximum];
-    }
-    if (body[ParkingLotRatesClientModel.kDiscount] !== undefined) {
-      res.discount = body[ParkingLotRatesClientModel.kDiscount];
-    }
-    if (body[ParkingLotRatesClientModel.kDynamicPricing] !== undefined) {
-      res.dynamicPricing = body[ParkingLotRatesClientModel.kDynamicPricing];
+    if (body[ParkingLotRatesClientModel.kDuration] !== undefined) {
+      res.duration = body[ParkingLotRatesClientModel.kDuration];
     }
 
     return res;

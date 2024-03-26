@@ -33,9 +33,7 @@ import useToken from "hooks/useToken";
 import { Image, Text, YStack } from "tamagui";
 import { StackNavigation } from "../../app/(auth)/home";
 import { UserLocationContext } from "../../providers/UserLocation/UserLocationProvider";
-import {
-  calculateDistance1
-} from "../../utils/map/geoUtils";
+import { calculateDistance1 } from "../../utils/map/geoUtils";
 
 export const BASE_URL = process.env.FRONTEND_SERVER_BASE_URL;
 
@@ -45,18 +43,11 @@ export type GeoPoint = {
 };
 
 export type Rate = {
-  RateType: string;
-  Rate: number;
-  NightRate?: number;
-  minimum: number;
-  maximum: number;
-  discount?: number;
-  dynamicPricing?: {
-    baseRate: number;
-    peakRate: number;
-    offPeakRate: number;
-    peakTimes: string[];
-  };
+  rateId: string;
+  lotId: string;
+  rateType: string;
+  rate: number;
+  duration: number;
 };
 
 export type Address = {

@@ -1,21 +1,6 @@
 import { firestore } from "firebase-admin";
 import GeoPoint = firestore.GeoPoint;
 
-export type Rate = {
-  RateType: string;
-  Rate: number;
-  NightRate?: number;
-  minimum: number;
-  maximum: number;
-  discount?: number;
-  dynamicPricing?: {
-    baseRate: number;
-    peakRate: number;
-    offPeakRate: number;
-    peakTimes: string[];
-  };
-};
-
 export type Address = {
   street: string;
   city: string;

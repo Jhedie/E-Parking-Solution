@@ -16,22 +16,9 @@ export class PartialParkingLotRateFirestoreModel {
         const res: Partial<Record<string, any>> = {};
         if (partialParkingLotRate.rate !== undefined)
           res[ParkingLotRateFirestoreModel.kRate] = partialParkingLotRate.rate;
-        if (partialParkingLotRate.nightRate !== undefined)
-          res[ParkingLotRateFirestoreModel.kNightRate] =
-            partialParkingLotRate.nightRate;
-        if (partialParkingLotRate.minimum !== undefined)
-          res[ParkingLotRateFirestoreModel.kMinimum] =
-            partialParkingLotRate.minimum;
-        if (partialParkingLotRate.maximum !== undefined)
-          res[ParkingLotRateFirestoreModel.kMaximum] =
-            partialParkingLotRate.maximum;
-        //optional fields
-        if (partialParkingLotRate.discount !== undefined)
-          res[ParkingLotRateFirestoreModel.kDiscount] =
-            partialParkingLotRate.discount;
-        if (partialParkingLotRate.dynamicPricing !== undefined)
-          res[ParkingLotRateFirestoreModel.kDynamicPricing] =
-            partialParkingLotRate.dynamicPricing;
+        if (partialParkingLotRate.duration !== undefined)
+          res[ParkingLotRateFirestoreModel.kDuration] =
+            partialParkingLotRate.duration;
         return res;
       },
     };

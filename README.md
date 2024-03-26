@@ -4,10 +4,10 @@
 
 <details>
 <summary>Authentication</summary>
-  <img src="Frontend/docs/Screens/Authentication/welcome.png" alt="alt text" width="100"/>
-  <img src="Frontend/docs/Screens/Authentication/signup-screen.png" alt="alt text" width="100"/>
-  <img src="Frontend/docs/Screens/Authentication/signin-screen.png" alt="alt text" width="100"/>
-  <img src="Frontend/docs/Screens/Authentication/resetPassword.png" alt="alt text" width="100"/>
+  <img src="Frontend/docs/Screens/authentication/welcome.png" alt="alt text" width="100"/>
+  <img src="Frontend/docs/Screens/authentication/signup-screen.png" alt="alt text" width="100"/>
+  <img src="Frontend/docs/Screens/authentication/signin-screen.png" alt="alt text" width="100"/>
+  <img src="Frontend/docs/Screens/authentication/resetPassword.png" alt="alt text" width="100"/>
 </details>
 <details>
 <summary>Onboarding</summary>
@@ -19,8 +19,8 @@
 </details>
 <details>
 <summary>Map</summary>
-  <img src="Frontend/docs/Screens/Map/MapV1.png" alt="Map V1" width="100"/>
-  <img src="Frontend/docs/Screens/Map/MapV2.png" alt="Map V2" width="100"/>
+  <img src="Frontend/docs/Screens/map/MapV1.png" alt="Map V1" width="100"/>
+  <img src="Frontend/docs/Screens/map/MapV2.png" alt="Map V2" width="100"/>
 </details>
 <details>
 <summary>Parking Details</summary>
@@ -29,41 +29,41 @@
 </details>
 <details>
 <summary>Booking Details</summary>
-  <img src="Frontend/docs/Screens/BookingDetails/BookingDetailsV1.png" alt="Booking Details" width="100"/>
-  <img src="Frontend/docs/Screens/BookingDetails/bookingDetailsV2.png" alt="Booking Details V2" width="100"/>
+  <img src="Frontend/docs/Screens/bookingDetails/BookingDetailsV1.png" alt="Booking Details" width="100"/>
+  <img src="Frontend/docs/Screens/bookingDetails/bookingDetailsV2.png" alt="Booking Details V2" width="100"/>
 </details>
 <details>
 <summary>Parking Slots</summary>
-  <img src="Frontend/docs/Screens/ParkingSlots/slotsV1.png" alt="Parking Slots" width="100"/>
+  <img src="Frontend/docs/Screens/parkingSlots/slotsV1.png" alt="Parking Slots" width="100"/>
 </details>
 <details>
 <summary>Vehicle Select</summary>
-  <img src="Frontend/docs/Screens/Vehicle/VehicleSelectV1.png" alt="Vehicle Select" width="100"/>
-  <img src="Frontend/docs/Screens/Vehicle/vehicleSelectV2.png" alt="Vehicle Select V2" width="100"/>
-  <img src="Frontend/docs/Screens/Vehicle/addVehicle.png" alt="Vehicle Select V3" width="100"/>
+  <img src="Frontend/docs/Screens/vehicle/VehicleSelectV1.png" alt="Vehicle Select" width="100"/>
+  <img src="Frontend/docs/Screens/vehicle/vehicleSelectV2.png" alt="Vehicle Select V2" width="100"/>
+  <img src="Frontend/docs/Screens/vehicle/addVehicle.png" alt="Vehicle Select V3" width="100"/>
 </details>
 <details>
 <summary>Profile</summary>
-  <img src="Frontend/docs/Screens/Profile/Profile.png" alt="Profile" width="100"/>
-  <img src="Frontend/docs/Screens/Profile/ProfileV2.png" alt="Profile V2" width="100"/>
+  <img src="Frontend/docs/Screens/profile/Profile.png" alt="Profile" width="100"/>
+  <img src="Frontend/docs/Screens/profile/ProfileV2.png" alt="Profile V2" width="100"/>
 </details>
 <details>
 <summary>Booking Confirmation</summary>
-  <img src="Frontend/docs/Screens/BookingConfirmation/bookingConfirmation.png" alt="Booking Confirmation" width="100"/>
-  <img src="Frontend/docs/Screens/BookingConfirmation/bookingSuccess.png" alt="Booking Confirmation V2" width="100"/>
-  <img src="Frontend/docs/Screens/BookingConfirmation/ParkingTicket.png" alt="Booking Confirmation V3" width="100"/>
+  <img src="Frontend/docs/Screens/bookingConfirmation/bookingConfirmation.png" alt="Booking Confirmation" width="100"/>
+  <img src="Frontend/docs/Screens/bookingConfirmation/bookingSuccess.png" alt="Booking Confirmation V2" width="100"/>
+  <img src="Frontend/docs/Screens/bookingConfirmation/ParkingTicket.png" alt="Booking Confirmation V3" width="100"/>
 </details>
 <details>
 <summary>Payment</summary>
-  <img src="Frontend/docs/Screens/Payment/paymentStripe.png" alt="Payment" width="100"/>
+  <img src="Frontend/docs/Screens/payment/paymentStripe.png" alt="Payment" width="100"/>
 </details>
 <details>
 <summary>Parking Session</summary>
-  <img src="Frontend/docs/Screens/ParkingSession/Parking.png" alt="Parking Session" width="100"/>
-  <img src="Frontend/docs/Screens/ParkingSession/ParkingV2.png" alt="Parking Session V3" width="100"/>
-  <img src="Frontend/docs/Screens/ParkingSession/parkingHistory.png" alt="Parking Session V2" width="100"/>
-  <img src="Frontend/docs/Screens/ParkingSession/ViewTicket.png" alt="Parking Session V4" width="100"/>
-  <img src="Frontend/docs/Screens/ParkingSession/Timer.png" alt="Parking Session V5" width="100"/>
+  <img src="Frontend/docs/Screens/parkingSession/Parking.png" alt="Parking Session" width="100"/>
+  <img src="Frontend/docs/Screens/parkingSession/ParkingV2.png" alt="Parking Session V3" width="100"/>
+  <img src="Frontend/docs/Screens/parkingSession/parkingHistory.png" alt="Parking Session V2" width="100"/>
+  <img src="Frontend/docs/Screens/parkingSession/ViewTicket.png" alt="Parking Session V4" width="100"/>
+  <img src="Frontend/docs/Screens/parkingSession/Timer.png" alt="Parking Session V5" width="100"/>
 </details>
 
 ## Information about this repository

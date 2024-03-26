@@ -1,5 +1,4 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useAuth } from "@providers/Authentication/AuthProvider";
 import { useConfig } from "@providers/Config/ConfigProvider";
 import { Picker } from "@react-native-picker/picker";
 import { RouteProp, useRoute } from "@react-navigation/native";
@@ -8,7 +7,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import dayjs from "dayjs";
 import useToken from "hooks/useToken";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -104,8 +103,7 @@ export const BookParkingDetailsScreen: React.FC<
   );
 
   const [bookingDetails, setBookingDetails] = useState<BookingDetails>();
-  
-  const dateTimePickerRef = useRef<any>(null);
+
   //when the selected rate changes, calendar should update the marked dates
   //I also want to update the price
   //I also want to update the total price
@@ -367,7 +365,6 @@ export const BookParkingDetailsScreen: React.FC<
                   setTimePickerVisibility(false);
                 }}
                 minimumDate={startDateTime} // Set the minimum date to the current date
-                ref={dateTimePickerRef}
               />
             </View>
           </View>

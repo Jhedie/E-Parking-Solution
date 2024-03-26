@@ -10,7 +10,7 @@ import { ParkingLot } from "../../Map/screen";
 import { BookingDetails } from "../BookingDetails/screen";
 import { ParkingSlot } from "../SelectSpot/screen";
 import { Vehicle } from "../Vehicle/SelectVehicle/screen";
-import { PaymentMethod } from "../payment - ToBeReplacedWithStripe/selectPaymentOption/screen";
+import { PaymentMethod } from "../payment - deprecated/selectPaymentOption/screen";
 import BookingSuccessModal from "./BookingSuccess/screen";
 
 export interface BookingConfirmationScreenProps {

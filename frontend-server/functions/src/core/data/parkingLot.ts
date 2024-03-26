@@ -1,21 +1,6 @@
 import { firestore } from "firebase-admin";
 import GeoPoint = firestore.GeoPoint;
 
-export type Rate = {
-  RateType: string;
-  Rate: number;
-  NightRate?: number;
-  minimum: number;
-  maximum: number;
-  discount?: number;
-  dynamicPricing?: {
-    baseRate: number;
-    peakRate: number;
-    offPeakRate: number;
-    peakTimes: string[];
-  };
-};
-
 export type Address = {
   street: string;
   city: string;
@@ -43,7 +28,6 @@ export class ParkingLot {
     public readonly LiveStatus: "Low" | "Medium" | "High",
     public readonly OperatingHours: string,
     public readonly Facilities: Facility[],
-    public readonly Rates: Rate[],
     public readonly createdAt: Date
   ) {}
 
@@ -66,7 +50,6 @@ export class ParkingLot {
       "Low", // Default LiveStatus
       "", // Operating Hours
       [], // No Facilities
-      [], // No Rates
       new Date() // Current date
     );
   }

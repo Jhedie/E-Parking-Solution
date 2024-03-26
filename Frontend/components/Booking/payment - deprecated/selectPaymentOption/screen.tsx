@@ -6,7 +6,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import AwesomeButton from "react-native-really-awesome-button";
 import { ScrollView, YStack } from "tamagui";
 import { StackNavigation } from "../../../../app/(auth)/home";
-import paymentList from "../../../../assets/data/paymentList.json";
+import paymentList from "../../../../assets/data/paymentList-deprecated.json";
 import { ParkingLot } from "../../../Map/screen";
 
 import { ParkingSlot } from "../../SelectSpot/screen";

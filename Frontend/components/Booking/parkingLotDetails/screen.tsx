@@ -6,7 +6,7 @@ import MapView, { Marker } from "react-native-maps";
 import AwesomeButton from "react-native-really-awesome-button";
 import { Image, YStack } from "tamagui";
 import { StackNavigation } from "../../../app/(auth)/home";
-import { ParkingLot } from "../../Map/screen";
+import { Address, ParkingLot } from "../../Map/screen";
 type RouteParams = {
   ParkingLotDetailsScreen: {
     parkingLot: ParkingLot;
@@ -17,6 +17,10 @@ interface ParkingLotDetailsScreenProps {
   navigation: StackNavigation;
 }
 
+export const formatAddress = (address: Address): string => {
+  return `${address.street}\n${address.city}, ${address.state}\n${address.country} ${address.postalCode}`;
+};
+
 export const ParkingLotDetailsScreen: React.FC<
   ParkingLotDetailsScreenProps
 > = ({ navigation }) => {
@@ -25,7 +29,7 @@ export const ParkingLotDetailsScreen: React.FC<
 
   const { width } = Dimensions.get("window");
 
-  console.log(parkingLot.LotId, "In the parking lot details screen");
+  console.log("In the parking lot details screen", parkingLot);
 
   return (
     <YStack
@@ -48,17 +52,16 @@ export const ParkingLotDetailsScreen: React.FC<
         >
           <View style={{ padding: 10, borderRadius: 10 }}>
             <Text style={{ fontWeight: "bold", fontSize: 18 }}>
-              {parkingLot.LotId}
+              {parkingLot.LotName}
             </Text>
             <Text
-              numberOfLines={1}
               style={{
                 overflow: "hidden",
-                marginVertical: 10 * 0.8,
+                marginVertical: 10,
                 fontSize: 16
               }}
             >
-              Leicester, United Kingdom
+              {formatAddress(parkingLot.Address)}
             </Text>
           </View>
           {/* add parking information block */}
@@ -72,17 +75,12 @@ export const ParkingLotDetailsScreen: React.FC<
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>
                 Parking Information
               </Text>
-              <Text style={{ fontSize: 16 }}>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iste
-                id soluta culpa rem quidem excepturi numquam assumenda nisi
-                omnis itaque officia harum, unde error a illo voluptatibus amet
-                quas esse!
-              </Text>
+              <Text style={{ fontSize: 16 }}>{parkingLot.Description}</Text>
             </View>
 
             <View style={{ marginTop: 10 }}>
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>Price</Text>
-              <Text style={{ fontSize: 16 }}>{parkingLot.Rate}</Text>
+              <Text style={{ fontSize: 16 }}>Rate to be added</Text>
             </View>
             <View style={{ marginTop: 10 }}>
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>Capacity</Text>
@@ -122,8 +120,8 @@ export const ParkingLotDetailsScreen: React.FC<
               <MapView
                 style={styles.map}
                 initialRegion={{
-                  latitude: parseFloat(parkingLot.Location.Latitude),
-                  longitude: parseFloat(parkingLot.Location.Longitude),
+                  latitude: parseFloat(parkingLot.Coordinates["Latitude"]),
+                  longitude: parseFloat(parkingLot.Coordinates["Longitude"]),
                   latitudeDelta: 0.0015, // Try smaller values
                   longitudeDelta: 0.0015 // Try smaller values
                 }}
@@ -134,8 +132,8 @@ export const ParkingLotDetailsScreen: React.FC<
               >
                 <Marker
                   coordinate={{
-                    latitude: parseFloat(parkingLot.Location.Latitude),
-                    longitude: parseFloat(parkingLot.Location.Longitude)
+                    latitude: parseFloat(parkingLot.Coordinates.Latitude),
+                    longitude: parseFloat(parkingLot.Coordinates.Longitude)
                   }}
                   title={parkingLot.LotId}
                 >

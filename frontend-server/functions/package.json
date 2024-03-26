@@ -1,6 +1,6 @@
 {
   "name": "functions",
-  "description": "Cloud Functions for Firebase E-Parking solution",
+  "description": "Cloud Functions based REST-API for Firebase E-Parking solution",
   "scripts": {
     "build": "node_modules/.bin/rimraf ./dist && npx tsc",
     "build:watch": "tsc --watch",

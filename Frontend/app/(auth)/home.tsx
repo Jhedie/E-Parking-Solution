@@ -1,11 +1,10 @@
-import { NavigationContainer, NavigationProp } from "@react-navigation/native";
+import { NavigationProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
   BookParkingDetailsScreen,
   BookingDetails
 } from "../../components/Booking/BookingDetails/screen";
 
-import { Home } from "@tamagui/lucide-icons";
 import BookingConfirmationScreen from "../../components/Booking/BookingConfirmation/screen";
 import { ParkingTicketScreen } from "../../components/Booking/ParkingTicket/screen";
 import {
@@ -18,8 +17,6 @@ import {
   VehicleScreen
 } from "../../components/Booking/Vehicle/SelectVehicle/screen";
 import { ParkingLotDetailsScreen } from "../../components/Booking/parkingLotDetails/screen";
-import { AddPaymentOptionScreen } from "../../components/Booking/payment - ToBeReplacedWithStripe/addPaymentOption/screen";
-import { PaymentOptionScreen } from "../../components/Booking/payment - ToBeReplacedWithStripe/selectPaymentOption/screen";
 import MapScreen, { ParkingLot } from "../../components/Map/screen";
 
 export type ScreenNames = [
@@ -29,15 +26,13 @@ export type ScreenNames = [
   "AddVehicleScreen",
   "BookParkingDetailsScreen",
   "SelectSpotScreen",
-  // "PaymentOptionScreen",
-  // "AddPaymentOptionScreen",
   "BookingConfirmationScreen",
   "ParkingTicketScreen"
 ];
 export type HomeStackParamList = {
   Home: undefined;
   OnboardingScreen: undefined;
-  ParkingLotDetailsScreen: { parkingLot: ParkingLot }; // Define a parameter for the BookingScreen route
+  ParkingLotDetailsScreen: { parkingLot: ParkingLot };
   VehicleScreen: { parkingLot: ParkingLot };
   AddVehicleScreen: undefined;
   BookParkingDetailsScreen: {
@@ -60,7 +55,6 @@ export type HomeStackParamList = {
     parkingSlot: ParkingSlot;
     vehicle: Vehicle;
     bookingDetails: BookingDetails;
-    // paymentMethod: PaymentMethod;
   };
   ParkingTicketScreen: {
     parkingLot: ParkingLot;
@@ -116,19 +110,6 @@ function HomeStack() {
         component={SelectSpotScreen}
         options={{ headerTitle: "Select Slot" }}
       />
-      {/* <HomeScreenStack.Screen
-        name="PaymentOptionScreen"
-        component={PaymentOptionScreen}
-        options={{ headerTitle: "Payment" }}
-      />
-      <HomeScreenStack.Screen
-        name="AddPaymentOptionScreen"
-        component={AddPaymentOptionScreen}
-        options={{
-          headerTitle: "Add Payment Option",
-          presentation: "modal"
-        }}
-      /> */}
       <HomeScreenStack.Screen
         name="BookingConfirmationScreen"
         component={BookingConfirmationScreen}

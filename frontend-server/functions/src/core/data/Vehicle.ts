@@ -1,34 +1,36 @@
 class Vehicle {
-  vehicleId: string;
-  registrationNumber: string;
-  image: string;
-  make: string;
-  model: string;
-  year: string;
-  type: string;
-  colour: string;
-  defaultVehicle: boolean;
+  public readonly vehicleId: string;
+  public readonly registrationNumber: string;
+  public readonly nickName: string;
+  public readonly defaultVehicle: boolean;
+  public readonly userId: string;
+  public readonly createdAt: Date;
 
   constructor(
     vehicleId: string,
     registrationNumber: string,
-    image: string,
-    make: string,
-    model: string,
-    year: string,
-    type: string,
-    colour: string,
-    defaultVehicle: boolean
+    nickName: string,
+    defaultVehicle: boolean,
+    userId: string,
+    createdAt: Date
   ) {
     this.vehicleId = vehicleId;
     this.registrationNumber = registrationNumber;
-    this.image = image;
-    this.make = make;
-    this.model = model;
-    this.year = year;
-    this.type = type;
-    this.colour = colour;
+    this.nickName = nickName;
     this.defaultVehicle = defaultVehicle;
+    this.userId = userId;
+    this.createdAt = createdAt;
+  }
+
+  static empty() {
+    return new Vehicle(
+      "", //vehicleId
+      "", //registrationNumber
+      "", //nickName
+      false, //defaultVehicle
+      "", //userId
+      new Date() //createdAt
+    );
   }
 }
 

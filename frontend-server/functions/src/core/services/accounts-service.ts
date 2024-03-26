@@ -34,6 +34,10 @@ class AccountsService {
         .doc(user.uid)
         .set(documentData);
 
+      // Additionally, create or update the document in a role-specific collection
+      const roleSpecificCollection = admin.firestore().collection(user.role);
+      await roleSpecificCollection.doc(user.uid).set(documentData);
+
       return user;
     } catch (e) {
       if (typeof e === "object" && e !== null && "code" in e) {
@@ -129,6 +133,37 @@ class AccountsService {
         "Error generating token"
       );
     }
+  }
+
+  async getUser(uid: string): Promise<User> {
+    const user = await admin
+      .auth()
+      .getUser(uid)
+      .catch((err) => {
+        throw new HttpResponseError(404, "USER_NOT_FOUND", "User not found");
+      });
+
+    const userFirestoreData = await admin
+      .firestore()
+      .collection("users")
+      .doc(uid)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          return doc.data();
+        } else {
+          throw new HttpResponseError(
+            404,
+            "USER_NOT_FOUND",
+            "User not found in firestore"
+          );
+        }
+      });
+
+    const userFirestore: UserFirestoreModel =
+      UserFirestoreModel.fromDocumentData(userFirestoreData);
+
+    return userFirestore.copyWith({ uid: user.uid });
   }
 
   sendMail = async (user: UserRecord, link: string): Promise<any> => {

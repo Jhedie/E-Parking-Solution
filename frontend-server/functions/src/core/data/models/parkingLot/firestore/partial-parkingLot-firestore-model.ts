@@ -1,6 +1,6 @@
 import { firestore } from "firebase-admin";
 import { ParkingLot } from "../../../parkingLot";
-import { ParkingLotFirestoreModel } from "./parkingLot-firebase-model";
+import { ParkingLotFirestoreModel } from "./parkingLot-firestore-model";
 import GeoPoint = firestore.GeoPoint;
 
 export class PartialParkingLotFirestoreModel {
@@ -51,8 +51,7 @@ export class PartialParkingLotFirestoreModel {
         if (partialParkingLot.Facilities)
           res[ParkingLotFirestoreModel.kFacilities] =
             partialParkingLot.Facilities;
-        if (partialParkingLot.Rates)
-          res[ParkingLotFirestoreModel.kRates] = partialParkingLot.Rates;
+
         return res;
       },
     };

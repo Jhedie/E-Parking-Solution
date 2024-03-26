@@ -29,8 +29,7 @@ export class PartialParkingLotClientModel {
       res.OperatingHours = body[ParkingLotClientModel.kOperatingHours];
     if (body[ParkingLotClientModel.kFacilities])
       res.Facilities = body[ParkingLotClientModel.kFacilities];
-    if (body[ParkingLotClientModel.kRates])
-      res.Rates = body[ParkingLotClientModel.kRates];
+
     return res;
   }
 }

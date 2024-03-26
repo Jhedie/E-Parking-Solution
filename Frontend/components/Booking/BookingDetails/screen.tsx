@@ -1,14 +1,26 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useAuth } from "@providers/Authentication/AuthProvider";
+import { useConfig } from "@providers/Config/ConfigProvider";
 import { Picker } from "@react-native-picker/picker";
 import { RouteProp, useRoute } from "@react-navigation/native";
+import { useToastController } from "@tamagui/toast";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 import dayjs from "dayjs";
-import React, { useEffect, useState } from "react";
-import { Animated, Text, TouchableOpacity, View } from "react-native";
+import useToken from "hooks/useToken";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  Animated,
+  Text,
+  TouchableOpacity,
+  View
+} from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AwesomeButton from "react-native-really-awesome-button";
 import { ScrollView, YStack } from "tamagui";
 import { StackNavigation } from "../../../app/(auth)/home";
-import { ParkingLot } from "../../Map/screen";
+import { ParkingLot, Rate } from "../../Map/screen";
 import { Vehicle } from "../Vehicle/SelectVehicle/screen";
 
 type RouteParams = {
@@ -27,67 +39,50 @@ export type BookingDetails = {
   endDateTime: string;
   totalprice: number;
   rateType?: string;
-  rateNumber?: number;
+  duration?: number;
 };
 
-const rates = [
-  {
-    RateType: "hour",
-    Rate: 5,
-    minimum: 1,
-    maximum: 24,
-    discount: 0, // data ideas regarding discounts may be added here
-    dynamicPricing: {
-      baseRate: 5,
-      peakRate: 10,
-      offPeakRate: 3,
-      peakTimes: ["08:00", "18:00"]
-    } // data ideas regarding dynamic pricing may be added here
-  },
-  {
-    RateType: "day",
-    Rate: 30,
-    minimum: 1,
-    maximum: 7,
-    discount: 0,
-    dynamicPricing: {
-      baseRate: 5,
-      peakRate: 10,
-      offPeakRate: 3,
-      peakTimes: ["08:00", "18:00"]
-    }
-  },
-  {
-    RateType: "week",
-    Rate: 150,
-    minimum: 1,
-    maximum: 4,
-    discount: 0,
-    dynamicPricing: {
-      baseRate: 5,
-      peakRate: 10,
-      offPeakRate: 3,
-      peakTimes: ["08:00", "18:00"]
-    }
-  },
-  {
-    RateType: "month",
-    Rate: 500,
-    minimum: 1,
-    maximum: 12,
-    discount: 0,
-    dynamicPricing: {
-      baseRate: 5,
-      peakRate: 10,
-      offPeakRate: 3,
-      peakTimes: ["08:00", "18:00"]
-    }
-  }
-];
 export const BookParkingDetailsScreen: React.FC<
   BookParkingDetailsScreenProps
 > = ({ navigation }) => {
   const route = useRoute<RouteProp<RouteParams, "BookParkingDetailsScreen">>();
+
+  const { parkingLot, vehicle } = route.params;
+
+  const queryClient = useQueryClient();
+  const toaster = useToastController();
+  const { BASE_URL } = useConfig();
+
+  const token = useToken();
+
+  const getRates = async (token: string): Promise<Rate[]> => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/all-parkingLotRates/${parkingLot.LotId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log("Error getting parking lot rates", error);
+      return [];
+    }
+  };
+
+  const {
+    data: parkingLotRates,
+    isLoading,
+    isError
+  } = useQuery({
+    queryKey: ["parkingLotRates"],
+    queryFn: () => getRates(token as string),
+    enabled: !!token
+  });
+
+  const ratesRevised = parkingLotRates;
 
   const [startDateTime, setStartDateTime] = useState<Date>(new Date());
   const [endDateTime, setEndDateTime] = useState<Date>();
@@ -101,42 +96,63 @@ export const BookParkingDetailsScreen: React.FC<
     animateEndDate();
   };
 
-  const [bookingDetails, setBookingDetails] = useState<BookingDetails>();
-
-  const [price, setPrice] = useState<number>(0);
-  const [totalPrice, setTotalPrice] = useState<number>(0);
-
-  const [selectedRateType, setSelectedRateType] = useState(rates[0].RateType);
-  const [selectedRateNumber, setSelectedRateNumber] = useState(1);
-  const [rateNumbers, setRateNumbers] = useState(
-    [...Array(24).keys()].map((n) => n + 1)
+  const [selectedRate, setSelectedRate] = useState<Rate>(
+    ratesRevised?.["parkingLotRates"][0]
+  );
+  const [totalPrice, setTotalPrice] = useState<number>(
+    ratesRevised?.["parkingLotRates"][0]?.rate
   );
 
-  //when the selected rate type changes or the selected rate number changes, I want the calendar to update the marked dates
+  const [bookingDetails, setBookingDetails] = useState<BookingDetails>();
+  
+  const dateTimePickerRef = useRef<any>(null);
+  //when the selected rate changes, calendar should update the marked dates
   //I also want to update the price
   //I also want to update the total price
   useEffect(() => {
     // Calculate the new end date based on the selected rate type and number
     let newEndDateTime: Date = new Date();
-    switch (selectedRateType) {
-      case "hour":
+
+    const rateTypeLower = selectedRate?.rateType.toLowerCase(); // Convert to lowercase
+
+    switch (rateTypeLower) {
+      case "minute":
+      case "minutes":
+      case "min":
+      case "mins":
         newEndDateTime = dayjs(startDateTime)
-          .add(selectedRateNumber, "hour")
+          .add(selectedRate?.duration, "minute")
+          .toDate();
+        break;
+      case "hour":
+      case "hours":
+      case "hr":
+        newEndDateTime = dayjs(startDateTime)
+          .add(selectedRate?.duration, "hour")
           .toDate();
         break;
       case "day":
+      case "days":
         newEndDateTime = dayjs(startDateTime)
-          .add(selectedRateNumber, "day")
+          .add(selectedRate?.duration, "day")
           .toDate();
         break;
       case "week":
+      case "weeks":
         newEndDateTime = dayjs(startDateTime)
-          .add(selectedRateNumber, "week")
+          .add(selectedRate?.duration, "week")
           .toDate();
         break;
       case "month":
+      case "months":
         newEndDateTime = dayjs(startDateTime)
-          .add(selectedRateNumber, "month")
+          .add(selectedRate?.duration, "month")
+          .toDate();
+        break;
+      case "year":
+      case "years":
+        newEndDateTime = dayjs(startDateTime)
+          .add(selectedRate?.duration, "year")
           .toDate();
         break;
     }
@@ -144,25 +160,22 @@ export const BookParkingDetailsScreen: React.FC<
     // Update the end date
     setEndDateTime(newEndDateTime);
 
-    // Calculate and update the price and total price
-    const selectedRate = rates.find(
-      (rate) => rate.RateType === selectedRateType
+    const foundRate = ratesRevised?.["parkingLotRates"].find(
+      (rate: Rate) => rate.rateId === selectedRate?.rateId
     );
-    if (selectedRate) {
-      const price = selectedRate.Rate;
-      const totalprice = selectedRate.Rate * selectedRateNumber;
-      // Update the price and total price
-      setPrice(price);
+
+    if (foundRate) {
+      const totalprice = selectedRate?.rate;
       setTotalPrice(totalprice);
       setBookingDetails({
         startDateTime: startDateTime.toISOString(),
         endDateTime: newEndDateTime.toISOString(),
         totalprice: totalprice,
-        rateType: selectedRateType,
-        rateNumber: selectedRateNumber
+        rateType: selectedRate?.rateType,
+        duration: selectedRate?.duration
       });
     }
-  }, [startDateTime, selectedRateType, selectedRateNumber]);
+  }, [startDateTime, selectedRate]);
 
   const endDateScale = React.useRef(new Animated.Value(1)).current;
   const animateEndDate = () => {
@@ -179,7 +192,26 @@ export const BookParkingDetailsScreen: React.FC<
       })
     ]).start();
   };
-  return (
+
+  return isLoading ? (
+    <YStack
+      flex={1}
+      justifyContent="center"
+      alignItems="center"
+    >
+      <ActivityIndicator />
+    </YStack>
+  ) : isError ? (
+    <YStack
+      flex={1}
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Text style={{ fontSize: 15, fontWeight: "500" }}>
+        Error loading parking lot rates
+      </Text>
+    </YStack>
+  ) : (
     <YStack flex={1}>
       <ScrollView
         style={{ marginHorizontal: 10 * 2.4 }}
@@ -205,13 +237,21 @@ export const BookParkingDetailsScreen: React.FC<
                   justifyContent: "space-between",
                   alignItems: "center",
                   paddingVertical: 10 * 1.2,
-                  paddingHorizontal: 10 * 1.5,
+                  paddingHorizontal: 10,
                   marginTop: 10 * 0.9,
                   borderRadius: 5,
-                  backgroundColor: "white"
+                  backgroundColor: "white",
+                  borderBottomWidth: 2,
+                  borderBottomColor: "grey"
                 }}
               >
-                <Text style={{}}>
+                <Text
+                  style={{
+                    fontWeight: "500",
+                    fontSize: 16,
+                    padding: 10
+                  }}
+                >
                   {startDateTime
                     ? `${dayjs(startDateTime).format(
                         "MMMM D, YYYY"
@@ -227,7 +267,9 @@ export const BookParkingDetailsScreen: React.FC<
             </View>
           </View>
         </View>
-        <Text style={{ marginBottom: 10, fontWeight: "600" }}>Select Rate</Text>
+        <Text style={{ marginBottom: 10, fontWeight: "600" }}>
+          Select Duration
+        </Text>
 
         <View
           style={{
@@ -238,63 +280,35 @@ export const BookParkingDetailsScreen: React.FC<
           }}
         >
           <Picker
-            selectedValue={selectedRateNumber}
+            selectedValue={selectedRate?.rateId}
             onValueChange={(itemValue) => {
-              setSelectedRateNumber(itemValue);
-              animateEndDate();
-            }}
-            style={{
-              width: "50%",
-              marginTop: 10,
-              marginBottom: 10
-            }}
-            itemStyle={{ fontSize: 15 }}
-          >
-            {rateNumbers.map((number) => (
-              <Picker.Item
-                key={number}
-                label={String(number)}
-                value={number}
-              />
-            ))}
-          </Picker>
-          <Picker
-            selectedValue={selectedRateType}
-            onValueChange={(itemValue) => {
-              setSelectedRateType(itemValue);
-              const selectedRate = rates.find(
-                (rate) => rate.RateType === itemValue
+              console.log("itemValue", itemValue);
+              const selectedRate = ratesRevised?.["parkingLotRates"].find(
+                (rate: Rate) => rate.rateId === itemValue
               );
               if (selectedRate) {
-                setSelectedRateNumber(selectedRate.minimum); // Set the selected number to the minimum of the new rate
-
-                // Create an array with a length equal to the difference between the maximum and minimum of the new rate plus 1
-                // The Array.keys() method is used to create an array of keys (indices), which are the numbers from 0 to the difference between the maximum and minimum
-                // The map() method is then used to add the minimum of the new rate to each number, resulting in an array of numbers from the minimum to the maximum of the new rate
-                setRateNumbers(
-                  [
-                    ...Array(
-                      selectedRate.maximum - selectedRate.minimum + 1
-                    ).keys()
-                  ].map((n) => n + selectedRate.minimum)
-                ); // Update the numbers array
+                console.log("selectedRate", selectedRate);
+                setSelectedRate(selectedRate);
               }
               animateEndDate();
             }}
             style={{
-              width: "50%",
+              width: "100%",
               marginTop: 10,
-              marginBottom: 10
+              marginBottom: 10,
+              fontWeight: "600"
             }}
-            itemStyle={{ fontSize: 15 }}
+            itemStyle={{ fontSize: 18, fontWeight: "600" }}
           >
-            {rates.map((rate, index) => (
-              <Picker.Item
-                key={index}
-                label={rate.RateType}
-                value={rate.RateType}
-              />
-            ))}
+            {ratesRevised?.["parkingLotRates"].map(
+              (rate: Rate, index: number) => (
+                <Picker.Item
+                  key={rate?.rateId}
+                  label={rate?.duration + " " + rate?.rateType}
+                  value={rate?.rateId}
+                />
+              )
+            )}
           </Picker>
         </View>
         <View>
@@ -312,13 +326,20 @@ export const BookParkingDetailsScreen: React.FC<
                   justifyContent: "space-between",
                   alignItems: "center",
                   paddingVertical: 10 * 1.2,
-                  paddingHorizontal: 10 * 1.5,
+                  paddingHorizontal: 10,
                   marginTop: 10 * 0.9,
                   borderRadius: 5,
-                  backgroundColor: "white"
+                  backgroundColor: "#ededed"
                 }}
               >
-                <Animated.Text style={{ transform: [{ scale: endDateScale }] }}>
+                <Animated.Text
+                  style={{
+                    transform: [{ scale: endDateScale }],
+                    fontWeight: "500",
+                    fontSize: 16,
+                    padding: 10
+                  }}
+                >
                   {endDateTime
                     ? `${dayjs(endDateTime).format("MMMM D, YYYY")} at ${dayjs(
                         endDateTime,
@@ -339,8 +360,14 @@ export const BookParkingDetailsScreen: React.FC<
                 onConfirm={(dateTime: Date) => {
                   handleTimeConfirm(dateTime);
                 }}
-                onCancel={() => setTimePickerVisibility(false)}
+                onChange={(dateTime) => {
+                  console.log("onChange", dateTime);
+                }}
+                onCancel={() => {
+                  setTimePickerVisibility(false);
+                }}
                 minimumDate={startDateTime} // Set the minimum date to the current date
+                ref={dateTimePickerRef}
               />
             </View>
           </View>
@@ -359,31 +386,15 @@ export const BookParkingDetailsScreen: React.FC<
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
-              marginBottom: 4 * 1.5,
-              marginHorizontal: 5 * 2
+              marginBottom: 4 * 1,
+              marginHorizontal: 4
             }}
           >
-            <Text style={{ fontWeight: "500" }}>Price</Text>
-            <Text style={{}}>
-              <Text>£{price}</Text>
-              <Text style={{}}> per {selectedRateType}</Text>
-            </Text>
-          </View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginHorizontal: 4 * 2,
-              marginBottom: 4 * 1.5
-            }}
-          >
-            <Text style={{ fontWeight: "500" }}>TotalPrice</Text>
-            <Text style={{}}>
+            <Text style={{ fontWeight: "500", fontSize: 16 }}>Total Price</Text>
+            <Text style={{ fontSize: 16 }}>
               <Text>£{totalPrice} </Text>
               <Text style={{}}>
-                for {selectedRateNumber} {selectedRateType}
+                for {selectedRate?.duration} {selectedRate?.rateType}
               </Text>
             </Text>
           </View>
@@ -414,9 +425,9 @@ export const BookParkingDetailsScreen: React.FC<
           borderRadius={10}
           backgroundShadow="#fff"
           backgroundDarker="#fff"
-          backgroundColor="#fff"
+          backgroundColor="black"
         >
-          <Text style={{}}>Select Slot</Text>
+          <Text style={{ color: "white" }}>Choose Parking Slot</Text>
         </AwesomeButton>
       </View>
     </YStack>

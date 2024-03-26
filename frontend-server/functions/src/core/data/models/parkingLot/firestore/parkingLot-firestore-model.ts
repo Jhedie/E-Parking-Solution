@@ -18,7 +18,6 @@ export class ParkingLotFirestoreModel extends ParkingLot {
   static kRate = "Rate";
   static kOperatingHours = "OperatingHours";
   static kFacilities = "Facilities";
-  static kRates = "Rates";
   static kCreatedAt = "createdAt";
 
   static empty() {
@@ -40,7 +39,6 @@ export class ParkingLotFirestoreModel extends ParkingLot {
       "Low", // LiveStatus
       "", // OperatingHours
       [], // Facilities
-      [], // Rates
       new Date() // Current date
     );
   }
@@ -68,7 +66,6 @@ export class ParkingLotFirestoreModel extends ParkingLot {
       [ParkingLotFirestoreModel.kLiveStatus]: this.LiveStatus,
       [ParkingLotFirestoreModel.kOperatingHours]: this.OperatingHours,
       [ParkingLotFirestoreModel.kFacilities]: this.Facilities,
-      [ParkingLotFirestoreModel.kRates]: this.Rates,
       [ParkingLotFirestoreModel.kCreatedAt]: createdAt ?? this.createdAt,
     };
   }
@@ -86,7 +83,6 @@ export class ParkingLotFirestoreModel extends ParkingLot {
       data[ParkingLotFirestoreModel.kLiveStatus],
       data[ParkingLotFirestoreModel.kOperatingHours],
       data[ParkingLotFirestoreModel.kFacilities],
-      data[ParkingLotFirestoreModel.kRates],
       (data[ParkingLotFirestoreModel.kCreatedAt] as Timestamp).toDate()
     );
   }

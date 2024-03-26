@@ -1,8 +1,8 @@
 import * as admin from "firebase-admin";
 import { firestore } from "firebase-admin";
 import { Vehicle } from "../data/Vehicle";
-import { PartialVehicleFirebaseModel } from "../data/models/vehicle/firestore/partial-vehicle-firebase-model";
-import { VehicleFirestoreModel } from "../data/models/vehicle/firestore/vehicle-firebase-model";
+import { PartialVehicleFirebaseModel } from "../data/models/vehicle/firestore/partial-vehicle-firestore-model";
+import { VehicleFirestoreModel } from "../data/models/vehicle/firestore/vehicle-firestore-model";
 import FieldValue = firestore.FieldValue;
 
 class VehicleService {
@@ -25,24 +25,22 @@ class VehicleService {
       // Execute the query within the transaction
       const querySnapshot = await transaction.get(defaultVehicleQuery);
 
-      // If there is an existing default vehicle, set its defaultVehicle to false
-      querySnapshot.forEach((doc) => {
-        transaction.update(doc.ref, { defaultVehicle: false });
-      });
-
       // Create the new vehicle
       const vehicleRef = this.doc(); // Creates a new document reference for the new vehicle
       const DocumentData = VehicleFirestoreModel.fromEntity(
         vehicle
       ).toDocumentData(vehicleRef.id, FieldValue.serverTimestamp());
 
+      // If there is an existing default vehicle, set its defaultVehicle to false
+      querySnapshot.forEach((doc) => {
+        transaction.update(doc.ref, { defaultVehicle: false });
+      });
+
       // Set the new vehicle document with the provided data
       transaction.set(vehicleRef, DocumentData);
 
       // Return the VehicleFirestoreModel from the new vehicle document
-      return VehicleFirestoreModel.fromDocumentData(
-        (await vehicleRef.get()).data()
-      );
+      return VehicleFirestoreModel.fromEntity(vehicle);
     });
   }
 
@@ -70,6 +68,9 @@ class VehicleService {
     );
   }
 
+  // This method is designed to ensure that only one vehicle can be the default for a user at a time.
+  // If a vehicle is being set as the default, it first checks if there are any other vehicles set as the default and updates them.
+  // If a vehicle is being unset as the default, it sets the first vehicle created by the user as the default.
   async updateVehicleById(
     vehicleId: string,
     partialVehicle: Partial<Record<keyof Vehicle, any>>

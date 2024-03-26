@@ -1,5 +1,6 @@
 import { RouteProp, useRoute } from "@react-navigation/native";
-import React from "react";
+import { useRouter, useSegments } from "expo-router";
+import React, { useState } from "react";
 import { Text, View } from "react-native";
 import QRCodeStyled from "react-native-qrcode-styled";
 import AwesomeButton from "react-native-really-awesome-button";
@@ -26,7 +27,12 @@ export type RouteParams = {
 export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
   navigation
 }) => {
+  const router = useRouter();
+
+  const segments = useSegments(); // hook that allows all navigation routes defined.
+
   const route = useRoute<RouteProp<RouteParams, "ParkingTicketScreen">>();
+  const [isLoading, setIsLoading] = useState(false);
 
   const bookedParkingDetails = route.params.bookingDetails;
   const initialItemState = bookedParkingDetails;
@@ -196,26 +202,35 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
           </View>
         </View>
       </View>
-      <View
-        style={{
-          margin: 10 * 2
-        }}
-      >
-        <AwesomeButton
-          height={50}
-          stretch={true}
-          raiseLevel={1}
-          borderRadius={10}
-          backgroundShadow="#fff"
-          backgroundDarker="#fff"
-          backgroundColor="black"
-          onPress={() => navigation.navigate("Home")}
+      {route.name === "ParkingTicketScreen" && (
+        <View
+          style={{
+            margin: 10 * 2
+          }}
         >
-          <Text style={{ color: "white", fontWeight: "500" }}>
-            View Parking Session
-          </Text>
-        </AwesomeButton>
-      </View>
+          <AwesomeButton
+            height={50}
+            stretch={true}
+            raiseLevel={1}
+            borderRadius={10}
+            backgroundShadow="#fff"
+            backgroundDarker="#fff"
+            backgroundColor="black"
+            onPress={() => {
+              setIsLoading(true);
+
+              setTimeout(() => {
+                setIsLoading(false);
+                router.replace("/(auth)/parking");
+              }, 1000);
+            }}
+          >
+            <Text style={{ color: "white", fontWeight: "500" }}>
+              {isLoading ? "Loading..." : "View Parking Session"}
+            </Text>
+          </AwesomeButton>
+        </View>
+      )}
     </YStack>
   );
 };

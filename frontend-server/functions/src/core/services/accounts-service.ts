@@ -34,6 +34,10 @@ class AccountsService {
         .doc(user.uid)
         .set(documentData);
 
+      // Additionally, create or update the document in a role-specific collection
+      const roleSpecificCollection = admin.firestore().collection(user.role);
+      await roleSpecificCollection.doc(user.uid).set(documentData);
+
       return user;
     } catch (e) {
       if (typeof e === "object" && e !== null && "code" in e) {

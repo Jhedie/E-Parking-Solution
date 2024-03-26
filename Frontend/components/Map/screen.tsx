@@ -1,12 +1,18 @@
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import "expo-dev-client";
+import { LinearGradient } from "expo-linear-gradient";
+import Ionicons from "react-native-vector-icons/Ionicons";
+
 import React, { useContext, useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Animated,
+  AppState,
   Dimensions,
   Platform,
   ScrollView,
   StyleSheet,
+  TextInput,
   TouchableOpacity,
   View
 } from "react-native";
@@ -22,15 +28,12 @@ import { useQuery } from "@tanstack/react-query";
 
 import { formatAddress } from "@components/Booking/parkingLotDetails/screen";
 import { useAuth } from "@providers/Authentication/AuthProvider";
-import { User } from "@tamagui/lucide-icons";
 import axios from "axios";
+import useToken from "hooks/useToken";
 import { Image, Text, YStack } from "tamagui";
 import { StackNavigation } from "../../app/(auth)/home";
 import { UserLocationContext } from "../../providers/UserLocation/UserLocationProvider";
-import {
-  calculateDistance,
-  calculateDistance1
-} from "../../utils/map/geoUtils";
+import { calculateDistance1 } from "../../utils/map/geoUtils";
 
 export const BASE_URL = process.env.FRONTEND_SERVER_BASE_URL;
 
@@ -40,18 +43,11 @@ export type GeoPoint = {
 };
 
 export type Rate = {
-  RateType: string;
-  Rate: number;
-  NightRate?: number;
-  minimum: number;
-  maximum: number;
-  discount?: number;
-  dynamicPricing?: {
-    baseRate: number;
-    peakRate: number;
-    offPeakRate: number;
-    peakTimes: string[];
-  };
+  rateId: string;
+  lotId: string;
+  rateType: string;
+  rate: number;
+  duration: number;
 };
 
 export type Address = {
@@ -95,23 +91,22 @@ const CARD_WIDTH = width * 0.9;
 
 const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
   const { user } = useAuth();
+  const [search, setSearch] = useState("");
 
-  const [token, setToken] = useState<string>("");
-  useEffect(() => {
-    const fetchToken = async () => {
-      if (user) {
-        const token = await user.getIdToken();
-        console.log("idToken", token);
-        setToken(token);
-      }
-    };
+  // const [token, setToken] = useState<string>("");
+  // useEffect(() => {
+  //   const fetchToken = async () => {
+  //     if (user) {
+  //       const token = await user.getIdToken();
+  //       setToken(token);
+  //     }
+  //   };
 
-    fetchToken();
-  }, [user]);
+  //   fetchToken();
+  // }, [user]);
+  const token = useToken();
 
   const getAllParkingLots = async (token: string): Promise<ParkingLot[]> => {
-    console.log("BASE_URL", `${BASE_URL}/all-parkinglots-public`);
-    console.log("token in method", token);
     try {
       const response = await axios.get(`${BASE_URL}/all-parkinglots-public`, {
         headers: {
@@ -119,28 +114,46 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
           Authorization: `Bearer ${token}`
         }
       });
-      console.log("returned parking lots", response.data);
       return response.data;
     } catch (error) {
       console.error("Failed to fetch parking lots:", error);
-      throw error;
+      return [];
     }
   };
 
   const {
     data: parkingLots,
     isLoading,
-    isError
+    isError,
+    refetch
   } = useQuery({
     queryKey: ["allParkingLots"],
-    queryFn: () => getAllParkingLots(token),
+    queryFn: () => getAllParkingLots(token as string),
     enabled: !!token
   });
-  console.log("parkingLots inner", parkingLots?.["parkingLots"]);
-  console.log(
-    "checking the lat long",
-    parkingLots?.["parkingLots"][0].Coordinates.Longitude
-  );
+
+  useEffect(() => {
+    // Define the function to handle app state changes
+    const handleAppStateChange = (nextAppState) => {
+      if (nextAppState === "active") {
+        // App has come to the foreground, refetch the data
+        console.log("App has come to the foreground, refetching data");
+        refetch();
+      }
+    };
+
+    // Subscribe to app state change events
+    const appStateSubscription = AppState.addEventListener(
+      "change",
+      handleAppStateChange
+    );
+
+    // Cleanup function to remove the event listener
+    return () => {
+      appStateSubscription.remove(); // Use the remove function on the subscription to clean up
+    };
+  }, [refetch]); // Dependency array includes refetch function
+
   const userLocationContext = useContext(UserLocationContext);
 
   // _map is a mutable reference object where we store the map instance.
@@ -227,7 +240,9 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
     });
   });
 
-  return (
+  return isLoading ? (
+    <ActivityIndicator />
+  ) : (
     location?.coords.latitude && (
       <YStack
         flex={1}
@@ -245,7 +260,6 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
           initialRegion={initialMapRegion}
         >
           {parkingLots?.["parkingLots"].map((parkingLot, index) => {
-            console.log("parkingLotIn marker", parkingLot);
             const scaleStyle = {
               transform: [
                 {
@@ -287,6 +301,68 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
             />
           </Marker>
         </MapView>
+
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0
+          }}
+        >
+          <LinearGradient colors={["#808080", "transparent", "transparent"]}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                paddingVertical: 10 * 1.2,
+                paddingHorizontal: 10 * 1.6,
+                marginTop: 20 * 3.5,
+                marginHorizontal: 10 * 2,
+                borderRadius: 5,
+                backgroundColor: "white"
+              }}
+            >
+              <Ionicons
+                name="search"
+                color={"grey"}
+                size={18}
+                style={{
+                  flex: 0.7
+                }}
+              />
+              <TextInput
+                value={search}
+                onChangeText={(text) => {
+                  console.log("searching", text);
+                  setSearch(text);
+                }}
+                placeholder={"search"}
+                placeholderTextColor={"grey"}
+                selectionColor={"black"}
+                style={{
+                  flex: 8.3,
+                  textAlign: "left",
+                  marginHorizontal: 10 * 1.3
+                }}
+              />
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "flex-end"
+                }}
+              >
+                <Ionicons
+                  name="filter"
+                  color={"grey"}
+                  size={18}
+                />
+              </TouchableOpacity>
+            </View>
+          </LinearGradient>
+        </View>
+
         <View style={{ position: "absolute", bottom: 0 }}>
           <View
             style={{
@@ -423,7 +499,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                             overflow: "hidden"
                           }}
                         >
-                          {parkingLot?.Rates[0][0]}
+                          Rate to be added
                         </Text>
                       </View>
                     </View>

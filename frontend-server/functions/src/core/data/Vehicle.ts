@@ -23,7 +23,14 @@ class Vehicle {
   }
 
   static empty() {
-    return new Vehicle("", "", "", false, "", new Date());
+    return new Vehicle(
+      "", //vehicleId
+      "", //registrationNumber
+      "", //nickName
+      false, //defaultVehicle
+      "", //userId
+      new Date() //createdAt
+    );
   }
 }
 

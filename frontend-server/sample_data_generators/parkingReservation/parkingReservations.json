@@ -1,0 +1,112 @@
+[
+  {
+    "SlotID": "1USBYqgeAHZwGVGXX5Gm",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "StartTime": "2024-03-16T20:23:13Z",
+    "EndTime": "2024-03-16T23:23:13Z",
+    "RateNumber": 1,
+    "RateType": "hour",
+    "Price": 10.0,
+    "TotalAmount": 30.0,
+    "Status": "pending"
+  },
+  {
+    "SlotID": "1USBYqgeAHZwGVGXX5Gm",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "StartTime": "2024-03-17T20:23:13Z",
+    "EndTime": "2024-03-17T23:23:13Z",
+    "RateNumber": 2,
+    "RateType": "day",
+    "Price": 20.0,
+    "TotalAmount": 60.0,
+    "Status": "pending"
+  },
+  {
+    "SlotID": "1USBYqgeAHZwGVGXX5Gm",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "StartTime": "2024-03-18T20:23:13Z",
+    "EndTime": "2024-03-18T23:23:13Z",
+    "RateNumber": 3,
+    "RateType": "hour",
+    "Price": 30.0,
+    "TotalAmount": 90.0,
+    "Status": "pending"
+  },
+  {
+    "SlotID": "1USBYqgeAHZwGVGXX5Gm",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "StartTime": "2024-03-19T20:23:13Z",
+    "EndTime": "2024-03-19T23:23:13Z",
+    "RateNumber": 4,
+    "RateType": "day",
+    "Price": 40.0,
+    "TotalAmount": 120.0,
+    "Status": "pending"
+  },
+  {
+    "SlotID": "1USBYqgeAHZwGVGXX5Gm",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "StartTime": "2024-03-20T20:23:13Z",
+    "EndTime": "2024-03-20T23:23:13Z",
+    "RateNumber": 5,
+    "RateType": "hour",
+    "Price": 50.0,
+    "TotalAmount": 150.0,
+    "Status": "pending"
+  },
+  {
+    "SlotID": "1USBYqgeAHZwGVGXX5Gm",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "StartTime": "2024-03-21T20:23:13Z",
+    "EndTime": "2024-03-21T23:23:13Z",
+    "RateNumber": 6,
+    "RateType": "day",
+    "Price": 60.0,
+    "TotalAmount": 180.0,
+    "Status": "pending"
+  },
+  {
+    "SlotID": "1USBYqgeAHZwGVGXX5Gm",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "StartTime": "2024-03-22T20:23:13Z",
+    "EndTime": "2024-03-22T23:23:13Z",
+    "RateNumber": 7,
+    "RateType": "hour",
+    "Price": 70.0,
+    "TotalAmount": 210.0,
+    "Status": "pending"
+  },
+  {
+    "SlotID": "1USBYqgeAHZwGVGXX5Gm",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "StartTime": "2024-03-23T20:23:13Z",
+    "EndTime": "2024-03-23T23:23:13Z",
+    "RateNumber": 8,
+    "RateType": "day",
+    "Price": 80.0,
+    "TotalAmount": 240.0,
+    "Status": "pending"
+  },
+  {
+    "SlotID": "1USBYqgeAHZwGVGXX5Gm",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "StartTime": "2024-03-24T20:23:13Z",
+    "EndTime": "2024-03-24T23:23:13Z",
+    "RateNumber": 9,
+    "RateType": "hour",
+    "Price": 90.0,
+    "TotalAmount": 270.0,
+    "Status": "pending"
+  },
+  {
+    "SlotID": "1USBYqgeAHZwGVGXX5Gm",
+    "lotId": "JaXo7s6NbnAKSO0MsJO0",
+    "StartTime": "2024-03-25T20:23:13Z",
+    "EndTime": "2024-03-25T23:23:13Z",
+    "RateNumber": 10,
+    "RateType": "day",
+    "Price": 100.0,
+    "TotalAmount": 300.0,
+    "Status": "pending"
+  }
+]

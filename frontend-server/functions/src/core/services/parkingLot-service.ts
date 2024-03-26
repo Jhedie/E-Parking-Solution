@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
 import { firestore } from "firebase-admin";
-import { ParkingLotFirestoreModel } from "../data/models/parkingLot/firestore/parkingLot-firebase-model";
-import { PartialParkingLotFirestoreModel } from "../data/models/parkingLot/firestore/partial-parkingLot-firebase-model";
+import { ParkingLotFirestoreModel } from "../data/models/parkingLot/firestore/parkingLot-firestore-model";
+import { PartialParkingLotFirestoreModel } from "../data/models/parkingLot/firestore/partial-parkingLot-firestore-model";
 import { ParkingLot } from "../data/parkingLot";
 import FieldValue = firestore.FieldValue;
 
@@ -79,6 +79,68 @@ class ParkingLotService {
 
     // Update the parking lot document with the new data
     await this.doc(parkingLotId).update(documentData);
+  }
+
+  async deleteParkingLotById(parkingLotId: string): Promise<void> {
+    // Delete the parking slots associated with the parking lot
+    await this.deleteParkingSlotsByParkingLotId(parkingLotId);
+
+    //Delete the parking lot rates associated with the parking lot
+    await this.deleteParkingLotRatesByParkingLotId(parkingLotId);
+
+    // Delete the parking lot document
+    await this.doc(parkingLotId).delete();
+  }
+  private async deleteParkingLotRatesByParkingLotId(
+    parkingLotId: string
+  ): Promise<void> {
+    // Get a reference to the parking lot rates collection
+    const parkingLotRatesCollection = admin
+      .firestore()
+      .collection("parkingLotRates");
+
+    // Query the parking lot rates collection for rates associated with the parking lot
+    const parkingLotRatesQuery = parkingLotRatesCollection.where(
+      "lotId",
+      "==",
+      parkingLotId
+    );
+
+    // Get the parking lot rates associated with the parking lot
+    const parkingLotRatesSnapshot = await parkingLotRatesQuery.get();
+
+    // Delete the parking lot rates
+    const deletePromises = parkingLotRatesSnapshot.docs.map((doc) =>
+      doc.ref.delete()
+    );
+    await Promise.all(deletePromises);
+  }
+  private async deleteParkingSlotsByParkingLotId(
+    parkingLotId: string
+  ): Promise<void> {
+    // Logic to delete parking slots associated with the parking lot
+    // This function should handle the deletion of parking slots when a parking lot is deleted
+
+    // Get a reference to the parking slots collection
+    const parkingSlotsCollection = admin.firestore().collection("parkingSlots");
+
+    // Query the parking slots collection for parking slots associated with the parking lot
+    const parkingSlotsQuery = parkingSlotsCollection.where(
+      "lotId",
+      "==",
+      parkingLotId
+    );
+
+    // Get the parking slots associated with the parking lot
+    const parkingSlotsSnapshot = await parkingSlotsQuery.get();
+
+    // Create a promise for each delete operation
+    const deletePromises = parkingSlotsSnapshot.docs.map((doc) =>
+      doc.ref.delete()
+    );
+
+    // Wait for all delete operations to complete
+    await Promise.all(deletePromises);
   }
 }
 

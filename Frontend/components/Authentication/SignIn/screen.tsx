@@ -2,6 +2,7 @@ import { useToastController } from "@tamagui/toast";
 import { useRouter } from "expo-router";
 import { Formik } from "formik";
 import { Image, StyleSheet, Text, View } from "react-native";
+import AwesomeButton from "react-native-really-awesome-button";
 import { Button, Input, Spinner, YStack } from "tamagui";
 import { ZodError, z } from "zod";
 import { useAuth } from "../../../providers/Authentication/AuthProvider";
@@ -40,6 +41,7 @@ export default function SignInScreen() {
       justifyContent="center"
       alignItems="center"
       gap
+      backgroundColor="white"
     >
       <View
         style={{
@@ -111,12 +113,38 @@ export default function SignInScreen() {
               <Spinner />
             ) : (
               <>
-                <Button
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: 30,
+                    marginTop: 30
+                  }}
+                >
+                  <AwesomeButton
+                    height={50}
+                    width={200}
+                    onPress={() => formikProps.handleSubmit()}
+                    raiseLevel={1}
+                    borderRadius={10}
+                    backgroundColor="black"
+                    backgroundShadow="black"
+                  >
+                    <Text
+                      numberOfLines={1}
+                      style={{ overflow: "hidden", color: "white" }}
+                    >
+                      Sign In
+                    </Text>
+                  </AwesomeButton>
+                </View>
+
+                {/* <Button
                   themeInverse
                   onPress={() => formikProps.handleSubmit()}
                 >
                   Sign In
-                </Button>
+                </Button> */}
                 <Button onPress={() => router.push("/(public)/reset")}>
                   Forgot Password?
                 </Button>

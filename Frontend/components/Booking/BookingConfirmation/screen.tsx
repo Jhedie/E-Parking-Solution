@@ -1,3 +1,4 @@
+import { useAuth } from "@providers/Authentication/AuthProvider";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { useStripe } from "@stripe/stripe-react-native";
 import dayjs from "dayjs";
@@ -10,7 +11,6 @@ import { ParkingLot } from "../../Map/screen";
 import { BookingDetails } from "../BookingDetails/screen";
 import { ParkingSlot } from "../SelectSpot/screen";
 import { Vehicle } from "../Vehicle/SelectVehicle/screen";
-import { PaymentMethod } from "../payment - deprecated/selectPaymentOption/screen";
 import BookingSuccessModal from "./BookingSuccess/screen";
 
 export interface BookingConfirmationScreenProps {
@@ -48,6 +48,8 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
     // paymentMethod: paymentMethod  - to be replaced with stripe
   };
 
+  const { user } = useAuth();
+
   const [openBookingSuccessModal, setOpenBookingSuccessModal] =
     React.useState(false);
   const successBookingModalClose = () => setOpenBookingSuccessModal(false);
@@ -65,12 +67,18 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          amount: 1000, // Amount in the smallest currency unit (e.g., cents for USD)
-          currency: "usd",
-          description: "Payment for parking",
+          amount: route.params.bookingDetails.totalprice, // Amount in the smallest currency unit (e.g., cents for USD)
+          currency: "gbp",
+          description:
+            "Payment for parking - " +
+            ConfirmationDetails.parkingLot.LotId +
+            " - " +
+            ConfirmationDetails.parkingSlot.Position.Row +
+            ConfirmationDetails.parkingSlot.Position.Column,
           customer: {
-            name: "John Doe",
-            email: "john.doe@example.com"
+            id: `${user?.uid}`,
+            name: `${user?.displayName}`,
+            email: `${user?.email}`
           }
         })
       });
@@ -93,7 +101,7 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
         await fetchPaymentSheetParams();
 
       const { error } = await initPaymentSheet({
-        merchantDisplayName: "Example, Inc.",
+        merchantDisplayName: "E-Parking-Solution",
         customerId: customer,
         customerEphemeralKeySecret: ephemeralKey,
         paymentIntentClientSecret: paymentIntent,
@@ -101,7 +109,7 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
         //methods that complete payment after a delay, like SEPA Debit and Sofort.
         allowsDelayedPaymentMethods: true,
         defaultBillingDetails: {
-          name: "Jane Doe"
+          name: `${user?.displayName}`
         }
       });
       if (!error) {
@@ -283,7 +291,7 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
           >
             <Text style={{ fontWeight: "500" }}>Duration</Text>
             <Text style={{}}>
-              {ConfirmationDetails.bookingDetails.rateNumber}{" "}
+              {ConfirmationDetails.bookingDetails.duration}{" "}
               {ConfirmationDetails.bookingDetails.rateType}
             </Text>
           </View>
@@ -310,12 +318,12 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
             }}
           >
             <Text style={{ marginRight: 6 }}>
-              {ConfirmationDetails.vehicle.Nickname}
+              {ConfirmationDetails.vehicle.nickName}
               {" |"}
             </Text>
 
             <Text style={{}}>
-              {ConfirmationDetails.vehicle.RegistrationNumber}
+              {ConfirmationDetails.vehicle.registrationNumber}
             </Text>
           </View>
         </View>
@@ -339,7 +347,7 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
           >
             <Text style={{ fontWeight: "500" }}>Price</Text>
             <Text style={{}}>
-              <Text>£{ConfirmationDetails.bookingDetails.rateNumber}</Text>
+              <Text>£{ConfirmationDetails.bookingDetails.duration}</Text>
             </Text>
           </View>
           {/* total price */}

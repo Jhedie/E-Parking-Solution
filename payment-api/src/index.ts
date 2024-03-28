@@ -6,6 +6,8 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT;
 
+app.use(express.json());
+
 app.get("/hello", (req, res) => {
   res.send("Express + TypeScript Server");
 });
@@ -35,20 +37,22 @@ app.post("/payment-sheet", async (req, res) => {
   //           email: `${user?.email}`
   //         }
   // get the detauls from the body of the request
+  console.log(req.body);
   const { amount, currency, description } = req.body;
   // Use an existing Customer ID if this is a returning customer.
   const customer = await stripe.customers.create({
     name: req.body.customer.name,
     email: req.body.customer.email,
   });
+
   const ephemeralKey = await stripe.ephemeralKeys.create(
-    { customer: req.body.customer.id },
+    { customer: "cus_PowIhjjShxeRnf" },
     { apiVersion: "2023-10-16" }
   );
   const paymentIntent = await stripe.paymentIntents.create({
     amount: amount,
     currency: currency,
-    customer: customer.id,
+    customer: "cus_PowIhjjShxeRnf",
     // In the latest version of the API, specifying the `automatic_payment_methods` parameter
     // is optional because Stripe enables its functionality by default.
     automatic_payment_methods: {
@@ -59,7 +63,7 @@ app.post("/payment-sheet", async (req, res) => {
   res.json({
     paymentIntent: paymentIntent.client_secret,
     ephemeralKey: ephemeralKey.secret,
-    customer: customer.id,
+    customer: "cus_PowIhjjShxeRnf",
     publishableKey:
       "pk_test_51OlYLWB1AMLkBmu1BFmgWiauMWOF8ceITmtOaLoEKq9lfLPk6aTfSUlBPDVBtPEgHWqSCuuMMwSfrs88Gud7LQ4k00IBlTIko7",
   });

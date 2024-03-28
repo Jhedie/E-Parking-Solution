@@ -55,6 +55,7 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
   const successBookingModalClose = () => setOpenBookingSuccessModal(false);
 
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
+
   const [loading, setLoading] = useState(false);
 
   const API_URL = "http://localhost:3000";
@@ -67,7 +68,7 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          amount: route.params.bookingDetails.totalprice, // Amount in the smallest currency unit (e.g., cents for USD)
+          amount: route.params.bookingDetails.totalprice * 100,
           currency: "gbp",
           description:
             "Payment for parking - " +
@@ -110,6 +111,14 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
         allowsDelayedPaymentMethods: true,
         defaultBillingDetails: {
           name: `${user?.displayName}`
+        },
+        style: "alwaysDark",
+        appearance: {
+          primaryButton: {
+            colors: {
+              background: "#FFCC00"
+            }
+          }
         }
       });
       if (!error) {

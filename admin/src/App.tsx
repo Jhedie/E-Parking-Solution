@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import {
   Authenticator,
@@ -16,7 +16,6 @@ import {
 } from "@firecms/core";
 import {
   FirebaseAuthController,
-  FirebaseLoginView,
   FirebaseSignInProvider,
   FirebaseUserWrapper,
   useFirebaseAuthController,
@@ -25,16 +24,19 @@ import {
   useInitialiseFirebase,
 } from "@firecms/firebase";
 import { CenteredView } from "@firecms/ui";
-import { demoCollection } from "./collections/demo";
 
-import { useLocation } from "react-router";
+import { AdminCollection } from "./collections/admins";
+import { DbChangesCollection } from "./collections/dbchanges";
+import { DriverCollection } from "./collections/driver";
+import { ParkingLotRatesCollection } from "./collections/parkingLotRates";
+import { ParkingLotCollection } from "./collections/parkingLots";
+import { ParkingOwnerCollection } from "./collections/parkingOwners";
+import { ParkingSlotsCollection } from "./collections/parkingSlots";
+import { UserCollection } from "./collections/users";
+import { VehicleCollection } from "./collections/vehicles";
 import AuthComponent from "./customComponents/authentication/AuthComponent";
-import LoginView from "./customComponents/authentication/SignIn";
 import { firebaseConfig } from "./firebase-config";
-import { ConfigProvider } from "./providers/Config/ConfigProvider";
 function App() {
-  const location = useLocation();
-
   // Use your own authentication logic here
   const myAuthenticator: Authenticator<FirebaseUserWrapper> = useCallback(
     async ({ user, authController }) => {
@@ -44,6 +46,7 @@ function App() {
       }
 
       const idTokenResult = await user?.firebaseUser?.getIdTokenResult();
+
       const userIsAdmin =
         idTokenResult?.claims.admin || user?.email?.endsWith("@firecms.co");
 
@@ -51,17 +54,30 @@ function App() {
 
       console.log("Allowing access to", user);
 
-      // we allow access to every user in this case
-      // return true;
       if (userIsAdmin) {
-        return true;
+        console.log("User is an admin");
+        return Boolean(userIsAdmin);
       }
+
       return false;
     },
     []
   );
 
-  const collections = useMemo(() => [demoCollection], []);
+  const collections = useMemo(
+    () => [
+      ParkingOwnerCollection,
+      VehicleCollection,
+      DriverCollection,
+      UserCollection,
+      DbChangesCollection,
+      ParkingSlotsCollection,
+      ParkingLotRatesCollection,
+      ParkingLotCollection,
+      AdminCollection,
+    ],
+    []
+  );
 
   const { firebaseApp, firebaseConfigLoading, configError } =
     useInitialiseFirebase({
@@ -127,47 +143,49 @@ function App() {
   return (
     <SnackbarProvider>
       <ModeControllerProvider value={modeController}>
-        <ConfigProvider>
-          <FireCMS
-            navigationController={navigationController}
-            authController={authController}
-            userConfigPersistence={userConfigPersistence}
-            dataSourceDelegate={firestoreDelegate}
-            storageSource={storageSource}
-          >
-            {({ context, loading }) => {
-              if (loading || authLoading) {
-                return <CircularProgressCenter size={"large"} />;
-              }
+        <FireCMS
+          navigationController={navigationController}
+          authController={authController}
+          userConfigPersistence={userConfigPersistence}
+          dataSourceDelegate={firestoreDelegate}
+          storageSource={storageSource}
+        >
+          {({ context, loading }) => {
+            if (loading || authLoading) {
+              return <CircularProgressCenter size={"large"} />;
+            }
 
-              if (!canAccessMainView) {
-                return (
-                  // <FirebaseLoginView
-                  //   authController={authController}
-                  //   firebaseApp={firebaseApp}
-                  //   signInOptions={signInOptions}
-                  //   notAllowedError={notAllowedError}
-                  //   logo="/logo/Icon-192x192.png"
-                  // />
-                  // eslint-disable-next-line react/jsx-no-undef
-                  <AuthComponent
-                    authController={authController}
-                    firebaseApp={firebaseApp}
-                    notAllowedError={notAllowedError}
-                    logo="/logo/Icon-192x192.png"
-                  />
-                );
-              }
-
+            if (!canAccessMainView) {
               return (
-                <Scaffold name={"E-Parking Admin"} autoOpenDrawer={false}>
-                  <NavigationRoutes />
-                  <SideDialogs />
-                </Scaffold>
+                // <FirebaseLoginView
+                //   authController={authController}
+                //   firebaseApp={firebaseApp}
+                //   signInOptions={signInOptions}
+                //   notAllowedError={notAllowedError}
+                //   logo="/logo/Icon-192x192.png"
+                // />
+                <AuthComponent
+                  authController={authController}
+                  firebaseApp={firebaseApp}
+                  notAllowedError={notAllowedError}
+                  logo="/logo/Icon-192x192.png"
+                />
               );
-            }}
-          </FireCMS>
-        </ConfigProvider>
+            }
+
+            return (
+              <Scaffold
+                name={"E-Parking-Admin"}
+                autoOpenDrawer={true}
+                logo="/logo/Icon-192x192.png"
+                includeDrawer={true}
+              >
+                <NavigationRoutes />
+                <SideDialogs />
+              </Scaffold>
+            );
+          }}
+        </FireCMS>
       </ModeControllerProvider>
     </SnackbarProvider>
   );

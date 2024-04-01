@@ -2,10 +2,12 @@ import { Formik } from "formik";
 import { z } from "zod";
 interface SignInProps {
   switch: () => void;
+  signInUserOnPress: (email: string, password: string) => void;
 }
 
 const SignIn: React.FC<SignInProps> = ({
   switch: toggleAuthView,
+  signInUserOnPress,
 }: SignInProps) => {
   const SignInValidationSchema = z.object({
     email: z.string().email("Please enter a valid email address"),
@@ -32,8 +34,7 @@ const SignIn: React.FC<SignInProps> = ({
           initialValues={initialValues}
           validate={validateForm}
           onSubmit={(values: FormValues) => {
-            // Handle form submission
-            console.log("Form submitted", values);
+            signInUserOnPress(values.email, values.password);
           }}
         >
           {(formikProps) => (

@@ -15,7 +15,7 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({
   children,
 }: PropsWithChildren<ConfigProviderProps>) => {
   const config: ConfigContextType = {
-    BASE_URL: import.meta.env.FRONTEND_SERVER_BASE_URL || "default_base_url",
+    BASE_URL: import.meta.env.VITE_FRONTEND_SERVER_BASE_URL,
   };
 
   return (

@@ -1,10 +1,39 @@
-import { useLocation, useParams } from "react-router";
+import { Authenticator, useAuthController } from "@firecms/core";
+import {
+  FirebaseUserWrapper,
+  useFirebaseAuthController,
+} from "@firecms/firebase";
+import axios from "axios";
+import { useCallback, useEffect, useState } from "react";
+import { useLocation } from "react-router";
+import { useConfig } from "../../providers/Config/ConfigProvider";
 
 interface VerificationProps {}
 const Verification: React.FC<VerificationProps> = ({}: VerificationProps) => {
   const location = useLocation();
+  const { BASE_URL } = useConfig();
+  const { email, userName, phoneNumber, token } = location.state;
 
-  const { email, password, userName, phoneNumber } = location.state;
+  function resendEmailVerification(): void {
+    axios
+      .post(
+        `${BASE_URL}/account/verify`,
+        {
+          email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then(() => {
+        console.log("sending Verification email sent!");
+      })
+      .catch((error) => {
+        console.log("Failed to send verification email: ", error);
+      });
+  }
 
   return (
     <div>
@@ -50,12 +79,15 @@ const Verification: React.FC<VerificationProps> = ({}: VerificationProps) => {
             verified:
           </p>
           <div className="mt-4">
-            <button className="px-2 py-2 text-blue-200 rounded">
+            <button
+              onClick={() => resendEmailVerification()}
+              className="btn btn-neutral"
+            >
               Click to Verify Email
             </button>
             <p className="mt-4 text-sm">
-              If you’re having trouble clicking the Verify Email Address
-              button, copy and paste the URL below into your web browser:
+              If you’re having trouble clicking the Verify Email Address button,
+              copy and paste the URL below into your web browser:
               <a href="" className="text-blue-600">
                 http://localhost:8000/email/verify/3/1ab7a09a3
               </a>

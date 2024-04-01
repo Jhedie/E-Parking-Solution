@@ -34,6 +34,7 @@ export default function AuthComponent({
     />
   );
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleAuthView = () => {
     setIsSignUp(!isSignUp);
@@ -42,19 +43,13 @@ export default function AuthComponent({
   const { BASE_URL } = useConfig();
   const navigate = useNavigate();
 
-  const handleSignIn = (email: string, password: string) => {
+  async function signInUserOnPress(email: string, password: string) {
     if (email && password) {
+      console.log("Signing in user...");
       authController.emailPasswordLogin(email, password);
     }
-  };
-
-  interface SignUpResponse {
-    email: string;
-    name: string;
-    phoneNumber: string;
-    customToken: string;
-    token: string;
   }
+
   async function signUpUserOnPressBackend(
     email: string,
     password: string,
@@ -62,22 +57,21 @@ export default function AuthComponent({
     phoneNumber: string
   ): Promise<void> {
     try {
-      // await axios
-      //   .post<SignUpResponse>(`${BASE_URL}/account/parkingOwner`, {
-      //     email,
-      //     password,
-      //     name: userName,
-      //     phoneNumber,
-      //   })
-      //   .then((userFromBackend) => {
-      //     alert("User account created. Please verify your email!");
-      //     console.log(userFromBackend.data);
-      //     console.log("User account created. Please verify your email!");
-      //   });
-
-      navigate("/app/verify-email", {
-        state: { email, password, userName, phoneNumber },
-      });
+      setIsLoading(true);
+      console.log(`${BASE_URL}/account/parkingOwner`);
+      await axios
+        .post(`${BASE_URL}/account/parkingOwner`, {
+          email,
+          password,
+          name: userName,
+          phoneNumber,
+        })
+        .then((userFromBackend) => {
+          alert("User account created. Please verify your email!");
+          console.log(userFromBackend.data.user.email);
+          //auto sign in user
+          authController.emailPasswordLogin(email, password);
+        });
     } catch (error) {
       const axiosError = error as AxiosError;
 
@@ -96,27 +90,35 @@ export default function AuthComponent({
         // An error occurred in setting up the request
         console.error("Request Setup Error:", axiosError.message);
       }
-
-      // Display a generic error message to the user
       console.log("Failed to sign up. Please try again!");
       console.error("Failed to sign up:", axiosError);
     }
+    setIsLoading(false);
   }
 
   return (
-    <div className="flex flex-col items-center justify-center  p-4 min-h-screen min-w-[40vw]">
-      <div className="">{logoComponent}</div>
-      {isSignUp ? (
-        <div className="w-[25vw]">
-          <SignUp
-            switch={toggleAuthView}
-            signUpUserOnPressBackend={signUpUserOnPressBackend}
-          />
-        </div>
+    <div className="flex flex-col items-center justify-center  p-4 min-h-screen ">
+      {isLoading ? (
+        <span className="loading loading-spinner loading-lg"></span>
       ) : (
-        <div className="w-[25vw]">
-          <SignIn switch={toggleAuthView} />
-        </div>
+        <>
+          <div className="">{logoComponent}</div>
+          {isSignUp ? (
+            <div className="w-[35vw]">
+              <SignUp
+                switch={toggleAuthView}
+                signUpUserOnPressBackend={signUpUserOnPressBackend}
+              />
+            </div>
+          ) : (
+            <div className="w-[30vw]">
+              <SignIn
+                switch={toggleAuthView}
+                signInUserOnPress={signInUserOnPress}
+              />
+            </div>
+          )}
+        </>
       )}
     </div>
   );

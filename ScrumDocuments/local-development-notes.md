@@ -268,3 +268,19 @@ https://medium.com/@elijahobara/how-to-send-emails-using-python-django-and-googl
 
 - Error: Can't set headers after they are sent to the client
   https://stackoverflow.com/questions/7042340/error-cant-set-headers-after-they-are-sent-to-the-client
+
+- Custom Claims
+  using custom claims for storing the isApproved status for several reasons:
+
+  1. Security and Integrity: Custom claims are securely managed on the server side and cannot be tampered with by the client. This ensures that once an admin approves a parking owner, the status cannot be altered without proper authorization.
+  2. Centralized Access Control: By using custom claims, you can leverage Firebase's built-in mechanisms for access control both in your application's backend (e.g., Firebase Functions) and directly in Firebase Security Rules for Firestore and Firebase Storage. This allows for a more streamlined and efficient way to manage access based on the approval status.
+  3. Scalability and Maintenance: As your application grows, the security and integrity of user roles and statuses become increasingly critical. Custom claims provide a scalable way to manage user permissions and statuses across different parts of your application without requiring changes to your database structure or additional queries to Firestore for each access check.
+  4. Efficiency: Although there's a propagation delay for custom claims (they're refreshed in the user's ID token on the next sign-in), this can be mitigated by forcing a token refresh in critical flows or by designing the user experience to accommodate this (e.g., informing users that approval may take a few minutes to process).
+     Implementation Considerations
+     Admin Tooling: To manage the complexity of updating custom claims, you can build or use existing admin tools. Firebase Admin SDK can be used in Cloud Functions or a secure backend environment to update custom claims based on admin actions.
+     User Experience: To address the token propagation delay, you can implement a mechanism to prompt users to refresh their session or automatically refresh the ID token after an admin has approved their account.
+     Security Rules: Leverage Firebase Security Rules to ensure that only users with the isApproved claim can access certain resources or perform specific actions. This adds an extra layer of security and ensures that your application's access control logic is closely aligned with Firebase's authentication model.
+     By choosing custom claims, you're opting for a solution that prioritizes security, scalability, and efficient access control, which are crucial for applications dealing with sensitive user roles and permissions.
+
+- Expo push notifications
+  https://docs.expo.dev/push-notifications/push-notifications-setup/#install-libraries

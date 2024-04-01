@@ -41,7 +41,7 @@
     "semi": 0,
     "key-spacing": "warn",
     "no-trailing-spaces": "warn",
-    "comma-dangle": "warn",
+    "comma-dangle": "off",
     "no-multi-spaces": "warn",
     "comma-spacing": "warn",
     "keyword-spacing": "warn",

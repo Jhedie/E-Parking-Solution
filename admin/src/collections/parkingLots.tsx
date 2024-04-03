@@ -26,6 +26,7 @@ export const ParkingLotCollection = buildCollection<ParkingLot>({
   id: "parkingLots",
   name: "ParkingLots",
   path: "parkingLots",
+  icon: "local_parking",
   editable: true,
   permissions: ({ authController, user }) => ({
     read: true,

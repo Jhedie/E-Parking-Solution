@@ -4,7 +4,7 @@ export const DbChangesCollection = buildCollection({
   id: "db-changes",
   name: "Db Changes",
   path: "db-changes",
-  icon: "assistant",
+  icon: "storage",
   properties: {
     description: {
       dataType: "string",

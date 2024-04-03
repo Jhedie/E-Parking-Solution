@@ -11,6 +11,7 @@ export const ParkingLotRatesCollection = buildCollection<ParkingLotRates>({
   id: "parkingLotRates",
   name: "ParkingLotRates",
   path: "parkingLotRates",
+  icon: "currency_pound",
   properties: {
     rateType: {
       dataType: "string",

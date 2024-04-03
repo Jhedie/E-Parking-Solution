@@ -1,4 +1,8 @@
-import { buildCollection } from "@firecms/core";
+import {
+  EntityOnPreSaveProps,
+  buildCollection,
+  buildEntityCallbacks,
+} from "@firecms/core";
 
 export type ParkingSlots = {
   type: string;
@@ -10,17 +14,53 @@ export type ParkingSlots = {
   };
 };
 
+const checkIfPositionIsAvailable = async (
+  entitySaveProps: EntityOnPreSaveProps
+): Promise<boolean> => {
+  const allParkingSlots =
+    await entitySaveProps.context.dataSource.fetchCollection<ParkingSlots>({
+      path: "parkingSlots",
+    });
+
+  const isAvailable =
+    allParkingSlots.filter(
+      (slot) =>
+        slot.values.position.row === entitySaveProps.values.position.row &&
+        slot.values.position.column === entitySaveProps.values.position.column
+    ).length === 0;
+
+  return isAvailable;
+};
+
+const parkingSlotCallbacks = buildEntityCallbacks<ParkingSlots>({
+  onPreSave: async (entitySaveProps) => {
+    console.log("Creating parking slot", entitySaveProps);
+    //check if the position is already avalable
+    const isPositionAvailable = await checkIfPositionIsAvailable(
+      entitySaveProps
+    );
+
+    if (isPositionAvailable) {
+      console.log("Position is available");
+      return entitySaveProps;
+    } else {
+      throw new Error("Position is already occupied");
+    }
+  },
+});
+
 export const ParkingSlotsCollection = buildCollection<ParkingSlots>({
   id: "parkingSlots",
   name: "ParkingSlots",
   path: "parkingSlots",
-  icon: "adjust",
+  icon: "calendar_view_month",
   permissions: ({ authController, user }) => ({
     read: true,
     edit: true,
     create: true,
     delete: true,
   }),
+  callbacks: parkingSlotCallbacks,
   properties: {
     type: {
       dataType: "string",
@@ -98,4 +138,5 @@ export const ParkingSlotsCollection = buildCollection<ParkingSlots>({
       },
     },
   },
+  initialSort: ["position", "asc"],
 });

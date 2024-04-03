@@ -10,6 +10,8 @@ export type Admin = {
 export const AdminCollection = buildCollection<Admin>({
   id: "admin",
   name: "Admin",
+  group: "users",
+  icon: "account_circle",
   path: "admin",
   permissions: ({ authController, user }) => ({
     read: true,

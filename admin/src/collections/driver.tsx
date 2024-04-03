@@ -9,8 +9,10 @@ export type Driver = {
 export const DriverCollection = buildCollection<Driver>({
   id: "driver",
   name: "Driver",
+  group: "users",
   path: "driver",
   editable: true,
+  icon: "sports_motorsports",
   permissions: ({ authController, user }) => ({
     read: true,
     edit: true,

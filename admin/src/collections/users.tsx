@@ -7,10 +7,11 @@ export type User = {
 };
 export const UserCollection = buildCollection<User>({
   id: "users",
-  name: "Users",
+  name: "All Users",
   path: "users",
+  group: "users",
   editable: true,
-  icon: "align_horizontal_center",
+  icon: "all_inclusive",
 
   permissions: ({ authController, user }) => ({
     read: true,
@@ -39,6 +40,20 @@ export const UserCollection = buildCollection<User>({
       validation: {
         required: true,
       },
+      enumValues: [
+        {
+          id: "admin",
+          label: "ADMIN",
+        },
+        {
+          id: "parkingOwner",
+          label: "PARKING LOT OWNER",
+        },
+        {
+          id: "driver",
+          label: "DRIVER",
+        },
+      ],
     },
     email: {
       dataType: "string",

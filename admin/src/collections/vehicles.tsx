@@ -11,6 +11,7 @@ export const VehicleCollection = buildCollection<Vehicle>({
   name: "Vehicles",
   path: "vehicles",
   singularName: "vehicle",
+  icon: "directions_car_filled",
   editable: true,
   properties: {
     nickName: {

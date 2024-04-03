@@ -17,7 +17,18 @@ export interface Controller {
 }
 
 export class HttpServer {
-  constructor(public readonly express: Express) {}
+  constructor(public readonly express: Express) {
+    //set cors headers
+    this.express.use((req, res, next) => {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+      );
+      res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+      next();
+    });
+  }
 
   get(path: string, requestHandler: RequestHandler, claims?: MyClaims[]): void {
     this.express.get(path, this._catchErrorHandler(requestHandler, claims));

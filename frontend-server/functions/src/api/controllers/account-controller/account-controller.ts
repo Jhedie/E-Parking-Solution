@@ -1,4 +1,5 @@
 import { RequestHandler } from "express";
+import { NextFunction, Request, Response } from "express-serve-static-core";
 import { UserClientModel } from "../../../core/data/models/user/client/user-client-model";
 import { accountsService } from "../../../core/services/accounts-service";
 import { HttpResponseError } from "../../../core/utils/http-response-error";
@@ -16,9 +17,31 @@ export class AccountController implements Controller {
       this.createParkingOwnerAccount.bind(this)
     );
     httpServer.get("/account/driver/:uid", this.getDriver.bind(this));
+    httpServer.post(
+      "/account/approveParkingOwner",
+      this.approveParkingOwner.bind(this),
+      ["admin"]
+    );
   }
 
-  private readonly getDriver: RequestHandler = async (req, res, next) => {
+  private readonly approveParkingOwner: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    console.log("Approving user req.body", req.body);
+    const uid = req.body.userId;
+    console.log("uid", uid);
+    const user = await accountsService.approveParkingOwner(uid);
+    res.send(UserClientModel.fromEntity(user).toBody());
+    next();
+  };
+
+  private readonly getDriver: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     const uid = req.params.uid;
     const user = await accountsService.getUser(uid);
     res.send(UserClientModel.fromEntity(user).toBody());
@@ -26,9 +49,9 @@ export class AccountController implements Controller {
   };
 
   private readonly createDriverAccount: RequestHandler = async (
-    req,
-    res,
-    next
+    req: Request,
+    res: Response,
+    next: NextFunction
   ) => {
     // add driver role to the  req.body to ensure security
     req.body.role = "driver";
@@ -69,9 +92,9 @@ export class AccountController implements Controller {
    * @param next
    */
   private readonly createParkingOwnerAccount: RequestHandler = async (
-    req,
-    res,
-    next
+    req: Request,
+    res: Response,
+    next: NextFunction
   ) => {
     req.body.role = "parkingOwner"; // add parking owner role to the  req.body to ensure security
     const input = UserClientModel.fromBody(req.body) as UserClientModel & {
@@ -104,9 +127,9 @@ export class AccountController implements Controller {
   };
 
   private readonly createAdminAccount: RequestHandler = async (
-    req,
-    res,
-    next
+    req: Request,
+    res: Response,
+    next: NextFunction
   ) => {
     const input: UserClientModel & { password: string; adminKey?: string } =
       UserClientModel.fromBody(req.body);
@@ -145,7 +168,11 @@ export class AccountController implements Controller {
     next();
   };
 
-  private readonly verifyUser: RequestHandler = async (req, res, next) => {
+  private readonly verifyUser: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     const { email } = req.body;
     const authorizationHeader = req.headers.authorization;
     console.log("authorizationHeader", authorizationHeader);

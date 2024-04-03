@@ -27,11 +27,12 @@ export class ParkingSlotController implements Controller {
     httpServer.get("/parkingSlot/:slotId", this.getParkingSlotById.bind(this), [
       "admin",
       "parkingOwner",
+      "driver",
     ]);
     httpServer.put(
       "/parkingSlot/:slotId",
       this.updateParkingSlotById.bind(this),
-      ["admin", "parkingOwner"]
+      ["admin", "parkingOwner", "driver"]
     );
     httpServer.delete(
       "/parkingSlot/:slotId",
@@ -42,7 +43,7 @@ export class ParkingSlotController implements Controller {
     httpServer.get(
       "/parkingSlots/:lotId",
       this.getParkingSlotsByLotId.bind(this),
-      ["admin", "parkingOwner"]
+      ["admin", "parkingOwner", "driver"]
     );
 
     //delete all parking slots
@@ -65,11 +66,11 @@ export class ParkingSlotController implements Controller {
     res: Response,
     next: NextFunction
   ) => {
-console.log("creating parking slot with", req.body);
+    console.log("creating parking slot with", req.body);
     const parkingSlotFromInput: ParkingSlot = ParkingSlotClientModel.validate(
       req.body
     );
-console.log(parkingSlotFromInput);
+    console.log(parkingSlotFromInput);
     const parkingSlot = await parkingSlotService.createParkingSlot(
       parkingSlotFromInput
     );

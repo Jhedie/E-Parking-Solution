@@ -32,7 +32,13 @@ export class UserClientModel extends User {
   }
 
   static empty(): UserClientModel {
-    return new UserClientModel("", "", "" as any, "", "");
+    return new UserClientModel(
+      "", // uid
+      "", // name
+      "" as any, // role
+      "", // email
+      "" // phoneNumber
+    );
   }
 
   /**

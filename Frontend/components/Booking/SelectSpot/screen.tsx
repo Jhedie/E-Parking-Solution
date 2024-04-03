@@ -1,16 +1,25 @@
 import { AntDesign } from "@expo/vector-icons";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View
+} from "react-native";
 
 import AwesomeButton from "react-native-really-awesome-button";
 import { YStack } from "tamagui";
 import { StackNavigation } from "../../../app/(auth)/home";
-import parkingSlots from "../../../assets/data/parkingSlots.json";
 import { ParkingLot } from "../../Map/screen";
 import { Vehicle } from "../Vehicle/SelectVehicle/screen";
 
+import { useConfig } from "@providers/Config/ConfigProvider";
+import { useToastController } from "@tamagui/toast";
+import { useQuery } from "@tanstack/react-query";
+import useToken from "hooks/useToken";
 import { BookingDetails } from "../BookingDetails/screen";
 interface SelectSpotScreenProps {
   navigation: StackNavigation;
@@ -24,22 +33,16 @@ type RouteParams = {
   };
 };
 
-export interface TimeSlot {
-  start: string;
-  end: string;
-}
-
 interface Position {
-  Row: string;
-  Column: number;
+  row: string;
+  column: number;
 }
 
 export interface ParkingSlot {
-  SpotID: number;
-  Type: string;
-  Status: string;
-  ReservedTimeSlots: TimeSlot[];
-  Position: Position;
+  slotId: number;
+  type: string;
+  status: string;
+  position: Position;
 }
 
 export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
@@ -48,17 +51,113 @@ export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
   const [selectedParkingSlot, setSelectedParkingSlot] = useState<ParkingSlot>();
   const route = useRoute<RouteProp<RouteParams, "SelectSpotScreen">>();
 
+  const token = useToken();
+  const { BASE_URL } = useConfig();
+  const toaster = useToastController();
+  const getAvailableParkingSlots = async (
+    token: string
+  ): Promise<ParkingSlot[]> => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/parkingSlots/${route.params.parkingLot.LotId}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch parking slots");
+      }
+
+      const data = await response.json();
+
+      return data;
+    } catch (error) {
+      console.error("Error fetching available parking slots", error);
+      return [];
+    }
+  };
+  const {
+    data: parkingSlotsData,
+    isLoading: parkingSlotsLoading,
+    isError: parkingSlotsError
+  } = useQuery({
+    queryKey: ["parkingSlots"],
+    queryFn: () => getAvailableParkingSlots(token as string),
+    enabled: !!token
+  });
+  const parkingSlotFromAPI = parkingSlotsData?.[
+    "parkingSlots"
+  ] as ParkingSlot[];
+
+  useEffect(() => {
+    // Check if there's already a selected parking slot and if parkingSlotsData is available
+    if (
+      !selectedParkingSlot &&
+      parkingSlotFromAPI &&
+      parkingSlotFromAPI.length > 0
+    ) {
+      selectRandomParkingSlot(parkingSlotFromAPI);
+
+      //scroll to the selected parking slot
+    }
+  }, [parkingSlotFromAPI]);
+
+  // Function to select a random parking slot
+  const selectRandomParkingSlot = (slots: ParkingSlot[]) => {
+    // Filter out only the slots that are not occupied
+    const availableSlots = slots.filter((slot) => slot.status !== "Occupied");
+
+    if (availableSlots.length > 0) {
+      const randomIndex = Math.floor(Math.random() * availableSlots.length);
+      const randomSlot = availableSlots[randomIndex];
+      setSelectedParkingSlot(randomSlot);
+      toaster.show(`Slot Choice`, {
+        title: "Random parking slot selected",
+        message: `Selected spot ${randomSlot.position.row}${randomSlot.position.column}`,
+        intent: "success",
+        timeout: 5000
+      });
+    } else {
+      // Handle the case where there are no available slots
+      toaster.show("No available parking slots", {
+        title: "No slots available",
+        message: "All parking slots are currently occupied.",
+        intent: "error"
+      });
+    }
+
+    if (selectedParkingSlot) {
+      console.log(
+        "scrolling to selected parking slot",
+        selectedParkingSlot.slotId
+      );
+      // Ensure the UI has been updated and positions captured
+      requestAnimationFrame(() => {
+        const xPos = slotPositions[selectedParkingSlot.slotId];
+        scrollViewRef.current?.scrollTo({ x: xPos, animated: true });
+      });
+    }
+  };
+
   const handleSelectParkingSot = (spot: ParkingSlot) => {
     setSelectedParkingSlot(spot);
   };
 
-  const columns = [...new Set(parkingSlots.map((spot) => spot.Position.Row))];
+  const columns = [
+    ...new Set(parkingSlotFromAPI?.map((spot) => spot.position.row))
+  ].sort((a, b) => a.localeCompare(b));
 
-  // Dynamically generate parking spots based on row positions
+  const slotPositions = useRef<{ [key: number]: number }>({}).current; // To store positions
+
+  // Dynamically generate parking spots based on row positions and sort by columns
   const generateParkingSlots = (row: string) => {
-    const parkingSlotsForPosition = parkingSlots.filter(
-      (spot) => spot.Position.Row === row
-    );
+    const parkingSlotsForPosition = parkingSlotFromAPI
+      ?.filter((spot) => spot.position.row === row)
+      .sort((a, b) => a.position.column - b.position.column);
 
     return (
       <View>
@@ -85,7 +184,11 @@ export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
           </View>
           {parkingSlotsForPosition.map((spot, index) => (
             <View
-              key={spot.SpotID}
+              key={spot.slotId}
+              onLayout={(event) => {
+                const layout = event.nativeEvent.layout;
+                slotPositions[spot.slotId] = layout.y; // Capture the Y position of each slot
+              }}
               style={{
                 flexDirection: "row",
                 justifyContent: "space-between",
@@ -98,7 +201,7 @@ export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
                 borderBottomColor: "lightgrey"
               }}
             >
-              {spot.Status === "Occupied" ? (
+              {spot.status === "Occupied" ? (
                 <AntDesign
                   name="car"
                   size={30}
@@ -116,14 +219,15 @@ export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
                     borderRadius: 5,
 
                     backgroundColor:
-                      selectedParkingSlot?.SpotID === spot.SpotID
+                      selectedParkingSlot?.slotId === spot.slotId
                         ? "black"
                         : "white"
                   }}
                 />
               )}
               <Text style={{ marginLeft: 20, fontWeight: "700" }}>
-                {spot.SpotID}
+                {spot.position.row}
+                {spot.position.column}
               </Text>
             </View>
           ))}
@@ -132,7 +236,27 @@ export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
     );
   };
 
-  return (
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  return parkingSlotsLoading ? (
+    <YStack
+      flex={1}
+      backgroundColor={"white"}
+      alignItems="center"
+      justifyContent="center"
+    >
+      <ActivityIndicator />
+    </YStack>
+  ) : parkingSlotsError ? (
+    <YStack
+      flex={1}
+      backgroundColor={"white"}
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Text>Error fetching parking slots</Text>
+    </YStack>
+  ) : (
     <YStack
       flex={1}
       backgroundColor={"white"}
@@ -153,6 +277,7 @@ export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
           horizontal
+          ref={scrollViewRef}
         >
           <View
             style={{
@@ -262,7 +387,8 @@ export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
           backgroundColor="black"
         >
           <Text style={{ color: "white", fontWeight: "500" }}>
-            Proceed with Spot {selectedParkingSlot?.SpotID}
+            Proceed with Spot {selectedParkingSlot?.position.row}
+            {selectedParkingSlot?.position.column}
           </Text>
         </AwesomeButton>
       </View>

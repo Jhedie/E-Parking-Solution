@@ -16,7 +16,7 @@ export type UserRole = "driver" | "parkingOwner" | "admin";
  * @typedef {("authenticated" | UserRole)} MyClaims
  * @todo Add OR operation with our own claims.
  */
-export type MyClaims = "authenticated" | UserRole;
+export type MyClaims = "authenticated" | "approved" | UserRole;
 
 /**
  * Initializes the Firebase Admin SDK.

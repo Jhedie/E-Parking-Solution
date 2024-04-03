@@ -34,7 +34,13 @@ export class UserFirestoreModel extends User {
    * @returns {UserFirestoreModel} - The created empty UserFirestoreModel instance.
    */
   static empty(): UserFirestoreModel {
-    return new UserFirestoreModel("", "", "" as any, "", "");
+    return new UserFirestoreModel(
+      "", // uid
+      "", // name
+      "" as any, // role
+      "", // email
+      "" // phoneNumber
+    );
   }
 
   /**

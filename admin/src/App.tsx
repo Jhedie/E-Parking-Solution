@@ -25,6 +25,8 @@ import {
 } from "@firecms/firebase";
 import { CenteredView } from "@firecms/ui";
 
+import toast from "react-hot-toast";
+import { Route } from "react-router";
 import { AdminCollection } from "./collections/admins";
 import { DbChangesCollection } from "./collections/dbchanges";
 import { DriverCollection } from "./collections/driver";
@@ -34,32 +36,33 @@ import { ParkingOwnerCollection } from "./collections/parkingOwners";
 import { ParkingSlotsCollection } from "./collections/parkingSlots";
 import { UserCollection } from "./collections/users";
 import { VehicleCollection } from "./collections/vehicles";
+import Dance from "./customComponents/Dance";
 import AuthComponent from "./customComponents/authentication/AuthComponent";
 import { firebaseConfig } from "./firebase-config";
 function App() {
-  // Use your own authentication logic here
   const myAuthenticator: Authenticator<FirebaseUserWrapper> = useCallback(
-    async ({ user, authController }) => {
-      if (user?.email?.includes("flanders")) {
-        // You can throw an error to prevent access
-        throw Error("Stupid Flanders!");
-      }
-
+    async ({ user }) => {
       const idTokenResult = await user?.firebaseUser?.getIdTokenResult();
+      const { admin, parkingOwner, approved } = idTokenResult?.claims || {};
+      const emailVerified = user?.firebaseUser?.emailVerified;
 
-      const userIsAdmin =
-        idTokenResult?.claims.admin || user?.email?.endsWith("@firecms.co");
-
-      console.log(idTokenResult?.claims);
-
-      console.log("Allowing access to", user);
-
-      if (userIsAdmin) {
-        console.log("User is an admin");
-        return Boolean(userIsAdmin);
+      if (parkingOwner && !emailVerified) {
+        toast.error("Please verify your email to access this page", { duration: 2000 });
+        return false;
       }
 
-      return false;
+      if (admin) {
+        return true;
+      } else if (parkingOwner) {
+        if (!approved) {
+          toast.loading("Awaiting approval...", { duration: 3000 });
+          return false;
+        }
+        return true;
+      } else {
+        toast.error("You do not have access to this page", { duration: 2000 });
+        return false;
+      }
     },
     []
   );
@@ -167,7 +170,7 @@ function App() {
                 <AuthComponent
                   authController={authController}
                   firebaseApp={firebaseApp}
-                  notAllowedError={notAllowedError}
+                  canAccessMainView={canAccessMainView}
                   logo="/logo/Icon-192x192.png"
                 />
               );
@@ -180,7 +183,11 @@ function App() {
                 logo="/logo/Icon-192x192.png"
                 includeDrawer={true}
               >
-                <NavigationRoutes />
+                <NavigationRoutes
+                  customRoutes={[
+                    <Route key={"dance"} path="dance" element={<Dance />} />,
+                  ]}
+                />
                 <SideDialogs />
               </Scaffold>
             );

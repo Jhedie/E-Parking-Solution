@@ -284,3 +284,6 @@ https://medium.com/@elijahobara/how-to-send-emails-using-python-django-and-googl
 
 - Expo push notifications
   https://docs.expo.dev/push-notifications/push-notifications-setup/#install-libraries
+
+- Modals
+  https://github.com/jmarioste/daisyui-modal/blob/main/components/Modal.tsx

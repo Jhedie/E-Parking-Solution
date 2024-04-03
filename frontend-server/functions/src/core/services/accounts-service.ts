@@ -11,6 +11,57 @@ class AccountsService {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   }
 
+  async approveParkingOwner(uid: string): Promise<User> {
+    const user = await this.getUser(uid);
+    try {
+      const currentClaims =
+        (await admin.auth().getUser(uid)).customClaims || {};
+      const updatedClaims = { ...currentClaims, approved: true };
+
+      await admin.auth().setCustomUserClaims(uid, updatedClaims);
+
+      try {
+        await this.sendApprovalUpdateEmail(
+          user.email,
+          "Hi, Your account has been approved",
+          "You can now access all your account and start serving your customers",
+          "Get Started"
+        );
+      } catch (emailError) {
+        console.error(
+          "Failed to send approval email, but account was approved:",
+          emailError
+        );
+      }
+
+      return user;
+    } catch (error) {
+      console.error("Error during the approval process:", error);
+      // Attempt to send a failure email if there was an error other than email sending
+      try {
+        await this.sendApprovalUpdateEmail(
+          user.email,
+          "Hi, There was an error approving your account",
+          "Please contact support for further assistance",
+          "Contact Support"
+        );
+      } catch (emailError) {
+        console.error("Failed to send error email:", emailError);
+      }
+
+      // Rethrow the original error with a more specific message if possible
+      if (error instanceof Error) {
+        throw new HttpResponseError(404, error.name, error.message);
+      } else {
+        throw new HttpResponseError(
+          500,
+          "APPROVAL_PROCESS_ERROR",
+          "An error occurred during the approval process"
+        );
+      }
+    }
+  }
+
   async createAccount(userInput: User, password: string): Promise<User> {
     try {
       const createUserRes = await admin.auth().createUser({
@@ -19,12 +70,14 @@ class AccountsService {
         password: password,
       });
 
+      //add the uid to the user object after creating the user
       const user = userInput.copyWith({ uid: createUserRes.uid });
 
       await admin.auth().setCustomUserClaims(user.uid, {
         driver: user.role == "driver", //true or false
         parkingOwner: user.role == "parkingOwner", //true or false
         admin: user.role == "admin", //true or false
+        approved: false,
       });
 
       const documentData = UserFirestoreModel.fromEntity(user).toDocumentData();
@@ -37,6 +90,24 @@ class AccountsService {
       // Additionally, create or update the document in a role-specific collection
       const roleSpecificCollection = admin.firestore().collection(user.role);
       await roleSpecificCollection.doc(user.uid).set(documentData);
+
+      if (user.role == "parkingOwner") {
+        // inform the admins
+        const admins = await admin.firestore().collection("admin").get();
+        admins.forEach((admin) => {
+          const data = admin.data();
+          this.sendApprovalEmail(
+            data.email,
+            "http://localhost:5173/app/"
+          ).catch((err) => {
+            throw new HttpResponseError(
+              500,
+              "EMAIL_SENDING_ERROR",
+              "Error sending email"
+            );
+          });
+        });
+      }
 
       return user;
     } catch (e) {
@@ -55,12 +126,10 @@ class AccountsService {
   }
 
   async sendVerificationEmail(email: string, token: string): Promise<any> {
-    const user: UserRecord = await admin
-      .auth()
-      .getUserByEmail(email)
-      .catch((err) => {
-        throw new HttpResponseError(404, "USER_NOT_FOUND", "User not found");
-      });
+    console.log("email at sendVerificationEmail", email);
+    console.log("token at sendVerificationEmail", token);
+    const user: UserRecord = await admin.auth().getUserByEmail(email);
+
     console.log("user", user);
 
     //verify the token to ensure the user is the same as the user in the token for security
@@ -178,6 +247,45 @@ class AccountsService {
       dynamic_template_data: {
         signedUpName: `${user.displayName}`,
         verificationLink: link,
+      },
+    };
+
+    return await sgMail.send(msg);
+  };
+
+  sendApprovalEmail = async (email: string, link: string): Promise<any> => {
+    const to: string = email;
+    const from: string = "jeddiahawuku12@gmail.com";
+
+    const msg = {
+      to,
+      from,
+      template_id: "d-d367c14a5d964e8c93d04419abbc16a0",
+      dynamic_template_data: {
+        approvalLink: link,
+      },
+    };
+
+    return await sgMail.send(msg);
+  };
+
+  sendApprovalUpdateEmail = async (
+    email: string,
+    approvalMessage: string,
+    furtherInformation: string,
+    actionMessage: string
+  ): Promise<any> => {
+    const to: string = email;
+    const from: string = "jeddiahawuku12@gmail.com";
+
+    const msg = {
+      to,
+      from,
+      template_id: "d-47713f0267b84b8dab3ce0f14a6bb8a8",
+      dynamic_template_data: {
+        ApprovalMessage: approvalMessage,
+        FurtherInformation: furtherInformation,
+        ActionMessage: actionMessage,
       },
     };
 

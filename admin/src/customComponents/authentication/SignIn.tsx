@@ -1,14 +1,20 @@
+import { useModeController } from "@firecms/core";
 import { Formik } from "formik";
 import { z } from "zod";
+
 interface SignInProps {
   switch: () => void;
   signInUserOnPress: (email: string, password: string) => void;
+  toggleResetPasswordModal: () => void;
 }
 
 const SignIn: React.FC<SignInProps> = ({
   switch: toggleAuthView,
   signInUserOnPress,
+  toggleResetPasswordModal,
 }: SignInProps) => {
+  const modeState = useModeController();
+
   const SignInValidationSchema = z.object({
     email: z.string().email("Please enter a valid email address"),
     password: z.string().min(8, "Password must be at least 8 characters long"),
@@ -28,7 +34,7 @@ const SignIn: React.FC<SignInProps> = ({
     password: "",
   };
   return (
-    <div className="card bg-base-100 shadow-xl p-10 mt-10">
+    <div className={"card bg-base-100 shadow-xl p-10 mt-10 text-white"}>
       <div className="card-body">
         <Formik
           initialValues={initialValues}
@@ -156,7 +162,21 @@ const SignIn: React.FC<SignInProps> = ({
                   )}
               </label>
 
+              <p
+                className={`text-center text-sm ${
+                  modeState.mode === "dark" ? "text-gray-300" : "text-gray-500"
+                } m-4`}
+              >
+                <button
+                  className="text-blue-500"
+                  onClick={toggleResetPasswordModal}
+                >
+                  Forgot your password?
+                </button>
+              </p>
+
               <button
+                type="submit"
                 className="btn w-full"
                 onClick={() => formikProps.handleSubmit()}
               >
@@ -165,7 +185,11 @@ const SignIn: React.FC<SignInProps> = ({
             </div>
           )}
         </Formik>
-        <p className=" text-center text-sm text-gray-500">
+        <p
+          className={`text-center text-sm ${
+            modeState.mode === "dark" ? "text-gray-300" : "text-gray-500"
+          }`}
+        >
           Not a member?{" "}
           <button className="text-blue-500" onClick={toggleAuthView}>
             Create an account

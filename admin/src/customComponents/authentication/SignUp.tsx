@@ -50,7 +50,7 @@ const SignUp: React.FC<SignUpProps> = ({
     }
   };
   return (
-    <div className="card bg-base-100 shadow-xl p-10 mt-10">
+    <div className="card bg-base-100 shadow-xl p-10 mt-10 text-white">
       <div className="card-body">
         <Formik
           initialValues={initialValues}

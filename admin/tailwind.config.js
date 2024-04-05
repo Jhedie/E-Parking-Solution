@@ -12,7 +12,7 @@ export default {
     themes: [
       {
         mytheme: {
-          primary: "#fcd34d",
+          primary: "#eab308",
 
           secondary: "#00ff00",
 
@@ -26,7 +26,7 @@ export default {
 
           success: "#6fc43a",
 
-          warning: "#fb8700",
+          warning: "#dc2626",
 
           error: "#ff798e",
         },

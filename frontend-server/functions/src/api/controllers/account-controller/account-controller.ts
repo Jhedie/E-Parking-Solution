@@ -22,6 +22,16 @@ export class AccountController implements Controller {
       this.approveParkingOwner.bind(this),
       ["admin"]
     );
+    httpServer.post(
+      "/account/rejectParkingOwner",
+      this.rejectParkingOwner.bind(this),
+      ["admin"]
+    );
+    httpServer.delete("/account/:uid", this.deleteUser.bind(this), [
+      "admin",
+      "driver",
+      "parkingOwner",
+    ]);
   }
 
   private readonly approveParkingOwner: RequestHandler = async (
@@ -32,9 +42,38 @@ export class AccountController implements Controller {
     console.log("Approving user req.body", req.body);
     const uid = req.body.userId;
     console.log("uid", uid);
-    const user = await accountsService.approveParkingOwner(uid);
-    res.send(UserClientModel.fromEntity(user).toBody());
+    await accountsService.approveParkingOwner(uid);
+    res.send({ message: "Parking owner approved successfully." });
     next();
+  };
+
+  private readonly rejectParkingOwner: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    console.log("Rejecting user req.body", req.body);
+    const uid = req.body.userId;
+    console.log("uid", uid);
+    await accountsService.rejectParkingOwner(uid);
+    res.send({ message: "Parking owner rejected successfully." });
+    next();
+  };
+
+  private readonly deleteUser: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      console.log("Deleting user req.params", req.params);
+      const uid = req.params.uid;
+      await accountsService.deleteUser(uid);
+      res.send({ message: "User deleted successfully." });
+      next();
+    } catch (error) {
+      next(error);
+    }
   };
 
   private readonly getDriver: RequestHandler = async (
@@ -55,6 +94,7 @@ export class AccountController implements Controller {
   ) => {
     // add driver role to the  req.body to ensure security
     req.body.role = "driver";
+    req.body.status = "";
 
     const input: UserClientModel & { password: string } =
       UserClientModel.fromBody(req.body);
@@ -97,6 +137,7 @@ export class AccountController implements Controller {
     next: NextFunction
   ) => {
     req.body.role = "parkingOwner"; // add parking owner role to the  req.body to ensure security
+    req.body.status = "pending";
     const input = UserClientModel.fromBody(req.body) as UserClientModel & {
       password: string;
     };
@@ -131,6 +172,7 @@ export class AccountController implements Controller {
     res: Response,
     next: NextFunction
   ) => {
+    req.body.status = "";
     const input: UserClientModel & { password: string; adminKey?: string } =
       UserClientModel.fromBody(req.body);
     if (

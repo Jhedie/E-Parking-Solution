@@ -58,7 +58,7 @@ export class ParkingLotEventTriggers implements InitializeEventTriggers {
     name: "onParkingLotUpdated",
     handler: onDocumentUpdated("parkingLots/{lotId}", async (document) => {
       const parkingLot: ParkingLot = ParkingLotFirestoreModel.fromDocumentData(
-        document.data.after.data()
+        document.data.after.data() // Use the after data to get the updated document
       );
 
       const record = new DbChangedRecord(

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import {
   Authenticator,
@@ -12,7 +12,7 @@ import {
   useBuildLocalConfigurationPersistence,
   useBuildModeController,
   useBuildNavigationController,
-  useValidateAuthenticator,
+  useValidateAuthenticator
 } from "@firecms/core";
 import {
   FirebaseAuthController,
@@ -27,19 +27,12 @@ import { CenteredView } from "@firecms/ui";
 
 import toast from "react-hot-toast";
 import { Route } from "react-router";
-import { AdminCollection } from "./collections/admins";
-import { DbChangesCollection } from "./collections/dbchanges";
-import { DriverCollection } from "./collections/driver";
-import { ParkingLotRatesCollection } from "./collections/parkingLotRates";
-import { ParkingLotCollection } from "./collections/parkingLots";
-import { ParkingOwnerCollection } from "./collections/parkingOwners";
-import { ParkingSlotsCollection } from "./collections/parkingSlots";
-import { UserCollection } from "./collections/users";
-import { VehicleCollection } from "./collections/vehicles";
+import { collectionsBuilder } from "./collections/collectionsBuilder";
 import Dance from "./customComponents/Dance";
 import AuthComponent from "./customComponents/authentication/AuthComponent";
 import { firebaseConfig } from "./firebase-config";
 function App() {
+  const [isAdmin, setIsAdmin] = useState(false);
   const myAuthenticator: Authenticator<FirebaseUserWrapper> = useCallback(
     async ({ user }) => {
       const idTokenResult = await user?.firebaseUser?.getIdTokenResult();
@@ -47,15 +40,18 @@ function App() {
       const emailVerified = user?.firebaseUser?.emailVerified;
 
       if (parkingOwner && !emailVerified) {
-        toast.error("Please verify your email to access this page", { duration: 2000 });
+        toast.error("Please verify your email to access this page", {
+          duration: 2000,
+        });
         return false;
       }
 
       if (admin) {
+        setIsAdmin(true);
         return true;
       } else if (parkingOwner) {
         if (!approved) {
-          toast.loading("Awaiting approval...", { duration: 3000 });
+          toast.loading("Approval required", { duration: 3000 });
           return false;
         }
         return true;
@@ -67,20 +63,25 @@ function App() {
     []
   );
 
-  const collections = useMemo(
-    () => [
-      ParkingOwnerCollection,
-      VehicleCollection,
-      DriverCollection,
-      UserCollection,
-      DbChangesCollection,
-      ParkingSlotsCollection,
-      ParkingLotRatesCollection,
-      ParkingLotCollection,
-      AdminCollection,
-    ],
-    []
-  );
+  //Now using the collections build to allow for dynamic collections
+  // const collections = useMemo(
+  //   () => [
+  //     ParkingOwnerCollection,
+  //     VehicleCollection,
+  //     DriverCollection,
+  //     UserCollection,
+  //     DbChangesCollection,
+  //     ParkingSlotsCollection,
+  //     ParkingLotRatesCollection,
+  //     ParkingLotCollection,
+  //     AdminCollection,
+  //   ],
+  //   []
+  // );
+
+  const collections = useMemo(() => {
+    return collectionsBuilder;
+  }, []);
 
   const { firebaseApp, firebaseConfigLoading, configError } =
     useInitialiseFirebase({
@@ -160,6 +161,7 @@ function App() {
 
             if (!canAccessMainView) {
               return (
+                //used a custom auth component to allow for custom login and signup
                 // <FirebaseLoginView
                 //   authController={authController}
                 //   firebaseApp={firebaseApp}
@@ -170,7 +172,6 @@ function App() {
                 <AuthComponent
                   authController={authController}
                   firebaseApp={firebaseApp}
-                  canAccessMainView={canAccessMainView}
                   logo="/logo/Icon-192x192.png"
                 />
               );
@@ -178,7 +179,7 @@ function App() {
 
             return (
               <Scaffold
-                name={"E-Parking-Admin"}
+                name={isAdmin ? "E-Parking-Admin" : "Parking Owner Dashboard"}
                 autoOpenDrawer={true}
                 logo="/logo/Icon-192x192.png"
                 includeDrawer={true}

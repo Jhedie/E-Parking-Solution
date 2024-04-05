@@ -19,14 +19,12 @@ import SignUp from "./SignUp";
 interface AuthViewProps {
   authController: FirebaseAuthController;
   firebaseApp: FirebaseApp;
-  canAccessMainView?: boolean;
   logo?: string;
 }
 
 export default function AuthComponent({
   authController,
   firebaseApp,
-  canAccessMainView,
   logo,
 }: AuthViewProps) {
   const modeState = useModeController();
@@ -64,24 +62,47 @@ export default function AuthComponent({
   async function signInUserOnPress(email: string, password: string) {
     if (email && password) {
       setIsLoading(true);
+
       setTimeout(() => {
-        toast
-          .promise(
-            signInWithEmailAndPassword(auth, email, password),
-            {
-              loading: "Signing in...",
-              success: (userCredential) =>
-                `User signed in, Welcome ${userCredential.user.displayName}!`,
-              error: (error) =>
-                `Failed to sign in. Please try again! ${error.message}`,
-            },
-            {
-              success: {
-                duration: 3000,
-              },
+        signInWithEmailAndPassword(auth, email, password)
+          .then(async (userCredential) => {
+            const idTokenResult = await userCredential.user.getIdTokenResult();
+            const { approved, rejected } = idTokenResult?.claims || {};
+
+            if (rejected === true) {
+              toast.error(
+                "Your account has been rejected. Please contact support"
+              );
+              setIsLoading(false);
+              return;
             }
-          )
-          .then(() => navigate("/app", { replace: true }));
+
+            if (approved === false) {
+              toast.error("Your account is not approved yet.");
+              setIsLoading(false);
+              return;
+            }
+            navigate("/app", { replace: true });
+            toast.success("Signed in successfully!");
+            toast.success(`Welcome, ${userCredential.user.displayName}!`);
+            setIsLoading(false);
+          })
+          .catch((error) => {
+            console.error("Failed to sign in: ", error);
+            if (error.code === "auth/user-not-found") {
+              toast.error("User not found. Please sign up!");
+            }
+            if (error.code === "auth/wrong-password") {
+              toast.error("Wrong password. Please try again!");
+            }
+            if (error.code === "auth/invalid-credential") {
+              toast.error("Invalid credentials. Please try again!");
+            }
+            if (error.code === "auth/too-many-requests") {
+              toast.error("Too many requests. Please try again later!");
+            }
+            setIsLoading(false);
+          });
       }, 1000);
     }
   }
@@ -151,7 +172,9 @@ export default function AuthComponent({
     sendPasswordResetEmail(auth, email)
       .then(() => {
         setIsResetPasswordModalOpen(false);
-        toast.success("Password reset email sent.");
+        toast.success(
+          "Password reset email sent. If your email exists, you will receive a password reset link."
+        );
       })
       .catch((error) => {
         toast.error(`Failed to send password reset email: ${error.message}`);
@@ -160,9 +183,11 @@ export default function AuthComponent({
 
   return (
     <div
-      className={"flex flex-col items-center justify-center p-4 min-h-screen"}
+      className={
+        "relative flex flex-col items-center justify-center p-4 min-h-screen overflow-hidden"
+      }
     >
-      <div className="absolute top-0 right-0 p-4">
+      <div className="absolute top-1 -right-1">
         <button
           className="btn btn-ghost tooltip tooltip-bottom"
           data-tip="Toggle Mode"

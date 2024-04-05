@@ -26,6 +26,7 @@ export class UserClientModel extends User {
   /** On request only: */
   static kPassword = "password";
   static kAdminKey = "adminKey";
+  static kStatus = "status";
 
   static fromEntity(entity: User): UserClientModel {
     return Object.assign(UserClientModel.empty(), entity);
@@ -37,7 +38,8 @@ export class UserClientModel extends User {
       "", // name
       "" as any, // role
       "", // email
-      "" // phoneNumber
+      "", // phoneNumber
+      "" // status
     );
   }
 
@@ -55,6 +57,7 @@ export class UserClientModel extends User {
       [UserClientModel.kRole]: this.role,
       [UserClientModel.kEmail]: this.email,
       [UserClientModel.kPhoneNumber]: this.phoneNumber,
+      [UserClientModel.kStatus]: this.status,
     };
   }
 
@@ -83,7 +86,8 @@ export class UserClientModel extends User {
         body[UserClientModel.kName],
         body[UserClientModel.kRole],
         body[UserClientModel.kEmail],
-        body[UserClientModel.kPhoneNumber]
+        body[UserClientModel.kPhoneNumber],
+        body[UserClientModel.kStatus]
       ),
       {
         password: body[UserClientModel.kPassword],

@@ -11,21 +11,33 @@ class AccountsService {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   }
 
-  async approveParkingOwner(uid: string): Promise<User> {
-    const user = await this.getUser(uid);
+  async approveParkingOwner(uid: string): Promise<void> {
+    const user = await admin.auth().getUser(uid);
     try {
       const currentClaims =
         (await admin.auth().getUser(uid)).customClaims || {};
-      const updatedClaims = { ...currentClaims, approved: true };
+      const updatedClaims = {
+        ...currentClaims,
+        approved: true,
+        rejected: false,
+      };
 
       await admin.auth().setCustomUserClaims(uid, updatedClaims);
+
+      // Update the user's status in Firestore to "approved"
+      await admin
+        .firestore()
+        .collection("users")
+        .doc(uid)
+        .update({ status: "approved" });
 
       try {
         await this.sendApprovalUpdateEmail(
           user.email,
           "Hi, Your account has been approved",
           "You can now access all your account and start serving your customers",
-          "Get Started"
+          "Get Started",
+          "http://localhost:5173/app/"
         );
       } catch (emailError) {
         console.error(
@@ -33,17 +45,77 @@ class AccountsService {
           emailError
         );
       }
-
-      return user;
     } catch (error) {
       console.error("Error during the approval process:", error);
       // Attempt to send a failure email if there was an error other than email sending
       try {
         await this.sendApprovalUpdateEmail(
+          "jeddiahawuku12@gmail.com",
+          `Hi, There was an error approving user account ${user.email}`,
+          "Kindly Investigate",
+          "Admin Dashboard",
+          "http://localhost:5173/app/"
+        );
+      } catch (emailError) {
+        console.error("Failed to send error email:", emailError);
+      }
+
+      // Rethrow the original error with a more specific message if possible
+      if (error instanceof Error) {
+        throw new HttpResponseError(404, error.name, error.message);
+      } else {
+        throw new HttpResponseError(
+          500,
+          "APPROVAL_PROCESS_ERROR",
+          "An error occurred during the approval process"
+        );
+      }
+    }
+  }
+
+  async rejectParkingOwner(uid: string): Promise<void> {
+    const user = await admin.auth().getUser(uid);
+    try {
+      const currentClaims =
+        (await admin.auth().getUser(uid)).customClaims || {};
+      const updatedClaims = {
+        ...currentClaims,
+        approved: false,
+        rejected: true,
+      };
+
+      await admin.auth().setCustomUserClaims(uid, updatedClaims);
+
+      // Update the user's status in Firestore instead of deleting
+      await admin
+        .firestore()
+        .collection("users")
+        .doc(uid)
+        .update({ status: "rejected" });
+
+      try {
+        await this.sendApprovalUpdateEmail(
           user.email,
-          "Hi, There was an error approving your account",
-          "Please contact support for further assistance",
-          "Contact Support"
+          "Hi, Your parking owner account application has been rejected",
+          "Kindly contact the team for more information",
+          "Contact Support",
+          "mailto:jeddiahawuku12@gmail.com"
+        );
+      } catch (emailError) {
+        console.error(
+          "Failed to send rejection email, but account was rejected:",
+          emailError
+        );
+      }
+    } catch (error) {
+      console.error("Error during the rejection process:", error);
+      try {
+        await this.sendApprovalUpdateEmail(
+          "jeddiahawuku12@gmail.com",
+          `Hi, There was an error rejecting user account ${user.email}`,
+          "Kindly Investigate",
+          "Admin Dashboard",
+          "http://localhost:5173/app/"
         );
       } catch (emailError) {
         console.error("Failed to send error email:", emailError);
@@ -91,7 +163,7 @@ class AccountsService {
       const roleSpecificCollection = admin.firestore().collection(user.role);
       await roleSpecificCollection.doc(user.uid).set(documentData);
 
-      if (user.role == "parkingOwner") {
+      if (user.role === "parkingOwner") {
         // inform the admins
         const admins = await admin.firestore().collection("admin").get();
         admins.forEach((admin) => {
@@ -205,34 +277,43 @@ class AccountsService {
   }
 
   async getUser(uid: string): Promise<User> {
-    const user = await admin
-      .auth()
-      .getUser(uid)
-      .catch((err) => {
+    try {
+      // Get the user from Firebase Authentication
+      const userRecord = await admin.auth().getUser(uid);
+
+      // Get the user's Firestore data
+      const userDoc = await admin
+        .firestore()
+        .collection("users")
+        .doc(uid)
+        .get();
+
+      if (!userDoc.exists) {
+        throw new HttpResponseError(
+          404,
+          "USER_NOT_FOUND",
+          "User not found in firestore"
+        );
+      }
+
+      // Assume fromDocumentData is a method that properly formats the document data into a user object
+      const userFirestore = UserFirestoreModel.fromDocumentData(userDoc.data());
+
+      // Return a new instance of UserFirestoreModel with the UID
+      return userFirestore.copyWith({ uid: userRecord.uid });
+    } catch (err: any) {
+      if (err.code === "auth/user-not-found") {
         throw new HttpResponseError(404, "USER_NOT_FOUND", "User not found");
-      });
+      }
+      // Re-throw the error if it's not a user-not-found error
+      throw err;
+    }
+  }
 
-    const userFirestoreData = await admin
-      .firestore()
-      .collection("users")
-      .doc(uid)
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          return doc.data();
-        } else {
-          throw new HttpResponseError(
-            404,
-            "USER_NOT_FOUND",
-            "User not found in firestore"
-          );
-        }
-      });
-
-    const userFirestore: UserFirestoreModel =
-      UserFirestoreModel.fromDocumentData(userFirestoreData);
-
-    return userFirestore.copyWith({ uid: user.uid });
+  async deleteUser(uid: string): Promise<void> {
+    await admin.auth().deleteUser(uid);
+    //delete the user from the firestore
+    await admin.firestore().collection("users").doc(uid).delete();
   }
 
   sendMail = async (user: UserRecord, link: string): Promise<any> => {
@@ -273,7 +354,8 @@ class AccountsService {
     email: string,
     approvalMessage: string,
     furtherInformation: string,
-    actionMessage: string
+    actionMessage: string,
+    link: string
   ): Promise<any> => {
     const to: string = email;
     const from: string = "jeddiahawuku12@gmail.com";
@@ -286,6 +368,7 @@ class AccountsService {
         ApprovalMessage: approvalMessage,
         FurtherInformation: furtherInformation,
         ActionMessage: actionMessage,
+        updateLink: link,
       },
     };
 

@@ -1,4 +1,10 @@
-import { buildCollection } from "@firecms/core";
+import {
+  EntityCallbacks,
+  EntityOnFetchProps,
+  FireCMSContext,
+  buildCollection,
+  buildProperty,
+} from "@firecms/core";
 
 export type ParkingLot = {
   Capacity: number;
@@ -9,7 +15,6 @@ export type ParkingLot = {
     Longitude: string;
     Latitude: string;
   };
-  LotId: string;
   Facilities: string[];
   Occupancy: number;
   Description: string;
@@ -22,6 +27,24 @@ export type ParkingLot = {
     country: string;
   };
 };
+
+
+const parkingOwnerCallbacks: EntityCallbacks = {
+  onFetch({ collection, context, entity, path }: EntityOnFetchProps) {
+    if (!context.authController.user) {
+      console.log("Not permitted");
+      throw new Error("Not permitted"); // Throw an error to indicate unauthorized access
+    }
+    return entity; // Explicitly return the entity
+  },
+  onPreSave: ({ collection, path, entityId, values, status, context }) => {
+    if (values.Owner === "") {
+      values.Owner = context.authController.user?.uid;
+    }
+    return values;
+  },
+};
+
 export const ParkingLotCollection = buildCollection<ParkingLot>({
   id: "parkingLots",
   name: "ParkingLots",
@@ -48,6 +71,20 @@ export const ParkingLotCollection = buildCollection<ParkingLot>({
       validation: {
         required: true,
       },
+      enumValues: [
+        {
+          id: "Low",
+          label: "Low",
+        },
+        {
+          id: "Medium",
+          label: "Medium",
+        },
+        {
+          id: "High",
+          label: "High",
+        },
+      ],
     },
     OperatingHours: {
       dataType: "string",
@@ -79,13 +116,6 @@ export const ParkingLotCollection = buildCollection<ParkingLot>({
         },
       },
     },
-    LotId: {
-      dataType: "string",
-      name: "LotId",
-      validation: {
-        required: true,
-      },
-    },
     Facilities: {
       dataType: "array",
       name: "Facilities",
@@ -111,7 +141,6 @@ export const ParkingLotCollection = buildCollection<ParkingLot>({
     },
     Owner: {
       dataType: "string",
-      readOnly: true,
       name: "Owner",
       validation: {
         required: true,
@@ -149,4 +178,6 @@ export const ParkingLotCollection = buildCollection<ParkingLot>({
       },
     },
   },
+
+  callbacks: parkingOwnerCallbacks,
 });

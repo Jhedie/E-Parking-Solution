@@ -9,26 +9,28 @@ export default function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <div className="absolute top-0 right-0 p-4">
+    <div className="relative flex flex-col items-center justify-center p-4 min-h-screen overflow-hidden">
+      <div className="absolute top-1 -right-1">
         <button
           className="btn btn-ghost tooltip tooltip-bottom"
           data-tip="Toggle Mode"
           onClick={() => modeController.toggleMode()}
         >
-          {modeController.mode === "dark" ? <DarkModeIcon /> : <Brightness5Icon />}
+          {modeController.mode === "dark" ? (
+            <DarkModeIcon />
+          ) : (
+            <Brightness5Icon />
+          )}
         </button>
       </div>
       <h1>Welcome to the landing page</h1>
-      <p>
-        This is a custom landing page. You can use it to display information
-        about your project or to implement a custom login view.
+      <p className="text-center mt-4">
+        This is a custom landing page. Information about the System will be
+        shown here
       </p>
-      <p>
-        The current mode is <strong>{modeController.mode}</strong>
-      </p>
-      <button className="btn" onClick={() => navigate("/app")}>
-        Go to the admin panel
+
+      <button className="btn mt-4" onClick={() => navigate("/app")}>
+        Proceed
       </button>
     </div>
   );

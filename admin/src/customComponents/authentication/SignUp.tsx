@@ -372,6 +372,7 @@ const SignUp: React.FC<SignUpProps> = ({
               </label>
 
               <button
+              type="submit"
                 onClick={() => formikProps.handleSubmit()}
                 className="btn btn-primary w-full"
               >

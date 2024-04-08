@@ -298,3 +298,14 @@ https://medium.com/@elijahobara/how-to-send-emails-using-python-django-and-googl
   Deleting a User: Remove a document from the users collection. As with creation, this can be done programmatically through your app or manually via the Firebase Console.
   Summary
   These triggers are part of the serverless architecture provided by Firebase, allowing you to execute backend logic in response to database events without needing to manage a server. The corrected onDeleted trigger will ensure that when a user is deleted, not only is their authentication record removed (if you're also deleting the user from Firebase Auth), but all related documents in Firestore are cleaned up based on the user's role, maintaining data integrity and preventing orphaned records.
+
+- securely querying data:
+  https://firebase.google.com/docs/firestore/security/rules-query
+
+  https://geofirestore.com/#examples
+
+  https://github.com/wmandai/geofire
+
+  https://github.com/MichaelSolati/geofirestore-js#geofirestorequeryquerycriteria
+
+  https://firebase.google.com/docs/firestore/solutions/geoqueries#web-modular-api

@@ -1,5 +1,4 @@
 import { firestore } from "firebase-admin";
-import { GeoPoint } from "firebase-admin/firestore";
 import { ParkingLot } from "../../../parkingLot";
 import FieldValue = firestore.FieldValue;
 import Timestamp = firestore.Timestamp;
@@ -25,7 +24,7 @@ export class ParkingLotFirestoreModel extends ParkingLot {
       "", // LotId
       "", // LotName
       "", // Description
-      new GeoPoint(0, 0), // Default Coordinates as a GeoPoint
+      null, // Default Coordinates
       "", // Owner
       {
         street: "",
@@ -58,7 +57,10 @@ export class ParkingLotFirestoreModel extends ParkingLot {
       [ParkingLotFirestoreModel.kLotId]: lotId ?? this.LotId,
       [ParkingLotFirestoreModel.kLotName]: this.LotName,
       [ParkingLotFirestoreModel.kDescription]: this.Description,
-      [ParkingLotFirestoreModel.kCoordinates]: this.Coordinates,
+      [ParkingLotFirestoreModel.kCoordinates]: new firestore.GeoPoint(
+        this.Coordinates.Latitude,
+        this.Coordinates.Longitude
+      ),
       [ParkingLotFirestoreModel.kOwner]: this.Owner,
       [ParkingLotFirestoreModel.kAddress]: this.Address,
       [ParkingLotFirestoreModel.kCapacity]: this.Capacity,

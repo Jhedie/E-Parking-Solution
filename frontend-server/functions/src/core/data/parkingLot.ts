@@ -1,6 +1,3 @@
-import { firestore } from "firebase-admin";
-import GeoPoint = firestore.GeoPoint;
-
 export type Address = {
   street: string;
   city: string;
@@ -15,12 +12,17 @@ export type Facility =
   | "Bicycle Parking"
   | "Motorcycle Parking";
 
+export type Coordinate = {
+  Latitude: number;
+  Longitude: number;
+};
+
 export class ParkingLot {
   constructor(
     public readonly LotId: string | undefined,
     public readonly LotName: string,
     public readonly Description: string,
-    public readonly Coordinates: GeoPoint,
+    public readonly Coordinates: Coordinate,
     public readonly Owner: string,
     public readonly Address: Address,
     public readonly Capacity: number,
@@ -36,7 +38,7 @@ export class ParkingLot {
       undefined, // LotId is undefined for an empty object
       "", // Empty LotName
       "", // Empty Description
-      new GeoPoint(0, 0), // Default Coordinates
+      null, // Default Coordinates
       "", // Empty owner
       {
         street: "",

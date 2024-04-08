@@ -1,4 +1,3 @@
-import { GeoPoint } from "firebase-admin/firestore";
 import { ParkingLot } from "../../../parkingLot";
 
 export class ParkingLotClientModel extends ParkingLot {
@@ -25,7 +24,7 @@ export class ParkingLotClientModel extends ParkingLot {
       "", // LotId
       "", // LotName
       "", // Description
-      new GeoPoint(0, 0), // Default Coordinates
+      null, // Default Coordinates
       "", // Owner
       {
         street: "",
@@ -43,7 +42,6 @@ export class ParkingLotClientModel extends ParkingLot {
     );
   }
 
-  //TODO: Add validation for parking lot data
   private static _validate(body: any) {
     //Validation logic to be done here
   }

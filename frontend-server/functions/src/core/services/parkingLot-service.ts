@@ -1,13 +1,28 @@
 import * as admin from "firebase-admin";
 import { firestore } from "firebase-admin";
+import * as geofirestore from "geofirestore";
 import { ParkingLotFirestoreModel } from "../data/models/parkingLot/firestore/parkingLot-firestore-model";
 import { PartialParkingLotFirestoreModel } from "../data/models/parkingLot/firestore/partial-parkingLot-firestore-model";
 import { ParkingLot } from "../data/parkingLot";
+
 import FieldValue = firestore.FieldValue;
 
 class ParkingLotService {
   private collection() {
     return admin.firestore().collection("parkingLots");
+  }
+
+  private geoFirestore: geofirestore.GeoFirestore;
+
+  private geocollection: geofirestore.GeoCollectionReference;
+  /**
+   * Explicitly initializes GeoFirestore and related resources.
+   * This method should be called after Firebase Admin SDK has been initialized.
+   */
+  initializeGeoFirestore() {
+    const firestoreInstance = admin.firestore();
+    this.geoFirestore = geofirestore.initializeApp(firestoreInstance);
+    this.geocollection = this.geoFirestore.collection("parkingLotsGeohash");
   }
 
   /**
@@ -16,7 +31,7 @@ class ParkingLotService {
    * @param {string} [LotId] - The ID of the parking lot. If not provided, a DocumentReference for a new parking lot is returned.
    * @returns {DocumentReference} A DocumentReference that can be used to read or write data to the specified parking lot document.
    */
-  private doc(LotId?: string) {
+  private doc(LotId?: string): firestore.DocumentReference {
     // If no LotId is provided, return a DocumentReference for a new parking lot
     if (!LotId) return this.collection().doc();
 
@@ -33,6 +48,17 @@ class ParkingLotService {
   async createParkingLot(parkingLot: ParkingLot): Promise<ParkingLot> {
     // Get a refernce to a new document with an auto-generated ID in the firebase collection
     const parkingLotRef = this.doc();
+    console.log("parkingLot in the service", parkingLot);
+    console.log("type of lat", typeof parkingLot.Coordinates.Latitude);
+    console.log("type of lon", typeof parkingLot.Coordinates.Latitude);
+    this.geocollection.add({
+      coordinates: new firestore.GeoPoint(
+        parkingLot.Coordinates.Latitude,
+        parkingLot.Coordinates.Longitude
+      ),
+      lotId: parkingLotRef.id,
+    });
+
     // Convert the product entity to Firestore document data including the auto-generated ID and the server timestamp
     const documentData = ParkingLotFirestoreModel.fromEntity(
       parkingLot
@@ -91,6 +117,7 @@ class ParkingLotService {
     // Delete the parking lot document
     await this.doc(parkingLotId).delete();
   }
+
   private async deleteParkingLotRatesByParkingLotId(
     parkingLotId: string
   ): Promise<void> {
@@ -141,6 +168,40 @@ class ParkingLotService {
 
     // Wait for all delete operations to complete
     await Promise.all(deletePromises);
+  }
+
+  async geosearchParkingLots(
+    lat: number,
+    lon: number,
+    radius: number
+  ): Promise<ParkingLot[]> {
+    console.log("lat", lat);
+    console.log("lon", lon);
+    console.log("radius", radius);
+
+    console.log("geocollection", this.geocollection);
+    // Example GeoQuery, adjust according to your needs
+    const query = this.geocollection.near({
+      center: new firestore.GeoPoint(lat, lon),
+      radius: radius,
+    });
+
+    // Await the query to get results
+    const value = await query.get().then((value) => {
+      console.log("value", value);
+      return value;
+    });
+    const results = value.docs.map((doc) => doc.data()); // Process results as needed
+
+    //for each of the results I want to get the entire ParkingLot document using the lotId
+    const parkingLotsFromSearch = await Promise.all(
+      results.map(async (result) => {
+        const parkingLot = await this.doc(result.lotId).get();
+        return ParkingLotFirestoreModel.fromDocumentData(parkingLot.data());
+      })
+    );
+
+    return parkingLotsFromSearch;
   }
 }
 

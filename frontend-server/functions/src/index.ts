@@ -1,6 +1,7 @@
 import * as admin from "firebase-admin";
 import * as v2 from "firebase-functions/v2";
 import { apiApp } from "./api";
+import { parkingLotService } from "./core/services/parkingLot-service";
 import { eventTriggers } from "./event-triggers";
 const serviceAccount = require("../e-parking-app-b22cb-firebase-adminsdk-d5yi5-fb98f59c3c.json");
 /**
@@ -24,6 +25,13 @@ export type MyClaims = "authenticated" | "approved" | UserRole;
  * This is required to use the Firebase Admin SDK in the application.
  */
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+
+/**
+ * Initializes the GeoFirestore service.
+ *
+ * This is required to use the GeoFirestore service in the application.
+ */
+parkingLotService.initializeGeoFirestore();
 
 /**
  * The API endpoint for the application.

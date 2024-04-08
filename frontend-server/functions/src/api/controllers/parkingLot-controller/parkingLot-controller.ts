@@ -48,6 +48,12 @@ export class ParkingLotController implements Controller {
       "parkingOwner",
       "admin",
     ]);
+
+    httpServer.post("/parkingLot/geosearch", this.geosearchParkingLots, [
+      "driver",
+      "admin",
+      "parkingOwner",
+    ]);
   }
 
   private readonly createParkingLot: RequestHandler = async (
@@ -59,6 +65,9 @@ export class ParkingLotController implements Controller {
       req.body,
       req.auth?.uid
     );
+
+    console.log("Creating parking lot with...", parkingLotFromInput);
+
     const parkingLot = await parkingLotService.createParkingLot(
       parkingLotFromInput
     );
@@ -217,6 +226,33 @@ export class ParkingLotController implements Controller {
     await parkingLotService.deleteParkingLotById(req.params["lotId"]);
     res.status(204).send({
       message: `Parking lot with id ${req.params["lotId"]} has been deleted successfully.`,
+    });
+    next();
+  };
+
+  private readonly geosearchParkingLots: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { lat, lon, radius } = req.body;
+    if (!lat || !lon || !radius) {
+      throw new HttpResponseError(
+        400,
+        "BAD REQUEST",
+        "Please inform lat, lon and radius on the query string"
+      );
+    }
+    const parkingLots = await parkingLotService.geosearchParkingLots(
+      parseFloat(lat as string),
+      parseFloat(lon as string),
+      parseFloat(radius as string)
+    );
+    const outputList = parkingLots.map((parkingLot) =>
+      ParkingLotClientModel.fromEntity(parkingLot).toBodyFullParkingLot()
+    );
+    res.send({
+      parkingLots: outputList,
     });
     next();
   };

@@ -1,9 +1,11 @@
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import "expo-dev-client";
 import { LinearGradient } from "expo-linear-gradient";
+import { debounce } from "lodash";
+import Geocoder from "react-native-geocoding";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-import React, { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -91,7 +93,6 @@ const CARD_WIDTH = width * 0.9;
 
 const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
   const { user } = useAuth();
-  const [search, setSearch] = useState("");
 
   // const [token, setToken] = useState<string>("");
   // useEffect(() => {
@@ -159,9 +160,9 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
   // _map is a mutable reference object where we store the map instance.
   // useRef is used so that the value persists across re-renders without causing additional renders.
   // Initial value is set to null, it will be assigned when the map is initialized.
-  const _map = React.useRef<MapView>(null);
+  const _map = useRef<MapView>(null);
   // scrollViewRef is a mutable reference object where we store the ScrollView instance.
-  const scrollViewRef = React.useRef<ScrollView>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   let mapIndex = 0;
   const mapAnimation: Animated.Value = new Animated.Value(0);
@@ -176,7 +177,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
     scrollViewRef.current?.scrollTo({ x: x, y: 0, animated: true });
   };
 
-  const interpolations = parkingLots?.["parkingLots"].map((_, index) => {
+  const interpolations = parkingLots?.["parkingLots"]?.map((_, index) => {
     const inputRange = [
       (index - 1) * CARD_WIDTH,
       index * CARD_WIDTH,
@@ -240,6 +241,64 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
     });
   });
 
+  //GEOLOCATION SEARCH
+
+  //LOCATION_CHANGE_THRESHOLD is a small number that represents the minimum change in coordinates to consider the map's center as having moved. This helps in ignoring minor, insignificant changes.
+  const LOCATION_CHANGE_THRESHOLD = 0.001;
+  const [markerPosition, setMarkerPosition] = useState({
+    latitude: location?.coords.latitude as number,
+    longitude: location?.coords.longitude as number
+  });
+
+  const isMarkerVisible =
+    Math.abs(markerPosition.latitude - (location?.coords.latitude as number)) >
+      LOCATION_CHANGE_THRESHOLD ||
+    Math.abs(
+      markerPosition.longitude - (location?.coords.longitude as number)
+    ) > LOCATION_CHANGE_THRESHOLD;
+
+  const [showSearchButton, setShowSearchButton] = useState(false);
+
+  useEffect(() => {
+    Geocoder.init(process.env.GEOCODER_API_KEY as string);
+  }, []);
+
+  const [search, setSearch] = useState("");
+  const fetchAddress = async () => {
+    try {
+      const { latitude, longitude } = markerPosition;
+      const response = await Geocoder.from(latitude, longitude);
+      const address = response.results[0].formatted_address;
+      console.log(address);
+      return address;
+    } catch (error) {
+      console.error(error);
+      return "Address not found";
+    }
+  };
+
+  const fetchNearbyPlaces = async () => {
+    const fetchedAddress = await fetchAddress();
+    setSearch(fetchedAddress);
+    // const places = await fetchPlacesNearby(
+    //   markerPosition.latitude,
+    //   markerPosition.longitude
+    // );
+    // Handle the fetched places as needed
+    console.log("fetching nearby places");
+  };
+
+  const debouncedFetchNearbyPlaces = useCallback(
+    debounce(() => {
+      fetchNearbyPlaces();
+    }, 1000),
+    [markerPosition]
+  ); // 1000ms = 1 second debounce time
+
+  useEffect(() => {
+    debouncedFetchNearbyPlaces();
+  }, [debouncedFetchNearbyPlaces, markerPosition]);
+
   return isLoading ? (
     <ActivityIndicator />
   ) : (
@@ -252,14 +311,35 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
       >
         <MapView
           ref={_map}
-          onPress={() => _map.current?.animateToRegion(initialMapRegion, 1000)}
+          // onPress={() => _map.current?.animateToRegion(initialMapRegion, 1000)}
           style={styles.map}
           provider={
             Platform.OS === "android" ? PROVIDER_GOOGLE : PROVIDER_DEFAULT
           }
           initialRegion={initialMapRegion}
+          onRegionChangeComplete={(region) => {
+            const distanceLat = Math.abs(
+              region.latitude - (location?.coords.latitude as number)
+            );
+            const distanceLng = Math.abs(
+              region.longitude - (location?.coords.longitude as number)
+            );
+
+            if (
+              distanceLat > LOCATION_CHANGE_THRESHOLD ||
+              distanceLng > LOCATION_CHANGE_THRESHOLD
+            ) {
+              setShowSearchButton(true);
+            } else {
+              setShowSearchButton(false);
+            }
+            setMarkerPosition({
+              latitude: region.latitude,
+              longitude: region.longitude
+            });
+          }}
         >
-          {parkingLots?.["parkingLots"].map((parkingLot, index) => {
+          {parkingLots?.["parkingLots"]?.map((parkingLot, index) => {
             const scaleStyle = {
               transform: [
                 {
@@ -300,6 +380,18 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
               style={{ width: 35, height: 35 }}
             />
           </Marker>
+          {isMarkerVisible && (
+            <Marker
+              coordinate={markerPosition}
+              title="Search Location"
+              style={{ width: 35, height: 35 }}
+            >
+              <Image
+                source={require("../../assets/images/marker-pin-1873372_1280.png")}
+                style={{ width: 35, height: 35 }}
+              />
+            </Marker>
+          )}
         </MapView>
 
         <View
@@ -360,6 +452,26 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                 />
               </TouchableOpacity>
             </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center"
+              }}
+            >
+              {showSearchButton && (
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "black",
+                    padding: 10,
+                    borderRadius: 20,
+                    marginTop: 10,
+                    paddingHorizontal: 10 * 1.5
+                  }}
+                >
+                  <Text style={{ color: "white" }}>Search This Area</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </LinearGradient>
         </View>
 
@@ -418,7 +530,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                 marginHorizontal: 10 * 1.5
               }}
             >
-              {parkingLots?.["parkingLots"].map((parkingLot) => {
+              {parkingLots?.["parkingLots"]?.map((parkingLot) => {
                 return (
                   <TouchableOpacity
                     onPress={() => console.log("card pressed")}

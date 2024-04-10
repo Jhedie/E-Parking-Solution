@@ -5,6 +5,7 @@ export class ParkingReservationClientModel extends ParkingReservation {
   static kUserId = "userId";
   static kSlotId = "slotId";
   static kLotId = "lotId";
+  static kVehicleId = "vehicleId";
   static kStartTime = "startTime";
   static kEndTime = "endTime";
   static kRateNumber = "rateNumber";
@@ -24,6 +25,7 @@ export class ParkingReservationClientModel extends ParkingReservation {
       "", // userId
       "", // slotId
       "", // lotId
+      "", // vehicleId
       null, // startTime
       null, // endTime
       0, // rateNumber
@@ -35,7 +37,6 @@ export class ParkingReservationClientModel extends ParkingReservation {
     );
   }
 
-  //TODO: Add necessary validations if needed
   private static _validate(body: any) {}
 
   static validate(body: any, userId: string): ParkingReservationClientModel {
@@ -46,6 +47,7 @@ export class ParkingReservationClientModel extends ParkingReservation {
       userId, // userId
       body[this.kSlotId],
       body[this.kLotId],
+      body[this.kVehicleId],
       new Date(body[this.kStartTime]),
       new Date(body[this.kEndTime]),
       body[this.kRateNumber],
@@ -62,6 +64,7 @@ export class ParkingReservationClientModel extends ParkingReservation {
       [ParkingReservationClientModel.kReservationId]: this.reservationId,
       [ParkingReservationClientModel.kSlotId]: this.slotId,
       [ParkingReservationClientModel.kLotId]: this.lotId,
+      [ParkingReservationClientModel.kVehicleId]: this.vehicleId,
       [ParkingReservationClientModel.kStartTime]: this.startTime.toISOString(),
       [ParkingReservationClientModel.kEndTime]: this.endTime.toISOString(),
       [ParkingReservationClientModel.kRateNumber]: this.rateNumber,

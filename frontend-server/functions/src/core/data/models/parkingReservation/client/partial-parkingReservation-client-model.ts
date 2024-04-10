@@ -13,6 +13,9 @@ export class PartialParkingReservationClientModel {
     if (body[ParkingReservationClientModel.kSlotId] !== undefined) {
       res.slotId = body[ParkingReservationClientModel.kSlotId];
     }
+    if (body[ParkingReservationClientModel.kVehicleId] !== undefined) {
+      res.vehicleId = body[ParkingReservationClientModel.kVehicleId];
+    }
     if (body[ParkingReservationClientModel.kStartTime] !== undefined) {
       res.startTime = new Date(body[ParkingReservationClientModel.kStartTime]);
     }

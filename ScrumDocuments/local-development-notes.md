@@ -288,6 +288,17 @@ https://medium.com/@elijahobara/how-to-send-emails-using-python-django-and-googl
 - Modals
   https://github.com/jmarioste/daisyui-modal/blob/main/components/Modal.tsx
 
+- Event triggers on deletion (side note given that I made use of firebase data intergrity has to be manually managed hence the need to set up event triggers to handle cascading deletes and other actions as and when needed. Event triggers are powerful but this may be a bad design decision choosing a nosql data but at least there is a work around to handle this issue). Below are some further notes:
+  Triggering Mechanism
+  With the correction in place, here's how the triggers would be activated:
+  User Creation (onCreated): This trigger is activated whenever a new document is created in the users collection. The Firestore path "users/{userId}" specifies that the trigger listens to the users collection and captures the userId of the created document. When a new user document is added to this collection, the function executes the logic defined in the handler, which, in this case, involves logging the creation event and potentially other business logic.
+  User Deletion (onDeleted): After correcting the trigger to use onDocumentDeleted, this trigger will activate whenever a document in the users collection is deleted. Similar to the creation trigger, it listens to the users collection but is specifically interested in document deletions. When a user document is deleted, the function executes the deletion logic, which includes deleting related documents in other collections based on the user's role.
+  How to Trigger These Functions
+  Creating a User: Simply add a new document to the users collection in Firestore. This can be done through a Firestore client in your app or directly via the Firebase Console.
+  Deleting a User: Remove a document from the users collection. As with creation, this can be done programmatically through your app or manually via the Firebase Console.
+  Summary
+  These triggers are part of the serverless architecture provided by Firebase, allowing you to execute backend logic in response to database events without needing to manage a server. The corrected onDeleted trigger will ensure that when a user is deleted, not only is their authentication record removed (if you're also deleting the user from Firebase Auth), but all related documents in Firestore are cleaned up based on the user's role, maintaining data integrity and preventing orphaned records.
+
 - Firebase Admin CMS
   Firecms
 

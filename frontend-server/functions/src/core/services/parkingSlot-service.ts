@@ -30,7 +30,8 @@ class ParkingSlotService {
   }
 
   async createMultipleParkingSlots(
-    parkingSlots: ParkingSlot[]
+    parkingSlots: ParkingSlot[],
+    transaction?: firestore.Transaction
   ): Promise<ParkingSlot[]> {
     const batch = admin.firestore().batch();
     const parkingSlotRefs: firestore.DocumentReference[] = [];

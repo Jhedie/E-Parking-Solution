@@ -5,7 +5,7 @@ export type Position = {
 
 export type status = "Occupied" | "Available" | "Reserved";
 
-export type type = "regular" | "handicapped" | "electric" | "motorcycle";
+export type type = "regular" | "handicapped" | "electric";
 
 class ParkingSlot {
   public readonly slotId: string;

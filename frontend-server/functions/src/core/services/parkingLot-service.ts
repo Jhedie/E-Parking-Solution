@@ -3,7 +3,11 @@ import { firestore } from "firebase-admin";
 import * as geofirestore from "geofirestore";
 import { ParkingLotFirestoreModel } from "../data/models/parkingLot/firestore/parkingLot-firestore-model";
 import { PartialParkingLotFirestoreModel } from "../data/models/parkingLot/firestore/partial-parkingLot-firestore-model";
+import { ParkingLotRateFirestoreModel } from "../data/models/parkingLotRates/firestore/parkingLotRate-firebase-model";
+import { ParkingSlotFirestoreModel } from "../data/models/parkingSlot/firestore/parkingSlot-firestore-model";
 import { ParkingLot } from "../data/parkingLot";
+import { ParkingLotRate } from "../data/parkingLotRates";
+import { ParkingSlot } from "../data/parkingSlot";
 
 import FieldValue = firestore.FieldValue;
 
@@ -142,6 +146,7 @@ class ParkingLotService {
     );
     await Promise.all(deletePromises);
   }
+
   private async deleteParkingSlotsByParkingLotId(
     parkingLotId: string
   ): Promise<void> {
@@ -168,6 +173,62 @@ class ParkingLotService {
 
     // Wait for all delete operations to complete
     await Promise.all(deletePromises);
+  }
+
+  async createParkingLotWithSlotsAndRates(
+    parkingLot: ParkingLot,
+    ownerID: string,
+    parkingSlots: ParkingSlot[],
+    parkingRates: ParkingLotRate[]
+  ): Promise<ParkingLot> {
+    const db = admin.firestore();
+
+    // Generate a new document reference for the parking lot so we can use its ID for slots and rates
+    const parkingLotRef = this.collection().doc();
+
+    // Start a transaction
+    await db.runTransaction(async (transaction) => {
+      // Prepare the parking lot data
+      const parkingLotData = ParkingLotFirestoreModel.fromEntity(
+        parkingLot
+      ).toDocumentData(
+        parkingLotRef.id,
+        firestore.FieldValue.serverTimestamp()
+      );
+
+      // Set the parking lot document within the transaction
+      transaction.set(parkingLotRef, parkingLotData);
+
+      // Prepare and set parking slots data
+      parkingSlots.forEach((slot) => {
+        const slotRef = db.collection("parkingSlots").doc(); // Generate a new doc for each slot
+        const slotData = ParkingSlotFirestoreModel.fromEntity({
+          ...slot,
+          lotId: parkingLotRef.id,
+        }).toDocumentData(slotRef.id, firestore.FieldValue.serverTimestamp());
+        transaction.set(slotRef, slotData);
+      });
+
+      // Prepare and set parking rates data
+      parkingRates.forEach((rate) => {
+        const rateRef = db.collection("parkingLotRates").doc(); // Generate a new doc for each rate
+        const rateData = ParkingLotRateFirestoreModel.fromEntity({
+          ...rate,
+          lotId: parkingLotRef.id,
+        }).toDocumentData(rateRef.id, firestore.FieldValue.serverTimestamp());
+        transaction.set(rateRef, rateData);
+      });
+    });
+
+    // Since the transaction does not return the created object, manually fetch or construct the parking lot object to return
+    // Fetching the created parking lot from Firestore immediately after the transaction
+    const createdParkingLotSnapshot = await parkingLotRef.get();
+    if (!createdParkingLotSnapshot.exists) {
+      throw new Error("Failed to create parking lot.");
+    }
+    return ParkingLotFirestoreModel.fromDocumentData(
+      createdParkingLotSnapshot.data()
+    );
   }
 
   async geosearchParkingLots(

@@ -10,7 +10,22 @@ export type Facility =
   | "EV Charging"
   | "Disabled Access"
   | "Bicycle Parking"
-  | "Motorcycle Parking";
+  | "Security Cameras"
+  | "Motorcycle Parking"
+  | string;
+
+export type OperatingHour = {
+  day:
+    | "Monday"
+    | "Tuesday"
+    | "Wednesday"
+    | "Thursday"
+    | "Friday"
+    | "Saturday"
+    | "Sunday";
+  start: string;
+  end: string;
+};
 
 export type Coordinate = {
   Latitude: number;
@@ -26,10 +41,10 @@ export class ParkingLot {
     public readonly Owner: string,
     public readonly Address: Address,
     public readonly Capacity: number,
-    public readonly Occupancy: number,
-    public readonly LiveStatus: "Low" | "Medium" | "High",
-    public readonly OperatingHours: string,
-    public readonly Facilities: Facility[],
+    public readonly Occupancy: number, // Number of slots occupied: This will be default 0
+    public readonly LiveStatus: "Low" | "Medium" | "High", // LiveStatus: This will be default "Low"
+    public readonly OperatingHours: OperatingHour[], // [day: Monday: start: "09:00", end: "17:00"...]
+    public readonly Facilities: Facility[], // Facilities: This will be default []
     public readonly createdAt: Date
   ) {}
 
@@ -50,7 +65,7 @@ export class ParkingLot {
       0, // Capacity
       0, // Occupancy
       "Low", // Default LiveStatus
-      "", // Operating Hours
+      [], // No Operating Hours
       [], // No Facilities
       new Date() // Current date
     );

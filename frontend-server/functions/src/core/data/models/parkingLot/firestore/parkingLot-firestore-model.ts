@@ -36,7 +36,7 @@ export class ParkingLotFirestoreModel extends ParkingLot {
       0, // Capacity
       0, // Occupancy
       "Low", // LiveStatus
-      "", // OperatingHours
+      [], // OperatingHours
       [], // Facilities
       new Date() // Current date
     );

@@ -299,6 +299,16 @@ https://medium.com/@elijahobara/how-to-send-emails-using-python-django-and-googl
   Summary
   These triggers are part of the serverless architecture provided by Firebase, allowing you to execute backend logic in response to database events without needing to manage a server. The corrected onDeleted trigger will ensure that when a user is deleted, not only is their authentication record removed (if you're also deleting the user from Firebase Auth), but all related documents in Firestore are cleaned up based on the user's role, maintaining data integrity and preventing orphaned records.
 
+- Firebase Admin CMS
+  Firecms
+
+  https://github.com/resulturan/refine-firebase
+
+- Create custom AutoComplete component:
+  https://github.com/derrmru/address-autocomplete/blob/master/src/AutoComplete.js
+
+  https://github.com/tasiodev/react-places-autocomplete/blob/main/package.json
+
 - securely querying data:
   https://firebase.google.com/docs/firestore/security/rules-query
 

@@ -14,13 +14,13 @@ export default {
         mytheme: {
           primary: "#eab308",
 
-          secondary: "#00ff00",
+          secondary: "#93c47d",
 
           accent: "#c99b00",
 
           neutral: "#262327",
 
-          "base-100": "#262c2f",
+          "base-100": "#eeeeee",
 
           info: "#00cdff",
 

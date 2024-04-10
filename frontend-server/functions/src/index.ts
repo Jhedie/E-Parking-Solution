@@ -3,6 +3,7 @@ import * as v2 from "firebase-functions/v2";
 import { apiApp } from "./api";
 import { parkingLotService } from "./core/services/parkingLot-service";
 import { eventTriggers } from "./event-triggers";
+import { paymentApp } from "./paymentApi";
 const serviceAccount = require("../e-parking-app-b22cb-firebase-adminsdk-d5yi5-fb98f59c3c.json");
 /**
  * User roles in the system.
@@ -17,7 +18,7 @@ export type UserRole = "driver" | "parkingOwner" | "admin";
  * @typedef {("authenticated" | UserRole)} MyClaims
  * @todo Add OR operation with our own claims.
  */
-export type MyClaims = "authenticated" | "approved" | UserRole;
+export type MyClaims = "authenticated" | "approved" | "rejected" | UserRole;
 
 /**
  * Initializes the Firebase Admin SDK.
@@ -40,6 +41,8 @@ parkingLotService.initializeGeoFirestore();
  * The function uses the Express app defined in `apiApp`.
  */
 exports.api = v2.https.onRequest(apiApp);
+
+exports.payment = v2.https.onRequest(paymentApp);
 
 /**
  * The event triggers for the application.

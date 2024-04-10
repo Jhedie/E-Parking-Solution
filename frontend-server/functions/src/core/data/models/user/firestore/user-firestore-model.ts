@@ -17,6 +17,7 @@ export class UserFirestoreModel extends User {
   static kRole = "role";
   static kEmail = "email";
   static kPhoneNumber = "phoneNumber";
+  static kStatus = "status";
 
   /**
    * Creates a UserFirestoreModel instance from a User entity.
@@ -39,7 +40,8 @@ export class UserFirestoreModel extends User {
       "", // name
       "" as any, // role
       "", // email
-      "" // phoneNumber
+      "", // phoneNumber
+      "" // status
     );
   }
 
@@ -55,7 +57,8 @@ export class UserFirestoreModel extends User {
       data[UserFirestoreModel.kName],
       data[UserFirestoreModel.kRole],
       data[UserFirestoreModel.kEmail],
-      data[UserFirestoreModel.kPhoneNumber]
+      data[UserFirestoreModel.kPhoneNumber],
+      data[UserFirestoreModel.kStatus]
     );
   }
   /**
@@ -70,6 +73,7 @@ export class UserFirestoreModel extends User {
       [UserFirestoreModel.kRole]: this.role,
       [UserFirestoreModel.kEmail]: this.email,
       [UserFirestoreModel.kPhoneNumber]: this.phoneNumber,
+      [UserFirestoreModel.kStatus]: this.status,
     };
   }
 }

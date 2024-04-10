@@ -287,3 +287,13 @@ https://medium.com/@elijahobara/how-to-send-emails-using-python-django-and-googl
 
 - Modals
   https://github.com/jmarioste/daisyui-modal/blob/main/components/Modal.tsx
+
+- Firebase Admin CMS
+  Firecms
+
+  https://github.com/resulturan/refine-firebase
+
+- Create custom AutoComplete component:
+  https://github.com/derrmru/address-autocomplete/blob/master/src/AutoComplete.js
+
+  https://github.com/tasiodev/react-places-autocomplete/blob/main/package.json

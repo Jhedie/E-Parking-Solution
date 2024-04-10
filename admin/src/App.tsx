@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 
 import {
   Authenticator,
+  CMSView,
   CircularProgressCenter,
   FireCMS,
   ModeControllerProvider,
@@ -12,7 +13,7 @@ import {
   useBuildLocalConfigurationPersistence,
   useBuildModeController,
   useBuildNavigationController,
-  useValidateAuthenticator
+  useValidateAuthenticator,
 } from "@firecms/core";
 import {
   FirebaseAuthController,
@@ -28,7 +29,7 @@ import { CenteredView } from "@firecms/ui";
 import toast from "react-hot-toast";
 import { Route } from "react-router";
 import { collectionsBuilder } from "./collections/collectionsBuilder";
-import Dance from "./customComponents/Dance";
+import MultiStepCreateParkingLotForm from "./customComponents/MultiStepCreateParkingLot/MultiStepCreateParkingLotForm";
 import AuthComponent from "./customComponents/authentication/AuthComponent";
 import { firebaseConfig } from "./firebase-config";
 function App() {
@@ -83,6 +84,15 @@ function App() {
     return collectionsBuilder;
   }, []);
 
+  const customViews: CMSView[] = [
+    {
+      path: "app/createParkingLot",
+      name: "New Parking Lot",
+      description: "A custom view for creating a parking lot",
+      view: <MultiStepCreateParkingLotForm />,
+    },
+  ];
+
   const { firebaseApp, firebaseConfigLoading, configError } =
     useInitialiseFirebase({
       firebaseConfig,
@@ -130,6 +140,7 @@ function App() {
     collections,
     authController,
     dataSourceDelegate: firestoreDelegate,
+    views: customViews,
   });
 
   if (firebaseConfigLoading || !firebaseApp) {
@@ -186,7 +197,11 @@ function App() {
               >
                 <NavigationRoutes
                   customRoutes={[
-                    <Route key={"dance"} path="dance" element={<Dance />} />,
+                    <Route
+                      key={"MultiStepCreateParkingLotForm"}
+                      path="createParkingLot"
+                      element={<MultiStepCreateParkingLotForm />}
+                    />,
                   ]}
                 />
                 <SideDialogs />

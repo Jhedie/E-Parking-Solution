@@ -4,22 +4,18 @@ import { NextFunction, Request, Response } from "express-serve-static-core";
 import { ParkingLotRatesClientModel } from "../../../core/data/models/parkingLotRates/client/parkingLotRate-client-model";
 import { PartialParkingLotRatesClientModel } from "../../../core/data/models/parkingLotRates/client/partial-parkingLotRate-client-model";
 import { ParkingLotRate } from "../../../core/data/parkingLotRates";
-import { parkingLotRatesService } from "../../../core/services/parkingLotRates-service";
+import { parkingLotRatesService } from "../../../core/services/parkingLotRates-service-refactor";
 import { HttpResponseError } from "../../../core/utils/http-response-error";
 import { Controller, HttpServer } from "../index";
 
 export class ParkingLotRatesController implements Controller {
   initialize(httpServer: HttpServer): void {
-    httpServer.post("/parkingLotRates", this.createParkingLotRate.bind(this), [
-      "admin",
-      "driver",
-      "parkingOwner",
-    ]);
-    httpServer.get(
-      "/all-parkingLotRates",
-      this.getAllParkingLotRates.bind(this),
-      ["admin", "driver", "parkingOwner"]
+    httpServer.post(
+      "/parkingLotRates/:parkingLotId",
+      this.createParkingLotRate.bind(this),
+      ["admin", "parkingOwner"]
     );
+
     // parkingLotrates by parkingLotId
     httpServer.get(
       "/all-parkingLotRates/:parkingLotId",
@@ -27,19 +23,19 @@ export class ParkingLotRatesController implements Controller {
       ["admin", "driver", "parkingOwner"]
     );
     httpServer.get(
-      "/parkingLotRates/:rateId",
+      "/parkingLotRates/:parkingLotId/:rateId",
       this.getParkingLotRateById.bind(this),
       ["admin", "driver", "parkingOwner"]
     );
     httpServer.put(
-      "/parkingLotRates/:rateId",
+      "/parkingLotRates/:parkingLotId/:rateId",
       this.updateParkingLotRateById.bind(this),
-      ["admin", "driver", "parkingOwner"]
+      ["admin", "parkingOwner"]
     );
     httpServer.delete(
-      "/parkingLotRates/:rateId",
+      "/parkingLotRates/:parkingLotId/:rateId",
       this.deleteRateById.bind(this),
-      ["admin", "driver", "parkingOwner"]
+      ["admin", "parkingOwner"]
     );
   }
 
@@ -57,7 +53,9 @@ export class ParkingLotRatesController implements Controller {
       console.log("Validated input rate:", rateFromInput);
 
       const createdRate = await parkingLotRatesService.createParkingLotRate(
-        rateFromInput
+        rateFromInput,
+        req.auth.uid,
+        req.params.parkingLotId
       );
       console.log("Created rate:", createdRate);
 
@@ -65,29 +63,6 @@ export class ParkingLotRatesController implements Controller {
     } catch (error) {
       console.error("Validation error:", error);
       res.status(400).send({ error: (error as Error).message });
-    }
-  };
-
-  private readonly getAllParkingLotRates: RequestHandler = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      console.log("Getting all parking lot rates...");
-
-      const rates = await parkingLotRatesService.getAllParkingLotRates();
-      console.log("Retrieved rates:", rates);
-
-      const parkingLotRates = rates.map((rate) =>
-        ParkingLotRatesClientModel.fromEntity(rate).toBodyPublicRate()
-      );
-      console.log("Mapped parking lot rates:", parkingLotRates);
-
-      res.send({ parkingLotRates: parkingLotRates });
-    } catch (error) {
-      console.error("Error getting parking lot rates:", error);
-      res.status(500).send({ error: (error as Error).message });
     }
   };
 
@@ -102,7 +77,11 @@ export class ParkingLotRatesController implements Controller {
       const rateId = req.params.rateId;
       console.log("Requested rate ID:", rateId);
 
-      const rate = await parkingLotRatesService.getParkingLotRateById(rateId);
+      const rate = await parkingLotRatesService.getParkingLotRateById(
+        req.auth.uid,
+        req.params.parkingLotId,
+        rateId
+      );
       console.log("Retrieved rate:", rate);
 
       if (!rate)
@@ -131,6 +110,7 @@ export class ParkingLotRatesController implements Controller {
 
       const rates =
         await parkingLotRatesService.getAllParkingLotRatesByParkingLotId(
+          req.auth.uid,
           parkingLotId
         );
       console.log("Retrieved rates:", rates);
@@ -167,7 +147,9 @@ export class ParkingLotRatesController implements Controller {
 
       await parkingLotRatesService.updateParkingLotRateById(
         rateId,
-        partialParkingLotRate
+        partialParkingLotRate,
+        req.auth.uid,
+        req.params.parkingLotId
       );
       console.log(`Rate with id ${rateId} has been updated successfully.`);
 
@@ -191,7 +173,11 @@ export class ParkingLotRatesController implements Controller {
       const rateId = req.params.rateId;
       console.log("Rate ID to delete:", rateId);
 
-      await parkingLotRatesService.deleteParkingLotRateById(rateId);
+      await parkingLotRatesService.deleteParkingLotRateById(
+        rateId,
+        req.auth.uid,
+        req.params.parkingLotId
+      );
       console.log(`Rate with id ${rateId} has been deleted successfully.`);
 
       res.status(204).send({

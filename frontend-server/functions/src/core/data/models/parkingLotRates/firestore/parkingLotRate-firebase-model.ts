@@ -7,7 +7,6 @@ import Timestamp = firestore.Timestamp;
 
 export class ParkingLotRateFirestoreModel extends ParkingLotRate {
   static kRateId = "rateId";
-  static kLotId = "lotId";
   static kRateType = "rateType";
   static kRate = "rate";
   static kDuration = "duration";
@@ -20,7 +19,6 @@ export class ParkingLotRateFirestoreModel extends ParkingLotRate {
   static empty(): ParkingLotRateFirestoreModel {
     return new ParkingLotRateFirestoreModel(
       "", // rateId
-      "", // lotId
       null, // rateType
       0, // rate
       0, // duration
@@ -50,7 +48,6 @@ export class ParkingLotRateFirestoreModel extends ParkingLotRate {
   ): DocumentData {
     const data: DocumentData = {
       [ParkingLotRateFirestoreModel.kRateId]: rateId ?? this.rateId,
-      [ParkingLotRateFirestoreModel.kLotId]: this.lotId,
       [ParkingLotRateFirestoreModel.kRateType]: this.rateType,
       [ParkingLotRateFirestoreModel.kRate]: this.rate,
       [ParkingLotRateFirestoreModel.kDuration]: this.duration,
@@ -71,7 +68,6 @@ export class ParkingLotRateFirestoreModel extends ParkingLotRate {
   static fromDocumentData(data: DocumentData): ParkingLotRateFirestoreModel {
     return new ParkingLotRateFirestoreModel(
       data[ParkingLotRateFirestoreModel.kRateId],
-      data[ParkingLotRateFirestoreModel.kLotId],
       data[ParkingLotRateFirestoreModel.kRateType],
       data[ParkingLotRateFirestoreModel.kRate],
       data[ParkingLotRateFirestoreModel.kDuration],

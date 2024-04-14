@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
 import * as v2 from "firebase-functions/v2";
 import { apiApp } from "./api";
-import { parkingLotService } from "./core/services/parkingLot-service";
+import { parkingLotService } from "./core/services/parkingLot-service-refactor";
 import { eventTriggers } from "./event-triggers";
 import { paymentApp } from "./paymentApi";
 const serviceAccount = require("../e-parking-app-b22cb-firebase-adminsdk-d5yi5-fb98f59c3c.json");

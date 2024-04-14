@@ -4,58 +4,64 @@ import { ParkingSlotClientModel } from "../../../core/data/models/parkingSlot/cl
 import { PartialParkingSlotClientModel } from "../../../core/data/models/parkingSlot/client/partial-parkingSlot-client-model";
 import { validateNoDuplicatePositionsInList } from "../../../core/data/models/parkingSlot/client/validators";
 import { ParkingSlot } from "../../../core/data/parkingSlot";
-import { parkingSlotService } from "../../../core/services/parkingSlot-service";
+import { parkingSlotService } from "../../../core/services/parkingSlot-service-refactor";
 import { HttpResponseError } from "../../../core/utils/http-response-error";
 import { Controller, HttpServer } from "../index";
 
 export class ParkingSlotController implements Controller {
   initialize(httpServer: HttpServer): void {
-    httpServer.post("/parkingSlot", this.createParkingSlot.bind(this), [
-      "admin",
-      "parkingOwner",
-    ]);
+    //create parking lot slot
     httpServer.post(
-      "/parkingSlots/multiple",
+      "/parkingSlot/:parkingLotId",
+      this.createParkingSlot.bind(this),
+      ["admin", "parkingOwner"]
+    );
+
+    //create multiple parking lot slots
+    httpServer.post(
+      "/parkingSlots-multiple/:parkingLotId",
       this.createMultipleParkingSlots.bind(this),
       ["admin", "parkingOwner"]
     );
 
-    httpServer.get("/all-parkingSlots", this.getAllParkingSlots.bind(this), [
-      "admin",
-      "parkingOwner",
-    ]);
-    httpServer.get("/parkingSlot/:slotId", this.getParkingSlotById.bind(this), [
-      "admin",
-      "parkingOwner",
-      "driver",
-    ]);
+    //get all parking lot slots
+    httpServer.get(
+      "/all-parkingSlots/:parkingLotId",
+      this.getAllParkingSlots.bind(this),
+      ["admin", "parkingOwner"]
+    );
+
+    //get parking lot slot by slotId
+    httpServer.get(
+      "/parkingSlot/:parkingLotId/:slotId",
+      this.getParkingSlotById.bind(this),
+      ["admin", "parkingOwner", "driver"]
+    );
+
+    // update parking slot by slotId
     httpServer.put(
-      "/parkingSlot/:slotId",
+      "/parkingSlot/:parkingLotId/:slotId",
       this.updateParkingSlotById.bind(this),
       ["admin", "parkingOwner", "driver"]
     );
+
+    //delete parking slot by slotId
     httpServer.delete(
-      "/parkingSlot/:slotId",
+      "/parkingSlot/:parkingLotId/:slotId",
       this.deleteParkingSlotById.bind(this),
       ["admin", "parkingOwner"]
     );
-    //parking Slots by lotId
+
+    //Get parking lot slots by lotId
     httpServer.get(
-      "/parkingSlots/:lotId",
+      "/parkingSlots/:parkingLotId",
       this.getParkingSlotsByLotId.bind(this),
       ["admin", "parkingOwner", "driver"]
     );
 
-    //delete all parking slots
-    httpServer.delete(
-      "/all-parkingSlots",
-      this.deleteAllParkingSlots.bind(this),
-      ["admin", "parkingOwner"]
-    );
-
     //delete parking slots by lotId
     httpServer.delete(
-      "/all-parkingSlots/:lotId",
+      "/all-parkingSlots/:parkingLotId",
       this.deleteParkingSlotsByLotId.bind(this),
       ["admin", "parkingOwner"]
     );
@@ -72,7 +78,9 @@ export class ParkingSlotController implements Controller {
     );
     console.log(parkingSlotFromInput);
     const parkingSlot = await parkingSlotService.createParkingSlot(
-      parkingSlotFromInput
+      parkingSlotFromInput,
+      req.auth.uid,
+      req.params.parkingLotId
     );
     const output =
       ParkingSlotClientModel.fromEntity(parkingSlot).toBodyPublicParkingSlot();
@@ -102,7 +110,9 @@ export class ParkingSlotController implements Controller {
     // Assuming parkingSlotService has a method for creating multiple slots
     const createdParkingSlots: ParkingSlot[] =
       await parkingSlotService.createMultipleParkingSlots(
-        validatedParkingSlots
+        validatedParkingSlots,
+        req.auth.uid,
+        req.params.parkingLotId
       );
 
     const outputList = createdParkingSlots.map((slot) =>
@@ -117,7 +127,10 @@ export class ParkingSlotController implements Controller {
     res: Response,
     next: NextFunction
   ) => {
-    const parkingSlots = await parkingSlotService.getParkingSlots();
+    const parkingSlots = await parkingSlotService.getParkingSlots(
+      req.auth.uid,
+      req.params.parkingLotId
+    );
     const outputList = parkingSlots.map((parkingSlot) =>
       ParkingSlotClientModel.fromEntity(parkingSlot).toBodyPublicParkingSlot()
     );
@@ -130,7 +143,9 @@ export class ParkingSlotController implements Controller {
     next: NextFunction
   ) => {
     const parkingSlot = await parkingSlotService.getParkingSlotById(
-      req.params.slotId
+      req.params.slotId,
+      req.auth.uid,
+      req.params.parkingLotId
     );
     if (!parkingSlot)
       throw new HttpResponseError(404, "NOT_FOUND", "Parking slot not found");
@@ -147,6 +162,8 @@ export class ParkingSlotController implements Controller {
   ) => {
     const partialParkingSlot = PartialParkingSlotClientModel.validate(req.body);
     await parkingSlotService.updateParkingSlotById(
+      req.auth.uid,
+      req.params.parkingLotId,
       req.params.slotId,
       partialParkingSlot
     );
@@ -160,7 +177,11 @@ export class ParkingSlotController implements Controller {
     res: Response,
     next: NextFunction
   ) => {
-    await parkingSlotService.deleteParkingSlotById(req.params.slotId);
+    await parkingSlotService.deleteParkingSlotById(
+      req.auth.uid,
+      req.params.parkingLotId,
+      req.params.slotId
+    );
     res.status(204).send({
       message: "Parking slot " + req.params.slotId + " successfully deleted",
     });
@@ -172,7 +193,8 @@ export class ParkingSlotController implements Controller {
     next: NextFunction
   ) => {
     const parkingSlots = await parkingSlotService.getParkingSlotsByLotId(
-      req.params.lotId
+      req.auth.uid,
+      req.params.parkingLotId
     );
     const outputList = parkingSlots.map((parkingSlot) =>
       ParkingSlotClientModel.fromEntity(parkingSlot).toBodyPublicParkingSlot()
@@ -180,21 +202,15 @@ export class ParkingSlotController implements Controller {
     res.send({ parkingSlots: outputList });
   };
 
-  private readonly deleteAllParkingSlots: RequestHandler = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    await parkingSlotService.deleteAllParkingSlots();
-    res.status(204).send({ message: "All parking slots successfully deleted" });
-  };
-
   private readonly deleteParkingSlotsByLotId: RequestHandler = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
-    await parkingSlotService.deleteParkingSlotsByLotId(req.params.lotId);
+    await parkingSlotService.deleteParkingSlotsByLotId(
+      req.auth.uid,
+      req.params.parkingLotId
+    );
     res.status(204).send({
       message:
         "All parking slots in lot " +

@@ -17,14 +17,12 @@ export class ParkingLotRate {
 
   constructor(
     rateId: string,
-    lotId: string,
     rateType: ParkingLotRateType,
     rate: number,
     duration: number,
     createdAt: Date
   ) {
     this.rateId = rateId;
-    this.lotId = lotId;
     this.rateType = rateType;
     this.rate = rate;
     this.duration = duration;
@@ -34,7 +32,6 @@ export class ParkingLotRate {
   static empty(): ParkingLotRate {
     return new ParkingLotRate(
       "", // rateId
-      "", // lotId
       null, // rateType
       0, // rate
       0, // duration

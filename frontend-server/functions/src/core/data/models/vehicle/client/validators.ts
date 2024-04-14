@@ -32,8 +32,9 @@ async function checkRegistrationNumberUniqueness(
   try {
     const querySnapshot = await admin
       .firestore()
-      .collection("vehicles")
+      .collectionGroup("vehicles")
       .where("registrationNumber", "==", number)
+      .where("role", "==", "driver")
       .get();
     return querySnapshot.empty;
   } catch (error) {

@@ -15,8 +15,6 @@ export class PartialParkingLotClientModel {
       res.Description = body[ParkingLotClientModel.kDescription];
     if (body[ParkingLotClientModel.kCoordinates])
       res.Coordinates = body[ParkingLotClientModel.kCoordinates];
-    if (body[ParkingLotClientModel.kOwner])
-      res.Owner = body[ParkingLotClientModel.kOwner];
     if (body[ParkingLotClientModel.kAddress])
       res.Address = body[ParkingLotClientModel.kAddress];
     if (body[ParkingLotClientModel.kCapacity])
@@ -30,6 +28,8 @@ export class PartialParkingLotClientModel {
     if (body[ParkingLotClientModel.kFacilities])
       res.Facilities = body[ParkingLotClientModel.kFacilities];
 
+    if (body[ParkingLotClientModel.kImages])
+      res.Images = body[ParkingLotClientModel.kImages];
     return res;
   }
 }

@@ -6,7 +6,6 @@ import Timestamp = firestore.Timestamp;
 
 export class ParkingSlotFirestoreModel extends ParkingSlot {
   static kSlotId = "slotId";
-  static klotId = "lotId";
   static kType = "type";
   static kStatus = "status";
   static kPosition = "position";
@@ -19,7 +18,6 @@ export class ParkingSlotFirestoreModel extends ParkingSlot {
   static empty(): ParkingSlotFirestoreModel {
     return new ParkingSlotFirestoreModel(
       "", // slotId
-      "", // lotId
       "", // Type
       "", // Status
       { row: "", column: 0 }, // Position
@@ -51,7 +49,6 @@ export class ParkingSlotFirestoreModel extends ParkingSlot {
   ): DocumentData {
     return {
       [ParkingSlotFirestoreModel.kSlotId]: slotId ?? this.slotId,
-      [ParkingSlotFirestoreModel.klotId]: this.lotId,
       [ParkingSlotFirestoreModel.kType]: this.type,
       [ParkingSlotFirestoreModel.kStatus]: this.status,
       [ParkingSlotFirestoreModel.kPosition]: this.position,
@@ -67,7 +64,6 @@ export class ParkingSlotFirestoreModel extends ParkingSlot {
   static fromDocumentData(data: DocumentData): ParkingSlotFirestoreModel {
     return new ParkingSlotFirestoreModel(
       data[ParkingSlotFirestoreModel.kSlotId],
-      data[ParkingSlotFirestoreModel.klotId],
       data[ParkingSlotFirestoreModel.kType],
       data[ParkingSlotFirestoreModel.kStatus],
       data[ParkingSlotFirestoreModel.kPosition],

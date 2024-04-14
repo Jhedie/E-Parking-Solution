@@ -1,4 +1,4 @@
-export type RateType = "minute" | "hour" | "day" | "week" | "month" | null;
+import { ParkingLotRate } from "./parkingLotRates";
 
 export type ParkingStatus =
   | "active"
@@ -8,48 +8,48 @@ export type ParkingStatus =
   | "pending"
   | "no show"
   | null;
+
+export type PaymentStatus = "completed" | "failed" | "refunded";
+
 class ParkingReservation {
   public readonly reservationId: string;
   public readonly userId: string;
-  public readonly slotId: string;
-  public readonly lotId: string;
   public readonly vehicleId: string;
   public readonly startTime: Date;
   public readonly endTime: Date;
-  public readonly rateNumber: number;
-  public readonly rateType: RateType;
-  public readonly price: number;
+  public readonly usedRates: ParkingLotRate[];
   public readonly totalAmount: number;
-  public readonly status: ParkingStatus;
+  public readonly parkingStatus: ParkingStatus;
+  public readonly paymentStatus: PaymentStatus;
+  public readonly qrCodeToken: string;
+  public readonly modifiedAt: Date;
   public readonly createdAt: Date;
 
   constructor(
     reservationId: string,
     userId: string,
-    slotId: string,
-    lotId: string,
     vehicleId: string,
     startTime: Date,
     endTime: Date,
-    rateNumber: number,
-    rateType: RateType,
-    price: number,
+    usedRates: ParkingLotRate[],
     totalAmount: number,
-    status: ParkingStatus,
+    parkingStatus: ParkingStatus,
+    paymentStatus: PaymentStatus,
+    qrCodeToken: string,
+    modifiedAt: Date,
     createdAt: Date
   ) {
     this.reservationId = reservationId;
     this.userId = userId;
-    this.slotId = slotId;
-    this.lotId = lotId;
     this.vehicleId = vehicleId;
     this.startTime = startTime;
     this.endTime = endTime;
-    this.rateNumber = rateNumber;
-    this.rateType = rateType;
-    this.price = price;
+    this.usedRates = usedRates;
     this.totalAmount = totalAmount;
-    this.status = status;
+    this.parkingStatus = parkingStatus;
+    this.paymentStatus = paymentStatus;
+    this.qrCodeToken = qrCodeToken;
+    this.modifiedAt = modifiedAt;
     this.createdAt = createdAt;
   }
 
@@ -57,16 +57,15 @@ class ParkingReservation {
     return new ParkingReservation(
       "", // reservationId
       "", // userId
-      "", // slotId
-      "", // lotId
       "", // vehicleId
       null, // startTime
       null, // endTime
-      0, // rateNumber
-      null, // rateType
-      0, // price
+      [], // usedRates
       0, // totalAmount
-      null, // status
+      null, // parkingStatus
+      null, // paymentStatus
+      "", // qrCodeToken
+      new Date(), // modifiedAt
       new Date() // createdAt
     );
   }

@@ -12,11 +12,12 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
   static kVehicleId = "vehicleId";
   static kStartTime = "startTime";
   static kEndTime = "endTime";
-  static kRateNumber = "rateNumber";
-  static kRateType = "rateType";
-  static kPrice = "price";
+  static kUsedRates = "usedRates";
   static kTotalAmount = "totalAmount";
-  static kStatus = "status";
+  static kParkingStatus = "parkingStatus";
+  static kPaymentStatus = "paymentStatus";
+  static kQrCodeToken = "qrCodeToken";
+  static kModifiedAt = "modifiedAt";
   static kCreatedAt = "createdAt";
 
   /**
@@ -27,16 +28,15 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
     return new ParkingReservationFirestoreModel(
       "", // reservationId
       "", // userId
-      "", // slotId
-      "", // lotId
       "", // vehicleId
       null, // startTime
       null, // endTime
-      0, // rateNumber
-      null, // rateType
-      0, // price
+      [], // usedRates
       0, // totalAmount
-      null, // status
+      null, // parkingStatus
+      null, // paymentStatus
+      "", // qrCodeToken
+      new Date(), // modifiedAt
       new Date() // createdAt
     );
   }
@@ -61,26 +61,29 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
    * @returns {DocumentData} Firestore document data format of the ParkingReservation.
    */
   toDocumentData(
-    reservationId?: string,
-    createdAt?: Timestamp | FieldValue
+    qrCodeToken: string,
+    createdAt: Timestamp | FieldValue,
+    reservationId: string
   ): DocumentData {
     const data: DocumentData = {
       [ParkingReservationFirestoreModel.kReservationId]:
         reservationId ?? this.reservationId,
       [ParkingReservationFirestoreModel.kUserId]: this.userId,
-      [ParkingReservationFirestoreModel.kSlotId]: this.slotId,
-      [ParkingReservationFirestoreModel.kLotId]: this.lotId,
+
       [ParkingReservationFirestoreModel.kVehicleId]: this.vehicleId,
       [ParkingReservationFirestoreModel.kStartTime]:
         firestore.Timestamp.fromDate(this.startTime),
       [ParkingReservationFirestoreModel.kEndTime]: firestore.Timestamp.fromDate(
         this.endTime
       ),
-      [ParkingReservationFirestoreModel.kRateNumber]: this.rateNumber,
-      [ParkingReservationFirestoreModel.kRateType]: this.rateType,
-      [ParkingReservationFirestoreModel.kPrice]: this.price,
+      [ParkingReservationFirestoreModel.kUsedRates]: this.usedRates,
       [ParkingReservationFirestoreModel.kTotalAmount]: this.totalAmount,
-      [ParkingReservationFirestoreModel.kStatus]: this.status,
+      [ParkingReservationFirestoreModel.kParkingStatus]: this.parkingStatus,
+      [ParkingReservationFirestoreModel.kPaymentStatus]: this.paymentStatus,
+      [ParkingReservationFirestoreModel.kQrCodeToken]:
+        qrCodeToken ?? this.qrCodeToken,
+      [ParkingReservationFirestoreModel.kModifiedAt]:
+        this.modifiedAt ?? createdAt,
       [ParkingReservationFirestoreModel.kCreatedAt]:
         createdAt ?? this.createdAt,
     };
@@ -99,16 +102,18 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
     return new ParkingReservationFirestoreModel(
       data[ParkingReservationFirestoreModel.kReservationId],
       data[ParkingReservationFirestoreModel.kUserId],
-      data[ParkingReservationFirestoreModel.kSlotId],
-      data[ParkingReservationFirestoreModel.kLotId],
+
       data[ParkingReservationFirestoreModel.kVehicleId],
       (data[ParkingReservationFirestoreModel.kStartTime] as Timestamp).toDate(),
       (data[ParkingReservationFirestoreModel.kEndTime] as Timestamp).toDate(),
-      data[ParkingReservationFirestoreModel.kRateNumber],
-      data[ParkingReservationFirestoreModel.kRateType],
-      data[ParkingReservationFirestoreModel.kPrice],
+      data[ParkingReservationFirestoreModel.kUsedRates],
       data[ParkingReservationFirestoreModel.kTotalAmount],
-      data[ParkingReservationFirestoreModel.kStatus],
+      data[ParkingReservationFirestoreModel.kParkingStatus],
+      data[ParkingReservationFirestoreModel.kPaymentStatus],
+      data[ParkingReservationFirestoreModel.kQrCodeToken],
+      (
+        data[ParkingReservationFirestoreModel.kModifiedAt] as Timestamp
+      ).toDate(),
       (data[ParkingReservationFirestoreModel.kCreatedAt] as Timestamp).toDate()
     );
   }

@@ -10,9 +10,6 @@ export class PartialParkingReservationClientModel {
 
     const res: Partial<Record<keyof ParkingReservation, any>> = {};
 
-    if (body[ParkingReservationClientModel.kSlotId] !== undefined) {
-      res.slotId = body[ParkingReservationClientModel.kSlotId];
-    }
     if (body[ParkingReservationClientModel.kVehicleId] !== undefined) {
       res.vehicleId = body[ParkingReservationClientModel.kVehicleId];
     }
@@ -22,20 +19,26 @@ export class PartialParkingReservationClientModel {
     if (body[ParkingReservationClientModel.kEndTime] !== undefined) {
       res.endTime = new Date(body[ParkingReservationClientModel.kEndTime]);
     }
-    if (body[ParkingReservationClientModel.kRateNumber] !== undefined) {
-      res.rateNumber = body[ParkingReservationClientModel.kRateNumber];
-    }
-    if (body[ParkingReservationClientModel.kRateType] !== undefined) {
-      res.rateType = body[ParkingReservationClientModel.kRateType];
-    }
-    if (body[ParkingReservationClientModel.kPrice] !== undefined) {
-      res.price = body[ParkingReservationClientModel.kPrice];
+    if (body[ParkingReservationClientModel.kUsedRates] !== undefined) {
+      res.usedRates = body[ParkingReservationClientModel.kUsedRates];
     }
     if (body[ParkingReservationClientModel.kTotalAmount] !== undefined) {
       res.totalAmount = body[ParkingReservationClientModel.kTotalAmount];
     }
-    if (body[ParkingReservationClientModel.kStatus] !== undefined) {
-      res.status = body[ParkingReservationClientModel.kStatus];
+    if (body[ParkingReservationClientModel.kParkingStatus] !== undefined) {
+      res.parkingStatus =
+        body[ParkingReservationClientModel.kParkingStatus];
+    }
+    if (body[ParkingReservationClientModel.kPaymentStatus] !== undefined) {
+      res.paymentStatus = body[ParkingReservationClientModel.kPaymentStatus];
+    }
+    if (body[ParkingReservationClientModel.kQrCodeToken] !== undefined) {
+      res.qrCodeToken = body[ParkingReservationClientModel.kQrCodeToken];
+    }
+    if (body[ParkingReservationClientModel.kModifiedAt] !== undefined) {
+      res.modifiedAt = new Date(
+        body[ParkingReservationClientModel.kModifiedAt]
+      );
     }
 
     return res;

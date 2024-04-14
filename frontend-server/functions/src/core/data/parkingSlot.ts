@@ -9,7 +9,6 @@ export type type = "regular" | "handicapped" | "electric";
 
 class ParkingSlot {
   public readonly slotId: string;
-  public readonly lotId: string;
   public readonly type: string;
   public readonly status: string;
   public readonly position: Position;
@@ -17,14 +16,12 @@ class ParkingSlot {
 
   constructor(
     slotId: string | undefined,
-    lotId: string,
     type: string,
     status: string,
     position: Position,
     createdAt: Date
   ) {
     this.slotId = slotId;
-    this.lotId = lotId;
     this.type = type;
     this.status = status;
     this.position = position;
@@ -34,7 +31,6 @@ class ParkingSlot {
   static empty() {
     return new ParkingSlot(
       undefined, // slotId
-      "", // LotId
       "", // Type
       "", // Status
       { row: "", column: 0 }, // Position

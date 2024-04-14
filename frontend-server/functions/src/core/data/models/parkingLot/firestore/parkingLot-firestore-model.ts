@@ -9,7 +9,6 @@ export class ParkingLotFirestoreModel extends ParkingLot {
   static kLotName = "LotName";
   static kDescription = "Description";
   static kCoordinates = "Coordinates";
-  static kOwner = "Owner";
   static kAddress = "Address";
   static kCapacity = "Capacity";
   static kOccupancy = "Occupancy";
@@ -17,6 +16,8 @@ export class ParkingLotFirestoreModel extends ParkingLot {
   static kRate = "Rate";
   static kOperatingHours = "OperatingHours";
   static kFacilities = "Facilities";
+  static kImages = "Images";
+  static kStatus = "Status";
   static kCreatedAt = "createdAt";
 
   static empty() {
@@ -25,19 +26,23 @@ export class ParkingLotFirestoreModel extends ParkingLot {
       "", // LotName
       "", // Description
       null, // Default Coordinates
-      "", // Owner
       {
-        street: "",
+        streetNumber: "",
+        unitNumber: "",
+        streetName: "",
         city: "",
         state: "",
         country: "",
         postalCode: "",
+        formattedAddress: "",
       }, // Empty Address
       0, // Capacity
       0, // Occupancy
       "Low", // LiveStatus
       [], // OperatingHours
       [], // Facilities
+      [], // Images
+      "Inactive", // Status
       new Date() // Current date
     );
   }
@@ -61,13 +66,14 @@ export class ParkingLotFirestoreModel extends ParkingLot {
         this.Coordinates.Latitude,
         this.Coordinates.Longitude
       ),
-      [ParkingLotFirestoreModel.kOwner]: this.Owner,
       [ParkingLotFirestoreModel.kAddress]: this.Address,
       [ParkingLotFirestoreModel.kCapacity]: this.Capacity,
       [ParkingLotFirestoreModel.kOccupancy]: this.Occupancy,
       [ParkingLotFirestoreModel.kLiveStatus]: this.LiveStatus,
       [ParkingLotFirestoreModel.kOperatingHours]: this.OperatingHours,
       [ParkingLotFirestoreModel.kFacilities]: this.Facilities,
+      [ParkingLotFirestoreModel.kImages]: this.Images,
+      [ParkingLotFirestoreModel.kStatus]: this.status,
       [ParkingLotFirestoreModel.kCreatedAt]: createdAt ?? this.createdAt,
     };
   }
@@ -78,13 +84,14 @@ export class ParkingLotFirestoreModel extends ParkingLot {
       data[ParkingLotFirestoreModel.kLotName],
       data[ParkingLotFirestoreModel.kDescription],
       data[ParkingLotFirestoreModel.kCoordinates],
-      data[ParkingLotFirestoreModel.kOwner],
       data[ParkingLotFirestoreModel.kAddress],
       data[ParkingLotFirestoreModel.kCapacity],
       data[ParkingLotFirestoreModel.kOccupancy],
       data[ParkingLotFirestoreModel.kLiveStatus],
       data[ParkingLotFirestoreModel.kOperatingHours],
       data[ParkingLotFirestoreModel.kFacilities],
+      data[ParkingLotFirestoreModel.kImages],
+      data[ParkingLotFirestoreModel.kStatus],
       (data[ParkingLotFirestoreModel.kCreatedAt] as Timestamp).toDate()
     );
   }

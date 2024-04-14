@@ -31,6 +31,12 @@ class AccountsService {
         .doc(uid)
         .update({ status: "approved" });
 
+      await admin
+        .firestore()
+        .collection("parkingOwner")
+        .doc(uid)
+        .update({ status: "approved" });
+
       try {
         await this.sendApprovalUpdateEmail(
           user.email,
@@ -90,6 +96,12 @@ class AccountsService {
       await admin
         .firestore()
         .collection("users")
+        .doc(uid)
+        .update({ status: "rejected" });
+
+      await admin
+        .firestore()
+        .collection("parkingOwner")
         .doc(uid)
         .update({ status: "rejected" });
 

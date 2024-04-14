@@ -32,9 +32,6 @@ export class PartialParkingLotFirestoreModel {
             );
           }
         }
-
-        if (partialParkingLot.Owner)
-          res[ParkingLotFirestoreModel.kOwner] = partialParkingLot.Owner;
         if (partialParkingLot.Address)
           res[ParkingLotFirestoreModel.kAddress] = partialParkingLot.Address;
         if (partialParkingLot.Capacity)

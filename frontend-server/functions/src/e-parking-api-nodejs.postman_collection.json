@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "Vehicle Management",
+			"name": "Vehicle",
 			"item": [
 				{
 					"name": "Create Vehicle",
@@ -17,7 +17,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{idToken}}",
+									"value": "{{driverToken}}",
 									"type": "string"
 								}
 							]
@@ -26,7 +26,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"registrationNumber\": \"MLC 123\",\n    \"nickName\": \"My Range Rover\",\n    \"defaultVehicle\": true\n}",
+							"raw": "{\n    \"registrationNumber\": \"ML62VXC\",\n    \"nickName\": \"My Peugot\",\n    \"defaultVehicle\": true\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -53,7 +53,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{idToken}}",
+									"value": "{{driverToken}}",
 									"type": "string"
 								}
 							]
@@ -80,7 +80,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{idToken}}",
+									"value": "{{driverToken}}",
 									"type": "string"
 								}
 							]
@@ -100,14 +100,14 @@
 					"response": []
 				},
 				{
-					"name": "Get Full vehicle By vehicle Id",
+					"name": "Get vehicle By vehicle Id",
 					"request": {
 						"auth": {
 							"type": "bearer",
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{idToken}}",
+									"value": "{{driverToken}}",
 									"type": "string"
 								}
 							]
@@ -126,7 +126,7 @@
 							"variable": [
 								{
 									"key": "vehicleId",
-									"value": "hxR23yiJw9bwxV9JD7oc"
+									"value": "Bebypa9MzMpBUK8pb7Az"
 								}
 							]
 						}
@@ -141,7 +141,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{idToken}}",
+									"value": "{{driverToken}}",
 									"type": "string"
 								}
 							]
@@ -161,7 +161,7 @@
 							"variable": [
 								{
 									"key": "vehicleId",
-									"value": "hxR23yiJw9bwxV9JD7oc"
+									"value": "Bebypa9MzMpBUK8pb7Az"
 								}
 							]
 						}
@@ -176,7 +176,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{idToken}}",
+									"value": "{{driverToken}}",
 									"type": "string"
 								}
 							]
@@ -185,7 +185,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"registrationNumber\": \"MLC 123\",\n    \"nickName\": \"My Audi updated\",\n    \"defaultVehicle\": false\n}",
+							"raw": "{\n    \"nickName\": \"My Audi updated from range\",\n    \"defaultVehicle\": true\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -204,7 +204,7 @@
 							"variable": [
 								{
 									"key": "vehicleId",
-									"value": "KxW5ETtjWGmULUjeCSGx"
+									"value": "GmwDkcoY2zblWqFmA7Vb"
 								}
 							]
 						}
@@ -258,7 +258,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjYwOWY4ZTMzN2ZjNzg1NTE0ZTExMGM2ZDg0N2Y0M2M3NDM1M2U0YWYiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoic3VwZXJ1c2VyIiwiZHJpdmVyIjpmYWxzZSwicGFya2luZ093bmVyIjpmYWxzZSwiYWRtaW4iOnRydWUsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9lLXBhcmtpbmctYXBwLWIyMmNiIiwiYXVkIjoiZS1wYXJraW5nLWFwcC1iMjJjYiIsImF1dGhfdGltZSI6MTcxMDE4NDAzMSwidXNlcl9pZCI6IkoxUzF1Q25Dc3BjRlF2bzNHNmNORkVmcFlvcDIiLCJzdWIiOiJKMVMxdUNuQ3NwY0ZRdm8zRzZjTkZFZnBZb3AyIiwiaWF0IjoxNzEwMTg0MDMxLCJleHAiOjE3MTAxODc2MzEsImVtYWlsIjoiZXBhcmtzdXBlcnVzZXJAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImVwYXJrc3VwZXJ1c2VyQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.Vh1c3o-ebFQ7Cwt2_Qf1RADBBQSr855ebLKpjz_rxNXgQpUECCBRvTiqjUYK5bW9c2VaOJ9JIDbRJoqWgJKP62izG4kqEyqRHlpZxyaJghsmdfnS9-328JY4nO8icoSiJ8STymtpauGdh2fMfJs8CN8_ce9ZLOWlXbaqVFknr2yaIpJsoRJ7qDgVh4eU7pTtKzE790oXmZSYAugkXzrmkZZxF0-yRUKNiDVQwQzFFVWHZnphOX_ewdb2GVYYjr6SOsZ8b3mhuvvBGyku9EUaN6eRAXnsvsrVZ14FwPRNxGBYShkW6uBvpPPWcWJEk5b_rdxGPGWr6ODJi3IfkafNDQ",
+									"value": "{{parkingOwnerToken}}",
 									"type": "string"
 								}
 							]
@@ -267,7 +267,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"LotName\": \"Leicester Euro Park\",\n  \"Coordinates\": {\n    \"Latitude\": \"52.625879\",\n    \"Longitude\": \"-1.150759\"\n  },\n  \"Description\":\"This parking lot is for Goldman lots\",\n  \"Address\": {\n    \"street\": \"200 Main St\",\n    \"city\": \"Leicester\",\n    \"state\": \"Leicestershire\",\n    \"country\": \"UK\",\n    \"postalCode\": \"LE5 3TX\"\n  },\n  \"Capacity\": 150,\n  \"Occupancy\": 75,\n  \"LiveStatus\": \"Medium\",\n  \"OperatingHours\": \"24/7\",\n  \"Facilities\": [\"EV Charging\"],\n  \"Rates\": [\n    {\n    \"RateType\": \"minute\",\n    \"Rate\": 0.10,\n    \"minimum\": 10,\n    \"maximum\": 60,\n    \"discount\": 0,\n    \"dynamicPricing\": null\n    },\n    {\n      \"RateType\": \"hour\",\n      \"Rate\": 5,\n      \"minimum\": 1,\n      \"maximum\": 24,\n      \"discount\": 0,\n      \"dynamicPricing\": {\n        \"baseRate\": 5,\n        \"peakRate\": 10,\n        \"offPeakRate\": 3,\n        \"peakTimes\": [\"08:00\", \"18:00\"]\n      }\n    },\n    {\n      \"RateType\": \"day\",\n      \"Rate\": 30,\n      \"minimum\": 1,\n      \"maximum\": 7,\n      \"discount\": 0,\n      \"dynamicPricing\": {\n        \"baseRate\": 5,\n        \"peakRate\": 10,\n        \"offPeakRate\": 3,\n        \"peakTimes\": [\"08:00\", \"18:00\"]\n      }\n    },\n    {\n      \"RateType\": \"week\",\n      \"Rate\": 150,\n      \"minimum\": 1,\n      \"maximum\": 4,\n      \"discount\": 0,\n      \"dynamicPricing\": {\n        \"baseRate\": 5,\n        \"peakRate\": 10,\n        \"offPeakRate\": 3,\n        \"peakTimes\": [\"08:00\", \"18:00\"]\n      }\n    },\n    {\n      \"RateType\": \"month\",\n      \"Rate\": 500,\n      \"minimum\": 1,\n      \"maximum\": 12,\n      \"discount\": 0,\n      \"dynamicPricing\": {\n        \"baseRate\": 5,\n        \"peakRate\": 10,\n        \"offPeakRate\": 3,\n        \"peakTimes\": [\"08:00\", \"18:00\"]\n      }\n    }\n  ]\n}\n",
+							"raw": "{\n  \"LotName\": \"University of Leicester Park Space 4\",\n  \"Description\":\"Fourth University of Leicester\",\n  \"Coordinates\": {\n    \"Latitude\": 52.622115,\n    \"Longitude\": -1.110158\n  },\n  \"Address\": {\n    \"street\": \"20 High St\",\n    \"city\": \"Leicester\",\n    \"state\": \"Leicestershire\",\n    \"country\": \"UK\",\n    \"postalCode\": \"LE4 7HG\"\n  },\n  \"Capacity\": 30,\n  \"Occupancy\": 0,\n  \"LiveStatus\": \"Low\",\n  \"OperatingHours\": [],\n  \"Facilities\": [\"EV Charging\"],\n  \"Images\":[],\n  \"status\":\"Inactive\"\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -297,7 +297,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{idToken}}",
+									"value": "{{driverToken}}",
 									"type": "string"
 								}
 							]
@@ -461,6 +461,80 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Geosearch parking Lot",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parkingOwnerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"lat\":52.667879,\n    \"lon\": -1.165759,\n    \"radius\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/parkingLot/geosearch",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"parkingLot",
+								"geosearch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DummySubcollection",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parkingOwnerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/account/create-subparkingLot",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"account",
+								"create-subparkingLot"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -475,7 +549,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{adminToken}}",
+									"value": "{{parkingOwnerToken}}",
 									"type": "string"
 								}
 							]
@@ -484,7 +558,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"type\": \"Electric\",\n    \"lotId\": \"Eynm9IpyLYGCHsEHGeRr\",\n    \"status\": \"Available\",\n    \"position\": {\n        \"row\": \"A\",\n        \"column\": 1\n    }\n}",
+							"raw": "{\n    \"type\": \"Electric\",\n    \"status\": \"Available\",\n    \"position\": {\n        \"row\": \"A\",\n        \"column\": 1\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -492,12 +566,26 @@
 							}
 						},
 						"url": {
-							"raw": "{{api}}/parkingSlot",
+							"raw": "{{api}}/parkingSlot/:parkingLotId",
 							"host": [
 								"{{api}}"
 							],
 							"path": [
-								"parkingSlot"
+								"parkingSlot",
+								":parkingLotId"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "parkingLotId",
+									"value": "SzJTpg2IIPmBPxrzZ8Ve"
+								}
 							]
 						}
 					},
@@ -511,7 +599,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{adminToken}}",
+									"value": "{{parkingOwnerToken}}",
 									"type": "string"
 								}
 							]
@@ -520,7 +608,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"slots\": [\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 6\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 6\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 6\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 6\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 6\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"JaXo7s6NbnAKSO0MsJO0\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 6\n            }\n        }\n    ]\n}",
+							"raw": "{\n    \"slots\": [\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"A\",\n                \"column\": 6\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"B\",\n                \"column\": 6\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"C\",\n                \"column\": 6\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"D\",\n                \"column\": 6\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"E\",\n                \"column\": 6\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 1\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 2\n            }\n        },\n        {\n            \"type\": \"electric\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 3\n            }\n        },\n        {\n            \"type\": \"motorcycle\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Occupied\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 4\n            }\n        },\n        {\n            \"type\": \"regular\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Available\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 5\n            }\n        },\n        {\n            \"type\": \"handicapped\",\n            \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n            \"status\": \"Reserved\",\n            \"position\": {\n                \"row\": \"F\",\n                \"column\": 6\n            }\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -548,7 +636,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{adminToken}}",
+									"value": "{{parkingOwnerToken}}",
 									"type": "string"
 								}
 							]
@@ -575,7 +663,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{adminToken}}",
+									"value": "{{parkingOwnerToken}}",
 									"type": "string"
 								}
 							]
@@ -594,7 +682,7 @@
 							"variable": [
 								{
 									"key": "slotId",
-									"value": "2FsODdheeQ2gLwiFrNZb"
+									"value": "3PRHCJprXS0cAf07KgCP"
 								}
 							]
 						}
@@ -609,7 +697,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{adminToken}}",
+									"value": "{{parkingOwnerToken}}",
 									"type": "string"
 								}
 							]
@@ -618,7 +706,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"type\": \"Standard\",\n    \"lotId\": \"Eynm9IpyLYGCHsEHGeRr\",\n    \"status\": \"Occupied\",\n    \"position\": {\n        \"row\": \"G\",\n        \"column\": 1\n    }\n}",
+							"raw": "{\n    \"type\": \"Standard\",\n    \"lotId\": \"4VIn9YyAfzY7pDX8tBjv\",\n    \"status\": \"Available\"\n    \n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -637,7 +725,7 @@
 							"variable": [
 								{
 									"key": "slotId",
-									"value": "2FsODdheeQ2gLwiFrNZb"
+									"value": "3PRHCJprXS0cAf07KgCP"
 								}
 							]
 						}
@@ -652,7 +740,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{adminToken}}",
+									"value": "{{driverToken}}",
 									"type": "string"
 								}
 							]
@@ -671,7 +759,7 @@
 							"variable": [
 								{
 									"key": "lotId",
-									"value": "Eynm9IpyLYGCHsEHGeRr"
+									"value": "4VIn9YyAfzY7pDX8tBjv"
 								}
 							]
 						}
@@ -752,7 +840,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{adminToken}}",
+									"value": "{{parkingOwnerToken}}",
 									"type": "string"
 								}
 							]
@@ -761,7 +849,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n      \"lotId\": \"Tr4niu3KiKDAemUi7zMZ\",\n      \"rateType\": \"biweekly\",\n      \"rate\": 500,\n      \"minimum\": 1,\n      \"maximum\": 12\n    }",
+							"raw": "{\n    \"rateType\": \"minute\",\n    \"rate\": 2,\n    \"duration\": 30\n}\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -769,12 +857,19 @@
 							}
 						},
 						"url": {
-							"raw": "{{api}}/parkingLotRates",
+							"raw": "{{api}}/parkingLotRates/:parkingLotId",
 							"host": [
 								"{{api}}"
 							],
 							"path": [
-								"parkingLotRates"
+								"parkingLotRates",
+								":parkingLotId"
+							],
+							"variable": [
+								{
+									"key": "parkingLotId",
+									"value": "SzJTpg2IIPmBPxrzZ8Ve"
+								}
 							]
 						}
 					},
@@ -788,7 +883,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{adminToken}}",
+									"value": "{{parkingOwnerToken}}",
 									"type": "string"
 								}
 							]
@@ -815,7 +910,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{adminToken}}",
+									"value": "{{parkingOwnerToken}}",
 									"type": "string"
 								}
 							]
@@ -834,7 +929,41 @@
 							"variable": [
 								{
 									"key": "rateId",
-									"value": "eTAIoivkXCXylKIQJ3ln"
+									"value": "88FCTuQkV9VdYPYYpHkp"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Parking Lot Rates By parking Lot ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parkingOwnerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/all-parkingLotRates/:parkingLotId",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"all-parkingLotRates",
+								":parkingLotId"
+							],
+							"variable": [
+								{
+									"key": "parkingLotId",
+									"value": "4VIn9YyAfzY7pDX8tBjv"
 								}
 							]
 						}
@@ -921,249 +1050,591 @@
 			]
 		},
 		{
-			"name": "1. Create Account",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{idToken}}",
-							"type": "string"
+			"name": "Parking Reservation",
+			"item": [
+				{
+					"name": "Create reservation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{driverToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehicleId\": \"Bebypa9MzMpBUK8pb7Az\",\n  \"startTime\": \"2022-01-01T12:00:00Z\",\n  \"endTime\": \"2022-01-01T15:00:00Z\",\n  \"usedRates\": [\"pYUr6VohbHJUtuwh9jIG\"],\n  \"totalAmount\": 2,\n  \"parkingStatus\": \"pending\",\n  \"paymentStatus\":\"completed\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/parkingReservations/:parkingLotId/:parkingSlotId",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"parkingReservations",
+								":parkingLotId",
+								":parkingSlotId"
+							],
+							"variable": [
+								{
+									"key": "parkingLotId",
+									"value": "SzJTpg2IIPmBPxrzZ8Ve"
+								},
+								{
+									"key": "parkingSlotId",
+									"value": "tefEsObRBeJmBQw8XauJ"
+								}
+							]
 						}
-					]
+					},
+					"response": []
 				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"name\":\"Jedidiah\",\n    \"role\":\"admin\",\n    \"email\": \"eparksuperuser@gmail.com\",\n    \"password\": \"password54321?\",\n    \"birthDateMillisecondsSinceEpoch\": 922354800000\n}\n",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "get Reservation by reservation ID full",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{driverToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/parkingReservations/:parkingLotId/:parkingSlotId/:reservationId/full-details",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"parkingReservations",
+								":parkingLotId",
+								":parkingSlotId",
+								":reservationId",
+								"full-details"
+							],
+							"variable": [
+								{
+									"key": "parkingLotId",
+									"value": "SzJTpg2IIPmBPxrzZ8Ve"
+								},
+								{
+									"key": "parkingSlotId",
+									"value": "tefEsObRBeJmBQw8XauJ"
+								},
+								{
+									"key": "reservationId",
+									"value": "2zKrH2mEr4f3nvk7lQ8A"
+								}
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{api}}/account",
-					"host": [
-						"{{api}}"
-					],
-					"path": [
-						"account"
-					]
+				{
+					"name": "get Reservation by ID public",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{driverToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/parkingReservations/:parkingLotId/:parkingSlotId/:reservationId/public-details",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"parkingReservations",
+								":parkingLotId",
+								":parkingSlotId",
+								":reservationId",
+								"public-details"
+							],
+							"variable": [
+								{
+									"key": "parkingLotId",
+									"value": "SzJTpg2IIPmBPxrzZ8Ve"
+								},
+								{
+									"key": "parkingSlotId",
+									"value": "tefEsObRBeJmBQw8XauJ"
+								},
+								{
+									"key": "reservationId",
+									"value": "2zKrH2mEr4f3nvk7lQ8A"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get Reservations By User ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{driverToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/all-user-parkingReservations",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"all-user-parkingReservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All parking reservations",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{parkingOwnerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/all-parkingReservations",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"all-parkingReservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Reservation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{driverToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"slotId\": \"3PRHCJprXS0cAf07KgCP\",\n    \"lotId\":\"4VIn9YyAfzY7pDX8tBjv\",\n    \"startTime\": \"2024-03-18T18:34:58Z\",\n    \"endTime\": \"2024-03-18T20:34:58Z\",\n    \"rateNumber\": 2,\n    \"rateType\": \"hour\",\n    \"price\": 10.0,\n    \"totalAmount\": 10,\n    \"status\": \"pending\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/parkingReservations/:reservationId",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"parkingReservations",
+								":reservationId"
+							],
+							"variable": [
+								{
+									"key": "reservationId",
+									"value": "ccLO57r6W3jBoj9G5oXZ"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Reservation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{driverToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/parkingReservations/:reservationId",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"parkingReservations",
+								":reservationId"
+							],
+							"variable": [
+								{
+									"key": "reservationId",
+									"value": "JnlIlEr0JdEQz310osS7"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Create Admin Account",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
+			"name": "User Management",
+			"item": [
+				{
+					"name": "1. Login on Google APIS",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"email\": \"gavar15792@hisotyr.com\",\n    \"password\": \"password\",\n    \"returnSecureToken\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCceM8xPTWxJcEnuHhzcdLDAvYQ0whFlH8",
+							"protocol": "https",
+							"host": [
+								"www",
+								"googleapis",
+								"com"
+							],
+							"path": [
+								"identitytoolkit",
+								"v3",
+								"relyingparty",
+								"verifyPassword"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "AIzaSyCceM8xPTWxJcEnuHhzcdLDAvYQ0whFlH8",
+									"description": "The \"apiKey\" field from Firebase Credentials (Client side). Check the README file for more info"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1. Login on Google APIS - Admin",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"email\": \"jeddiahawuku12@gmail.com\",\n    \"password\": \"password123?\",\n    \"returnSecureToken\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCceM8xPTWxJcEnuHhzcdLDAvYQ0whFlH8",
+							"protocol": "https",
+							"host": [
+								"www",
+								"googleapis",
+								"com"
+							],
+							"path": [
+								"identitytoolkit",
+								"v3",
+								"relyingparty",
+								"verifyPassword"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "AIzaSyCceM8xPTWxJcEnuHhzcdLDAvYQ0whFlH8",
+									"description": "The \"apiKey\" field from Firebase Credentials (Client side). Check the README file for more info"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1. Login on Google APIS - Parking Owner",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"email\": \"jedidiahawuku12@gmail.com\",\n    \"password\": \"password123?\",\n    \"returnSecureToken\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCceM8xPTWxJcEnuHhzcdLDAvYQ0whFlH8",
+							"protocol": "https",
+							"host": [
+								"www",
+								"googleapis",
+								"com"
+							],
+							"path": [
+								"identitytoolkit",
+								"v3",
+								"relyingparty",
+								"verifyPassword"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "AIzaSyCceM8xPTWxJcEnuHhzcdLDAvYQ0whFlH8",
+									"description": "The \"apiKey\" field from Firebase Credentials (Client side). Check the README file for more info"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Admin Account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"Jedidiah Awuku\",\n    \"role\":\"admin\",\n    \"email\": \"jeddiahawuku12@gmail.com\",\n    \"password\": \"password123?\",\n    \"phoneNumber\": \"0774839242\",\n    \"adminKey\": \"parkAdminSecretKey123\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/account/admin",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"account",
+								"admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Parking Owner",
+					"event": [
 						{
-							"key": "token",
-							"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjYwOWY4ZTMzN2ZjNzg1NTE0ZTExMGM2ZDg0N2Y0M2M3NDM1M2U0YWYiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiSmVkZGlhaCIsImRyaXZlciI6dHJ1ZSwicGFya2luZ093bmVyIjpmYWxzZSwiYWRtaW4iOmZhbHNlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZS1wYXJraW5nLWFwcC1iMjJjYiIsImF1ZCI6ImUtcGFya2luZy1hcHAtYjIyY2IiLCJhdXRoX3RpbWUiOjE3MTAxODM5NjIsInVzZXJfaWQiOiJWa1hTRE9CdWtMT1h1SHNYWnZ2c2Y0SFF1OUIyIiwic3ViIjoiVmtYU0RPQnVrTE9YdUhzWFp2dnNmNEhRdTlCMiIsImlhdCI6MTcxMDE4Mzk2MiwiZXhwIjoxNzEwMTg3NTYyLCJlbWFpbCI6ImplZGRpYWhhd3VrdTEyQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImplZGRpYWhhd3VrdTEyQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.p73clyIOK8YOi1D8cKsRAjsf7GK_-5uPFPIle5WvgjFKIzWRnDimQIzEdZpniePdjnA-1Sb8cnRuzaqgCACnb-iesSgzTxQN64QvJW3SBNXsqjh1-Mo_QStvD6i4LWUATQ1EqWW-EOC3rQpNJ_nvH4EvCF4KnL1m6Hu-Md3jQoE4L0xcmWfDVfyalH7n21Ib_HmYeVroiSQqx2K2tluqcwyy_fayyEDySiW-XcSia4RnIIcFsXJiQGGSGlHolLL6XA_JBkiDh5yYyjJZslTKwsYyZmEyb-JtyfIpibsTyDaXIWqmMvwET4jt-oeUnezMw2aswWpt8ZQp5ATbQL_XRg",
-							"type": "string"
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Response status code is 200\", function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Verify the response includes the newly created parking owner's account details\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.have.property('id');",
+									"    pm.expect(responseData).to.have.property('name');",
+									"    pm.expect(responseData).to.have.property('email');",
+									"    pm.expect(responseData).to.have.property('phone');",
+									"    pm.expect(responseData).to.have.property('address');",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"name\":\"superuser\",\n    \"role\":\"admin\",\n    \"email\": \"eparksuperuser@gmail.com\",\n    \"password\": \"password123?\",\n    \"phoneNumber\": \"0774839242\",\n    \"adminKey\": \"parkAdminSecretKey123\"\n}\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}/account",
-					"host": [
-						"{{api}}"
 					],
-					"path": [
-						"account"
-					]
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Jed Lots\",\n    \"role\": \"parkingOwner\",\n    \"email\": \"jedidiahawuku12@gmail.com\",\n    \"password\": \"password54321?\",\n    \"phoneNumber\": \"(123) 456-7890\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/account/parkingOwner",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"account",
+								"parkingOwner"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Parking driver",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"JedidiahTest\",\n    \"email\": \"jedidiahawuku12@gmail.com\",\n    \"password\": \"password54321?\",\n    \"phoneNumber\": \"(123) 456-7890\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}/account/driver",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"account",
+								"driver"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User verification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImlhdCI6MTcwOTk4MDU4MCwiZXhwIjoxNzA5OTg0MTgwLCJpc3MiOiJmaXJlYmFzZS1hZG1pbnNkay1kNXlpNUBlLXBhcmtpbmctYXBwLWIyMmNiLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwic3ViIjoiZmlyZWJhc2UtYWRtaW5zZGstZDV5aTVAZS1wYXJraW5nLWFwcC1iMjJjYi5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsInVpZCI6IkptRzlJN0w2VjJQb3Q4Y0JydkgyODdYN2o5STMifQ.WlqzXxyIfDtfF3aB4hsjnBXupHvkoecTPx_8mQ1WRF4vC7W4KldKqA3JA4nNEzsX6Bz554c8hDh6j3AKBvOA8aUegeI9OxiaOhRZ2k8-qC_6XO35vDXKeS_pgej4tDdh-IH0obRSZ3TNiQij1k8dsnFZCk7G0hUZIaa4WsQVk2raAl1zkI8fvhg-0clGFKpfCa9XM-iDFzxnnHJsC0xKJn9taTTeHvkFrziUtkt8jD-jTkh1N3Fh9ai774A2MFQNDCf9N4XMaLtXWuLMfhfomhy7gRZFG8iBb1DV1bCDP4sK6yNjhsEyEnbN9lus-qF0Svl6vL-mwd5RULPYcRfv6Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"jeddiahawuku12@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/account/verify",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"account",
+								"verify"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			],
+			"description": "The super User is created before hand on the Firebase console.\n\nThis will provide a bearer token than can you used to create other Admin and other users if necessary.\n\n1. Login on Google APIS with super user\n    \n2. Copy IDToken\n    \n3. Use to create Admin"
 		},
 		{
-			"name": "Create Parking Owner",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{idToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"name\":\"Emmanuel Lots\",\n    \"role\":\"parkingOwner\",\n    \"email\": \"jedidiahawuku12@gmail.com\",\n    \"password\": \"password54321?\",\n    \"birthDateMillisecondsSinceEpoch\": 922354800000\n}\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}/account",
-					"host": [
-						"{{api}}"
-					],
-					"path": [
-						"account"
-					]
+			"name": "Payment",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create Parking driver",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"name\": \"JedidiahTest\",\n    \"email\": \"jedidiahawuku12@gmail.com\",\n    \"password\": \"password54321?\",\n    \"phoneNumber\": \"(123) 456-7890\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{api}}/account/driver",
-					"host": [
-						"{{api}}"
-					],
-					"path": [
-						"account",
-						"driver"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "User verification",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImlhdCI6MTcwOTk4MDU4MCwiZXhwIjoxNzA5OTg0MTgwLCJpc3MiOiJmaXJlYmFzZS1hZG1pbnNkay1kNXlpNUBlLXBhcmtpbmctYXBwLWIyMmNiLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwic3ViIjoiZmlyZWJhc2UtYWRtaW5zZGstZDV5aTVAZS1wYXJraW5nLWFwcC1iMjJjYi5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsInVpZCI6IkptRzlJN0w2VjJQb3Q4Y0JydkgyODdYN2o5STMifQ.WlqzXxyIfDtfF3aB4hsjnBXupHvkoecTPx_8mQ1WRF4vC7W4KldKqA3JA4nNEzsX6Bz554c8hDh6j3AKBvOA8aUegeI9OxiaOhRZ2k8-qC_6XO35vDXKeS_pgej4tDdh-IH0obRSZ3TNiQij1k8dsnFZCk7G0hUZIaa4WsQVk2raAl1zkI8fvhg-0clGFKpfCa9XM-iDFzxnnHJsC0xKJn9taTTeHvkFrziUtkt8jD-jTkh1N3Fh9ai774A2MFQNDCf9N4XMaLtXWuLMfhfomhy7gRZFG8iBb1DV1bCDP4sK6yNjhsEyEnbN9lus-qF0Svl6vL-mwd5RULPYcRfv6Q",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"email\": \"jeddiahawuku12@gmail.com\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{local}}/account/verify",
-					"host": [
-						"{{local}}"
-					],
-					"path": [
-						"account",
-						"verify"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "2. Login on Google APIS",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"email\": \"eparksuperuser@gmail.com\",\n    \"password\": \"password123?\",\n    \"returnSecureToken\": true\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCceM8xPTWxJcEnuHhzcdLDAvYQ0whFlH8",
-					"protocol": "https",
-					"host": [
-						"www",
-						"googleapis",
-						"com"
-					],
-					"path": [
-						"identitytoolkit",
-						"v3",
-						"relyingparty",
-						"verifyPassword"
-					],
-					"query": [
-						{
-							"key": "key",
-							"value": "AIzaSyCceM8xPTWxJcEnuHhzcdLDAvYQ0whFlH8",
-							"description": "The \"apiKey\" field from Firebase Credentials (Client side). Check the README file for more info"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "helloWorld",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{idToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{api}}/account/hello",
-					"host": [
-						"{{api}}"
-					],
-					"path": [
-						"account",
-						"hello"
-					]
-				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "Get DB Changes (ADMIN)",
@@ -1243,17 +1714,17 @@
 		},
 		{
 			"key": "adminToken",
-			"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImViYzIwNzkzNTQ1NzExODNkNzFjZWJlZDI5YzU1YmVmMjdhZDJjY2IiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoic3VwZXJ1c2VyIiwiZHJpdmVyIjpmYWxzZSwicGFya2luZ093bmVyIjpmYWxzZSwiYWRtaW4iOnRydWUsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9lLXBhcmtpbmctYXBwLWIyMmNiIiwiYXVkIjoiZS1wYXJraW5nLWFwcC1iMjJjYiIsImF1dGhfdGltZSI6MTcxMDU3OTMwMywidXNlcl9pZCI6IkoxUzF1Q25Dc3BjRlF2bzNHNmNORkVmcFlvcDIiLCJzdWIiOiJKMVMxdUNuQ3NwY0ZRdm8zRzZjTkZFZnBZb3AyIiwiaWF0IjoxNzEwNTc5MzAzLCJleHAiOjE3MTA1ODI5MDMsImVtYWlsIjoiZXBhcmtzdXBlcnVzZXJAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImVwYXJrc3VwZXJ1c2VyQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.qv3rGj7CJ-j7UhglALjQHWLATdV0594N6fSb1_N6gvOpok3MZlrJQ_ry7g91FpJUL-A27K-up6GNxiRz2DLkUYaSVZuNIuy74JZyZ5p8leD6-My2kHluLZYsKiKVStOjmwYD3avNaw061I1rEN0cEg6YKNHz_1ZrMLCP1brdO-jGIJ1Sz59LsRpOy9pb5ep9MBlnpHiEDZOaREgbB26YxmsgqZ9CTQA_r4_SM0sY701QwMobBvMeWS04d68xEFPot-wKFnILBCETWGTL9cHHHEQ3mYDzX1Itm287DAOMDdwY9wNQ1Q1A3e9HhVbZ5q4uKc8rqGU6-6CXupx3jPZq0w",
+			"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImYyOThjZDA3NTlkOGNmN2JjZTZhZWNhODExNmU4ZjYzMDlhNDQwMjAiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiSmVkIEF3dWt1IiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0lKblpVMVp3c1p4YjM2MEg2OFhkR18wMlBHRkw1ZjJVNUN6aUdVNFpBeD1zOTYtYyIsImRyaXZlciI6ZmFsc2UsInBhcmtpbmdPd25lciI6ZmFsc2UsImFkbWluIjp0cnVlLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZS1wYXJraW5nLWFwcC1iMjJjYiIsImF1ZCI6ImUtcGFya2luZy1hcHAtYjIyY2IiLCJhdXRoX3RpbWUiOjE3MTMwMTQ2MjYsInVzZXJfaWQiOiI1VFhsTXFUWHZ6ZEhkZ1BROUI3dm16MEU5N3YyIiwic3ViIjoiNVRYbE1xVFh2emRIZGdQUTlCN3ZtejBFOTd2MiIsImlhdCI6MTcxMzAxNDYyNiwiZXhwIjoxNzEzMDE4MjI2LCJlbWFpbCI6ImplZGRpYWhhd3VrdTEyQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbImplZGRpYWhhd3VrdTEyQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.bJPrMfS-9YaCMjiHBkGlKVsPVo3K0s511tU7pZicLaX7FPPY4em3CHqJIpKSY94yyE_F1QPeEq8LEp-J1ogswYWo7hhZuCYS4h1RMJzFgRx5s0BdBrq6tq57xBfLvjg8_fz_3jX_G1enIw8GpQgvHQ-ikJrBLmlJQjyxd1Slh8WAAmcLKqJl7T-sHwfnO9jqR4zRlyxT4fXt6YazJoaNpFLSh8A9MG1xwSKEbipgzPvmoPkGrEypdtV0aFr-G2QzKQWhDkXF5araoqfShMbw_X2Bo9b1tN7RXh0DALDgd3JLTGhaRRhusUVz--oaMp45S6pllZ-5JjhYn4Xb9hwmIA",
 			"type": "string"
 		},
 		{
-			"key": "parkingOwnerToken ",
-			"value": "",
+			"key": "parkingOwnerToken",
+			"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImYyOThjZDA3NTlkOGNmN2JjZTZhZWNhODExNmU4ZjYzMDlhNDQwMjAiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiSmVkIExvdHMiLCJkcml2ZXIiOmZhbHNlLCJwYXJraW5nT3duZXIiOnRydWUsImFkbWluIjpmYWxzZSwiYXBwcm92ZWQiOnRydWUsInJlamVjdGVkIjpmYWxzZSwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL2UtcGFya2luZy1hcHAtYjIyY2IiLCJhdWQiOiJlLXBhcmtpbmctYXBwLWIyMmNiIiwiYXV0aF90aW1lIjoxNzEzMDE4NjA4LCJ1c2VyX2lkIjoieFJZTW1QUmZqYU1qUVJDTGJRTFNETFVuZlczMiIsInN1YiI6InhSWU1tUFJmamFNalFSQ0xiUUxTRExVbmZXMzIiLCJpYXQiOjE3MTMwMTg2MDgsImV4cCI6MTcxMzAyMjIwOCwiZW1haWwiOiJqZWRpZGlhaGF3dWt1MTJAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiamVkaWRpYWhhd3VrdTEyQGdtYWlsLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.acXi4h8DPn1yHvaXvQSnZArrvafX0qKCf5iqI7AN0vJrcdDz-4aRKPRm0wMbJVKlyoHku5CRwMejydk-jGvO2upBZXZV_WZNe24GosHZ9nyoR02GVoZV2bYMgVGIs5nMlD0Lp-308Y3wdBgECpaWTmuOG_9MUv-JvWQm-sCpmduTs7-G1xARXX0B4OnKzBrGQIzi_1ZMe_qElr66oGUyZY3HsXQAyy6BcaKlCp1tLc4vEoi4j-wu24VXWGxG75YbUtnqzuVOogllmBDWNFk5zMSl-S5jWHslS9_11PbabHGPhx4u6HmrzyKFOhtr6Uc3WiaO5NL4LL-fd7TAlqeYmA",
 			"type": "string"
 		},
 		{
 			"key": "driverToken",
-			"value": "",
+			"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImYyOThjZDA3NTlkOGNmN2JjZTZhZWNhODExNmU4ZjYzMDlhNDQwMjAiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiR2F2YXIiLCJkcml2ZXIiOnRydWUsInBhcmtpbmdPd25lciI6ZmFsc2UsImFkbWluIjpmYWxzZSwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL2UtcGFya2luZy1hcHAtYjIyY2IiLCJhdWQiOiJlLXBhcmtpbmctYXBwLWIyMmNiIiwiYXV0aF90aW1lIjoxNzEzMDQyMzUzLCJ1c2VyX2lkIjoiVjBUQjBoUGZSS1dMaDU4SWFMbzI2emk4a1B6MiIsInN1YiI6IlYwVEIwaFBmUktXTGg1OElhTG8yNnppOGtQejIiLCJpYXQiOjE3MTMwNDIzNTMsImV4cCI6MTcxMzA0NTk1MywiZW1haWwiOiJnYXZhcjE1NzkyQGhpc290eXIuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiZ2F2YXIxNTc5MkBoaXNvdHlyLmNvbSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.cUrRpVpYkk73vzn53ZA1gGXZf-8Qkh1rvVKXGRkMuKXwD9af7huoqjIITR9B6DnF9IZTRIQdC596fP23okNVZjSEvRAnTONTNgp4G6WxRgOKOODlSww7YEpaj6mQ1pUxBfHebMTmPBpVzActuMk6FuY-ozUcZ1jXpmjGVZwJ7Om3A8_CQc3GHwWuyAmATnDPPgmC1BAimj-KuLoa1ju9PxpQPuLLu2FVXyCSqjRuWO6-rEOR2S9MtzL5B8nDQnf1rMiFrUsZ_gGbh4BoFuHcq5okTqok-phvV_cwEKRuZVLaiwzWipFmnj66fqthRHdcU7Go3dwN5MtA6uZQwrR9Tg",
 			"type": "string"
 		}
 	]

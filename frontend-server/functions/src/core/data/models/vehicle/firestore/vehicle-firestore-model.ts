@@ -8,7 +8,6 @@ class VehicleFirestoreModel extends Vehicle {
   static kRegistrationNumber = "registrationNumber";
   static kNickName = "nickName";
   static kDefaultVehicle = "defaultVehicle";
-  static kUserId = "userId";
   static kCreatedAt = "createdAt";
 
   /**
@@ -16,7 +15,13 @@ class VehicleFirestoreModel extends Vehicle {
    * @returns {VehicleFirestoreModel} - The created empty VehicleFirestoreModel instance.
    */
   static empty(): VehicleFirestoreModel {
-    return new VehicleFirestoreModel("", "", "", false, "", new Date());
+    return new VehicleFirestoreModel(
+      "", // vehicleId
+      "", // registrationNumber
+      "", // nickName
+      false, // defaultVehicle
+      new Date() // createdAt
+    );
   }
 
   /**Creates a vehicleFirestoreModel instance from a Vehicle entity.
@@ -34,7 +39,6 @@ class VehicleFirestoreModel extends Vehicle {
       [VehicleFirestoreModel.kRegistrationNumber]: this.registrationNumber,
       [VehicleFirestoreModel.kNickName]: this.nickName,
       [VehicleFirestoreModel.kDefaultVehicle]: this.defaultVehicle,
-      [VehicleFirestoreModel.kUserId]: this.userId,
       [VehicleFirestoreModel.kCreatedAt]: createdAt ?? this.createdAt,
     };
   }
@@ -45,7 +49,6 @@ class VehicleFirestoreModel extends Vehicle {
       data[VehicleFirestoreModel.kRegistrationNumber],
       data[VehicleFirestoreModel.kNickName],
       data[VehicleFirestoreModel.kDefaultVehicle],
-      data[VehicleFirestoreModel.kUserId],
       (data[VehicleFirestoreModel.kCreatedAt] as Timestamp).toDate()
     );
   }

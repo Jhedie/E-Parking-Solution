@@ -178,9 +178,9 @@ export class UsersEventTriggers implements InitializeEventTriggers {
         await admin.auth().deleteUser(uid);
         console.log(
           `Successfully deleted user ${uid} from Firebase Authentication.`
-          );
-        } catch (error) {
-          console.error(
+        );
+      } catch (error) {
+        console.error(
           `Error deleting user ${uid} from Firebase Authentication:`,
           error
         );
@@ -191,15 +191,18 @@ export class UsersEventTriggers implements InitializeEventTriggers {
   private readonly onUpdated: EventTriggerV2Function = {
     name: "onUserUpdated",
     handler: onDocumentUpdated("users/{userId}", async (document) => {
-      const user = UserFirestoreModel.fromDocumentData(
-        document.data.after.data()
-      );
+      const user = await admin.auth().getUser(document.data.after.data().uid);
+      console.log("event trigger to update user", user.uid);
       const record = new DbChangedRecord(
         "USER_UPDATED",
-        `User ${user.name} (${user.role}) has been updated`,
+        `User ${user.displayName} (${user.uid}) has been updated`,
         user.uid
       );
       await dbChangesService.addRecord(record);
+
+      // const _uid = user.uid;
+
+      console.log(`customClaims: ${JSON.stringify(user.customClaims)}`);
     }),
   };
 }

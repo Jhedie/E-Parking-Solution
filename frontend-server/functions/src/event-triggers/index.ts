@@ -1,4 +1,3 @@
-import { ParkingLotEventTriggers } from "./by-document/parkingLot-event-triggers";
 import { UsersEventTriggers } from "./by-document/users-event-triggers";
 import { InitializeEventTriggers } from "./initialize-event-triggers";
 
@@ -9,7 +8,7 @@ import { InitializeEventTriggers } from "./initialize-event-triggers";
  */
 const eventTriggerList: Array<InitializeEventTriggers> = [
   new UsersEventTriggers(),
-  new ParkingLotEventTriggers(),
+  // new ParkingLotEventTriggers(),
 ];
 
 /**

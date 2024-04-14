@@ -3,50 +3,51 @@ import { NextFunction, Request, Response } from "express-serve-static-core";
 import { ParkingReservationClientModel } from "../../../core/data/models/parkingReservation/client/parkingReservation-client-model";
 import { PartialParkingReservationClientModel } from "../../../core/data/models/parkingReservation/client/partial-parkingReservation-client-model";
 import { ParkingReservation } from "../../../core/data/parkingReservation";
-import { parkingReservationService } from "../../../core/services/parkingReservation-service";
+import { parkingReservationService } from "../../../core/services/parkingReservation-service-refactor";
 import { HttpResponseError } from "../../../core/utils/http-response-error";
 import { Controller, HttpServer } from "../index";
 
 export class ParkingReservationController implements Controller {
   initialize(httpServer: HttpServer): void {
     httpServer.post(
-      "/parkingReservations",
+      "/parkingReservations/:parkingLotId/:parkingSlotId",
       this.createParkingReservation.bind(this),
-      ["driver", "parkingOwner", "admin"]
+      ["driver"]
     );
+
     httpServer.get(
-      "/all-parkingReservations",
+      "/all-parkingReservations/:parkingLotId/:parkingSlotId",
       this.getAllParkingReservations.bind(this),
-      ["driver", "parkingOwner", "admin"]
+      ["parkingOwner", "admin"]
     );
 
     httpServer.get(
-      "/all-user-parkingReservations",
-      this.getParkingReservationByUserId.bind(this),
-      ["driver", "parkingOwner", "admin"]
-    );
-
-    httpServer.get(
-      "/parkingReservations/:reservationId/full-details",
+      "/parkingReservations/:parkingLotId/:parkingSlotId/:reservationId/full-details",
       this.getParkingReservationByIdFull.bind(this),
-      ["driver", "parkingOwner", "admin"]
+      ["driver"]
     );
 
     httpServer.get(
-      "/parkingReservations/:reservationId/",
+      "/parkingReservations/:parkingLotId/:parkingSlotId/:reservationId/public-details",
       this.getParkingReservationByIdPublic.bind(this),
-      ["driver", "parkingOwner", "admin"]
+      ["driver"]
+    );
+
+    httpServer.get(
+      "/all-user-parkingReservations/",
+      this.getParkingReservationByUserId.bind(this),
+      ["driver"]
     );
 
     httpServer.put(
-      "/parkingReservations/:reservationId",
+      "/parkingReservations/:parkingLotId/:parkingSlotId/:reservationId",
       this.updateParkingReservation.bind(this),
-      ["driver", "parkingOwner", "admin"]
+      ["driver"]
     );
     httpServer.delete(
-      "/parkingReservations/:reservationId",
+      "/parkingReservations/:parkingLotId/:parkingSlotId/:reservationId",
       this.deleteParkingReservation.bind(this),
-      ["driver", "parkingOwner", "admin"]
+      ["driver"]
     );
   }
 
@@ -56,7 +57,7 @@ export class ParkingReservationController implements Controller {
     next: NextFunction
   ) => {
     try {
-      console.log("Creating parking reservation...");
+      console.log("Creating parking reservation.. with body", req.body);
       const parkingReservationDataInput: ParkingReservation =
         ParkingReservationClientModel.validate(req.body, req.auth.uid);
 
@@ -66,6 +67,8 @@ export class ParkingReservationController implements Controller {
       );
       const createdReservation =
         await parkingReservationService.createParkingReservation(
+          req.params.parkingLotId,
+          req.params.parkingSlotId,
           parkingReservationDataInput
         );
       const output =
@@ -76,9 +79,9 @@ export class ParkingReservationController implements Controller {
     } catch (error) {
       next(
         new HttpResponseError(
-          400,
+          500,
           "BAD_REQUEST",
-          "Error creating parking reservation."
+          "Error creating parking reservation., error: " + error
         )
       );
     }
@@ -92,7 +95,10 @@ export class ParkingReservationController implements Controller {
     try {
       console.log("Getting all parking reservations...");
       const reservations =
-        await parkingReservationService.getAllParkingReservations();
+        await parkingReservationService.getAllParkingReservations(
+          req.params.parkingLotId,
+          req.params.parkingSlotId
+        );
 
       const outputList = reservations.map((reservation) =>
         ParkingReservationClientModel.fromEntity(
@@ -128,6 +134,8 @@ export class ParkingReservationController implements Controller {
       const reservationId = req.params.reservationId;
       const reservation =
         await parkingReservationService.getParkingReservationById(
+          req.params.parkingLotId,
+          req.params.parkingSlotId,
           reservationId
         );
       if (!reservation || reservation.userId !== req.auth.uid) {
@@ -178,6 +186,7 @@ export class ParkingReservationController implements Controller {
       const userId = req.auth.uid;
       const reservations =
         await parkingReservationService.getParkingReservationsByUserId(userId);
+      console.log("completed reservations");
       const outputList = reservations.map((reservation) =>
         ParkingReservationClientModel.fromEntity(
           reservation
@@ -189,7 +198,7 @@ export class ParkingReservationController implements Controller {
         new HttpResponseError(
           500,
           "INTERNAL_SERVER_ERROR",
-          "Error fetching parking reservations."
+          "Error fetching parking reservations." + error
         )
       );
     }
@@ -213,7 +222,11 @@ export class ParkingReservationController implements Controller {
       PartialParkingReservationClientModel.validate(req.body);
 
     const reservation =
-      await parkingReservationService.getParkingReservationById(reservationId);
+      await parkingReservationService.getParkingReservationById(
+        req.params.parkingLotId,
+        req.params.parkingSlotId,
+        reservationId
+      );
 
     if (!reservation || reservation.userId !== req.auth.uid) {
       throw new HttpResponseError(
@@ -224,6 +237,8 @@ export class ParkingReservationController implements Controller {
     }
 
     await parkingReservationService.updateParkingReservationById(
+      req.params.parkingLotId,
+      req.params.parkingSlotId,
       reservationId,
       partialReservationData
     );
@@ -249,7 +264,11 @@ export class ParkingReservationController implements Controller {
       );
     }
     const reservation =
-      await parkingReservationService.getParkingReservationById(reservationId);
+      await parkingReservationService.getParkingReservationById(
+        req.params.parkingLotId,
+        req.params.parkingSlotId,
+        reservationId
+      );
     if (!reservation || reservation.userId !== req.auth.uid) {
       throw new HttpResponseError(
         404,
@@ -258,7 +277,11 @@ export class ParkingReservationController implements Controller {
       );
     }
 
-    await parkingReservationService.deleteParkingReservationById(reservationId);
+    await parkingReservationService.deleteParkingReservationById(
+      req.params.parkingLotId,
+      req.params.parkingSlotId,
+      reservationId
+    );
     res.status(204).send({
       message:
         "Reservation " + reservationId + " has been deleted successfully.",

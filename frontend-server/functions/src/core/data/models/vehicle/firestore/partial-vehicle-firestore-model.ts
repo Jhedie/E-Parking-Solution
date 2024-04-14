@@ -19,8 +19,6 @@ export class PartialVehicleFirebaseModel {
         if (partialVehicle.defaultVehicle)
           res[VehicleFirestoreModel.kDefaultVehicle] =
             partialVehicle.defaultVehicle;
-        if (partialVehicle.userId)
-          res[VehicleFirestoreModel.kUserId] = partialVehicle.userId;
         return res;
       },
     };

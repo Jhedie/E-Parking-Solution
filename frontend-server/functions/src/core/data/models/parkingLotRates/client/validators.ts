@@ -1,10 +1,3 @@
-export function validateLotID(body: any) {
-  const lotID = body["lotId"];
-  if (!lotID) {
-    throw new Error("Lot ID is required");
-  }
-}
-
 export function rateTypePresent(body: any) {
   const rateType = body["rateType"];
   if (!rateType) {

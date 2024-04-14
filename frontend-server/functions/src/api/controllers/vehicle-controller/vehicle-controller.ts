@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express-serve-static-core";
 import { Vehicle } from "../../../core/data/Vehicle";
 import { PartialVehicleClientModel } from "../../../core/data/models/vehicle/client/partial-vehicle-client-model";
 import { VehicleClientModel } from "../../../core/data/models/vehicle/client/vehicle-client-model";
-import { vehicleService } from "../../../core/services/vehicle-service";
+import { vehicleService } from "../../../core/services/vehicle-service-refactor";
 import { HttpResponseError } from "../../../core/utils/http-response-error";
 import { Controller, HttpServer } from "../index";
 
@@ -62,7 +62,10 @@ export class VehicleController implements Controller {
       );
 
       console.log("vehicleFromInput", vehicleFromInput);
-      const vehicle = await vehicleService.createVehicle(vehicleFromInput);
+      const vehicle = await vehicleService.createVehicle(
+        vehicleFromInput,
+        req.auth.uid
+      );
       const output = VehicleClientModel.fromEntity(vehicle).toBodyFullVehicle();
       res.send(output);
     } catch (error) {
@@ -79,7 +82,7 @@ export class VehicleController implements Controller {
     res: Response,
     next: NextFunction
   ) => {
-    const vehicles = await vehicleService.getVehicles();
+    const vehicles = await vehicleService.getVehicles(req.auth.uid);
     const outputList = vehicles.map((vehicle) =>
       VehicleClientModel.fromEntity(vehicle).toBodyPublicVehicle()
     );
@@ -120,9 +123,10 @@ export class VehicleController implements Controller {
       );
     }
     const vehicle = await vehicleService.getVehicleById(
+      req.auth.uid,
       req.params["vehicleId"]
     );
-    if (!vehicle || vehicle.userId !== req.auth.uid) {
+    if (!vehicle) {
       throw new HttpResponseError(
         404,
         "NOT_FOUND",
@@ -175,9 +179,10 @@ export class VehicleController implements Controller {
     const partialVehicle = PartialVehicleClientModel.validate(req.body);
 
     const vehicle = await vehicleService.getVehicleById(
+      req.auth.uid,
       req.params["vehicleId"]
     );
-    if (!vehicle || vehicle.userId !== req.auth.uid) {
+    if (!vehicle) {
       throw new HttpResponseError(
         404,
         "NOT_FOUND",
@@ -194,6 +199,7 @@ export class VehicleController implements Controller {
     //   );
     // }
     await vehicleService.updateVehicleById(
+      req.auth.uid,
       req.params["vehicleId"],
       partialVehicle
     );
@@ -216,6 +222,7 @@ export class VehicleController implements Controller {
       );
 
     const vehicle = await vehicleService.getVehicleById(
+      req.auth.uid,
       req.params["vehicleId"]
     );
 
@@ -238,7 +245,7 @@ export class VehicleController implements Controller {
     //   }
     // }
 
-    await vehicleService.deleteVehicleById(req.params.vehicleId);
+    await vehicleService.deleteVehicleById(req.auth.uid, req.params.vehicleId);
 
     res.status(204).send({
       message: "Deleted " + req.params.vehicleId + " successfully",

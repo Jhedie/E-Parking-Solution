@@ -15,10 +15,6 @@ export class PartialParkingReservationFirestoreModel {
       ...partialReservation,
       toDocumentData(): Partial<Record<string, any>> {
         const res: Partial<Record<string, any>> = {};
-        if (partialReservation.slotId !== undefined) {
-          res[ParkingReservationFirestoreModel.kSlotId] =
-            partialReservation.slotId;
-        }
         if (partialReservation.vehicleId !== undefined) {
           res[ParkingReservationFirestoreModel.kVehicleId] =
             partialReservation.vehicleId;
@@ -33,26 +29,31 @@ export class PartialParkingReservationFirestoreModel {
           res[ParkingReservationFirestoreModel.kEndTime] =
             firestore.Timestamp.fromDate(new Date(partialReservation.endTime));
         }
-        if (partialReservation.rateNumber !== undefined) {
-          res[ParkingReservationFirestoreModel.kRateNumber] =
-            partialReservation.rateNumber;
-        }
-        if (partialReservation.rateType !== undefined) {
-          res[ParkingReservationFirestoreModel.kRateType] =
-            partialReservation.rateType;
-        }
-        if (partialReservation.price !== undefined) {
-          res[ParkingReservationFirestoreModel.kPrice] =
-            partialReservation.price;
+
+        if (partialReservation.usedRates !== undefined) {
+          res[ParkingReservationFirestoreModel.kUsedRates] =
+            partialReservation.usedRates;
         }
         if (partialReservation.totalAmount !== undefined) {
           res[ParkingReservationFirestoreModel.kTotalAmount] =
             partialReservation.totalAmount;
         }
-        if (partialReservation.status !== undefined) {
-          res[ParkingReservationFirestoreModel.kStatus] =
-            partialReservation.status;
+        if (partialReservation.parkingStatus !== undefined) {
+          res[ParkingReservationFirestoreModel.kParkingStatus] =
+            partialReservation.parkingStatus;
         }
+        if (partialReservation.paymentStatus !== undefined) {
+          res[ParkingReservationFirestoreModel.kPaymentStatus] =
+            partialReservation.paymentStatus;
+        }
+
+        if (partialReservation.modifiedAt !== undefined) {
+          res[ParkingReservationFirestoreModel.kModifiedAt] =
+            firestore.Timestamp.fromDate(
+              new Date(partialReservation.modifiedAt)
+            );
+        }
+
         return res;
       },
     };

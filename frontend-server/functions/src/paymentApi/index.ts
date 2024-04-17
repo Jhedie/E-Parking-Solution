@@ -1,3 +1,4 @@
+import cors from "cors";
 import dotenv from "dotenv";
 import express, { Express } from "express";
 
@@ -6,7 +7,14 @@ dotenv.config();
 const paymentApp: Express = express();
 
 paymentApp.use(express.json());
+const corsOptions = {
+  origin: "*", // Allow only this origin to access
+  methods: "GET,POST,PUT,DELETE,OPTIONS", // Allowed methods
+  allowedHeaders: "Origin,X-Requested-With,Content-Type,Accept,Authorization", // Allowed headers
+  credentials: true, // Allow cookies
+};
 
+paymentApp.use(cors(corsOptions));
 paymentApp.get("/payment/hello", (req, res) => {
   res.send("Payment API Deployed and Working!");
 });

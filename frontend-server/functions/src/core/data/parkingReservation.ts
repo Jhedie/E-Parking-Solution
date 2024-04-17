@@ -14,6 +14,8 @@ export type PaymentStatus = "completed" | "failed" | "refunded";
 class ParkingReservation {
   public readonly reservationId: string;
   public readonly userId: string;
+  public readonly slotId: string;
+  public readonly lotId: string;
   public readonly vehicleId: string;
   public readonly startTime: Date;
   public readonly endTime: Date;
@@ -28,6 +30,8 @@ class ParkingReservation {
   constructor(
     reservationId: string,
     userId: string,
+    slotId: string,
+    lotId: string,
     vehicleId: string,
     startTime: Date,
     endTime: Date,
@@ -41,6 +45,8 @@ class ParkingReservation {
   ) {
     this.reservationId = reservationId;
     this.userId = userId;
+    this.slotId = slotId;
+    this.lotId = lotId;
     this.vehicleId = vehicleId;
     this.startTime = startTime;
     this.endTime = endTime;
@@ -57,6 +63,8 @@ class ParkingReservation {
     return new ParkingReservation(
       "", // reservationId
       "", // userId
+      "", // slotId
+      "", // lotId
       "", // vehicleId
       null, // startTime
       null, // endTime

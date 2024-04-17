@@ -19,7 +19,7 @@ const Modal = ({ children, open, disableClickOutside, onClose }: Props) => {
   });
 
   const modalClass = cn({
-    "modal modal-bottom sm:modal-middle backdrop-blur-2xl": true,
+    "modal modal-bottom sm:modal-middle backdrop-blur-2xl text-black": true,
     "modal-open": open,
   });
   return (

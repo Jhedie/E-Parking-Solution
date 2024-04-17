@@ -2,13 +2,15 @@ import { FieldArray, useFormikContext } from "formik";
 import React from "react";
 import { z } from "zod";
 export const ParkingRatesFormSchema = z.object({
-  rates: z.array(
-    z.object({
-      rateType: z.enum(["minute", "hour", "day", "week", "month", "year"]),
-      rate: z.string().min(1, "Rate is required"),
-      duration: z.string().min(1, "Duration is required"),
-    })
-  ),
+  Rates: z
+    .array(
+      z.object({
+        rateType: z.enum(["minute", "hour", "day", "week", "month", "year"]),
+        rate: z.number().min(0.01, "Rate is required"),
+        duration: z.number().min(0.01, "Duration is required"),
+      })
+    )
+    .min(1, "At least one rate is required"),
 });
 
 export type ParkingLotRateType =
@@ -35,7 +37,7 @@ export default function ParkingRatesForm() {
           </p>
         </div>
         {/* FieldArray component is used to manage an array of form fields source: https://formik.org/docs/api/fieldarray*/}
-        <FieldArray name="rates">
+        <FieldArray name="Rates">
           {/* remove and push are functions to add and remove rates */}
           {({ remove, push }) => (
             <div>
@@ -50,8 +52,10 @@ export default function ParkingRatesForm() {
                   >
                     Add {rateType} Rate
                   </button>
-                  {formikProps.values.rates
-                    .map((rate, index) => ({ ...rate, actualIndex: index })) // Add actual index to each rate
+                  {formikProps.values.Rates.map((rate, index) => ({
+                    ...rate,
+                    actualIndex: index,
+                  })) // Add actual index to each rate
                     .filter((rate) => rate.rateType === rateType) // Filter rates by rateType
                     .map((rate, rateIndex) => (
                       <div
@@ -59,20 +63,30 @@ export default function ParkingRatesForm() {
                         className="flex flex-row items-center m-2"
                       >
                         <input
-                          type="text"
-                          name={`rates[${rate.actualIndex}].duration`}
+                          type="number"
+                          name={`Rates[${rate.actualIndex}].duration`}
                           placeholder={`Duration in ${rateType}s`}
                           onChange={formikProps.handleChange}
                           value={rate.duration}
-                          className="input input-bordered mr-2 bg-white"
+                          className={`input input-bordered mr-2 bg-white ${
+                            formikProps.touched.Rates &&
+                            formikProps.errors.Rates
+                              ? "border-red-500"
+                              : ""
+                          }`}
                         />
                         <input
                           type="number"
-                          name={`rates[${rate.actualIndex}].rate`}
+                          name={`Rates[${rate.actualIndex}].rate`}
                           placeholder="£ Rate Number"
                           onChange={formikProps.handleChange}
                           value={rate.rate}
-                          className="input input-bordered mr-2 bg-white"
+                          className={`input input-bordered mr-2 bg-white ${
+                            formikProps.touched.Rates &&
+                            formikProps.errors.Rates
+                              ? "border-red-500"
+                              : ""
+                          }`}
                           min="0.01"
                           step="0.01"
                         />
@@ -90,6 +104,9 @@ export default function ParkingRatesForm() {
             </div>
           )}
         </FieldArray>
+        {formikProps.touched.Rates && formikProps.errors.Rates ? (
+          <div className="text-red-500">At least one rate is required</div>
+        ) : null}
       </div>
     </div>
   );

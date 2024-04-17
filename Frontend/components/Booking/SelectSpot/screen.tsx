@@ -155,6 +155,7 @@ export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
 
   // Dynamically generate parking spots based on row positions and sort by columns
   const generateParkingSlots = (row: string) => {
+    // Filter out parking slots for the current row
     const parkingSlotsForPosition = parkingSlotFromAPI
       ?.filter((spot) => spot.position.row === row)
       .sort((a, b) => a.position.column - b.position.column);

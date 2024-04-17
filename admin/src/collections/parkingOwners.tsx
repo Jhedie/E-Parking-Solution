@@ -1,6 +1,7 @@
 import { CollectionActionsProps, buildCollection } from "@firecms/core";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { ParkingLotCollection } from "./parkingLots";
 
 export type Owner = {
   name: string;
@@ -18,9 +19,14 @@ export const ParkingOwnerCollection = buildCollection<Owner>({
   editable: true,
   group: "users",
   Actions: ({ selectionController, context }: CollectionActionsProps) => {
+    const BASE_URL = import.meta.env.VITE_FRONTEND_SERVER_BASE_URL;
     const isAdmin = JSON.parse(
       (context.authController.user as any)?.reloadUserInfo?.customAttributes
     ).admin;
+
+    const isApproved = JSON.parse(
+      (context.authController.user as any)?.reloadUserInfo?.customAttributes
+    ).approved;
 
     console.log(
       JSON.parse(
@@ -33,7 +39,7 @@ export const ParkingOwnerCollection = buildCollection<Owner>({
         {isAdmin && (
           <>
             <button
-              className="btn btn-outline p-2"
+              className="btn btn-success p-2"
               onClick={() => {
                 console.log(
                   "User approved",
@@ -42,16 +48,22 @@ export const ParkingOwnerCollection = buildCollection<Owner>({
                 console.log("Context", context);
                 console.log("reloarduserinfo", context.authController.user);
 
-                // I want to change the approval claim for the selected user
+                // I want to change the approval claim for the selected entity
                 if (selectionController.selectedEntities) {
                   selectionController.selectedEntities.forEach((entity) => {
+                    if (entity.values.status === "approved") {
+                      toast.success(
+                        `User: ${entity.values.name} has already been approved!`
+                      );
+                      return;
+                    }
                     context.authController
                       .getAuthToken()
                       .then((token: string) => {
                         console.log("user id", entity.id);
                         axios
                           .post(
-                            "https://api-b7mr63u4xa-uc.a.run.app/account/approveParkingOwner",
+                            `${BASE_URL}/account/approveParkingOwner`,
                             {
                               userId: entity.id,
                             },
@@ -78,6 +90,7 @@ export const ParkingOwnerCollection = buildCollection<Owner>({
             >
               Approve user
             </button>
+
             <button
               className="btn btn-warning p-2"
               onClick={() => {
@@ -96,13 +109,19 @@ export const ParkingOwnerCollection = buildCollection<Owner>({
                 // I want to change the rejection claim for the selected user
                 if (selectionController.selectedEntities) {
                   selectionController.selectedEntities.forEach((entity) => {
+                    if (entity.values.status === "rejected") {
+                      toast.success(
+                        `User: ${entity.values.name} has already been rejected!`
+                      );
+                      return;
+                    }
                     context.authController
                       .getAuthToken()
                       .then((token: string) => {
                         console.log("user id", entity.id);
                         axios
                           .post(
-                            "https://api-b7mr63u4xa-uc.a.run.app/account/rejectParkingOwner",
+                            `${BASE_URL}/account/rejectParkingOwner`,
                             {
                               userId: entity.id,
                             },
@@ -136,10 +155,11 @@ export const ParkingOwnerCollection = buildCollection<Owner>({
 
   permissions: ({ authController, user }) => ({
     read: true,
-    edit: false,
+    edit: true,
     create: false,
-    delete: false,
+    delete: true,
   }),
+
   properties: {
     name: {
       dataType: "string",
@@ -164,11 +184,25 @@ export const ParkingOwnerCollection = buildCollection<Owner>({
       name: "PhoneNumber",
     },
     role: {
+      dataType: "string",
       name: "Role",
       validation: {
         required: true,
       },
-      dataType: "string",
+      enumValues: [
+        {
+          id: "admin",
+          label: "ADMIN",
+        },
+        {
+          id: "parkingOwner",
+          label: "PARKING LOT OWNER",
+        },
+        {
+          id: "driver",
+          label: "DRIVER",
+        },
+      ],
     },
     status: {
       dataType: "string",
@@ -176,11 +210,11 @@ export const ParkingOwnerCollection = buildCollection<Owner>({
       enumValues: [
         {
           id: "approved",
-          label: "Approved",
+          label: "APPROVED",
         },
         {
           id: "rejected",
-          label: "Rejected",
+          label: "REJECTED",
         },
       ],
       validation: {
@@ -188,4 +222,5 @@ export const ParkingOwnerCollection = buildCollection<Owner>({
       },
     },
   },
+  subcollections: [ParkingLotCollection],
 });

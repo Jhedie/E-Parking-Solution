@@ -1,3 +1,4 @@
+import cors from "cors";
 import {
   Express,
   NextFunction,
@@ -11,7 +12,6 @@ import {
   HttpResponseError,
 } from "../../core/utils/http-response-error";
 import { MyClaims } from "../../index";
-
 export interface Controller {
   initialize(httpServer: HttpServer): void;
 }
@@ -19,15 +19,15 @@ export interface Controller {
 export class HttpServer {
   constructor(public readonly express: Express) {
     //set cors headers
-    this.express.use((req, res, next) => {
-      res.header("Access-Control-Allow-Origin", "*");
-      res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-      );
-      res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-      next();
-    });
+  
+    const corsOptions = {
+      origin: "*", // Allow only this origin to access
+      methods: "GET,POST,PUT,DELETE,OPTIONS", // Allowed methods
+      allowedHeaders:
+        "Origin,X-Requested-With,Content-Type,Accept,Authorization", // Allowed headers
+      credentials: true, // Allow cookies
+    };
+    this.express.use(cors(corsOptions));
   }
 
   get(path: string, requestHandler: RequestHandler, claims?: MyClaims[]): void {

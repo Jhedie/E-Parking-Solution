@@ -50,7 +50,7 @@ const SignUp: React.FC<SignUpProps> = ({
     }
   };
   return (
-    <div className="card bg-base-100 shadow-xl p-10 mt-10 text-white">
+    <div className="card bg-base-100 shadow-xl mt-2 p-5 text-black">
       <div className="card-body">
         <Formik
           initialValues={initialValues}
@@ -372,7 +372,7 @@ const SignUp: React.FC<SignUpProps> = ({
               </label>
 
               <button
-              type="submit"
+                type="submit"
                 onClick={() => formikProps.handleSubmit()}
                 className="btn btn-primary w-full"
               >
@@ -381,7 +381,7 @@ const SignUp: React.FC<SignUpProps> = ({
             </div>
           )}
         </Formik>
-        <p className="text-center text-sm text-gray-500 mt-4">
+        <p className="text-center text-sm text-gray-500">
           Already have an account?{" "}
           <button onClick={toggleAuthView} className="text-blue-500">
             Sign in

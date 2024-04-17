@@ -40,6 +40,7 @@ export type ParkingLotStatus = "Active" | "Inactive";
 export class ParkingLot {
   constructor(
     public readonly LotId: string | undefined,
+    public readonly OwnerId: string,
     public readonly LotName: string,
     public readonly Description: string,
     public readonly Coordinates: Coordinate,
@@ -57,6 +58,7 @@ export class ParkingLot {
   static empty() {
     return new ParkingLot(
       undefined, // LotId is undefined for an empty object
+      "", // Empty ownerId
       "", // Empty LotName
       "", // Empty Description
       null, // Default Coordinates

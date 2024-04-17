@@ -13,6 +13,9 @@ export class PartialParkingReservationClientModel {
     if (body[ParkingReservationClientModel.kVehicleId] !== undefined) {
       res.vehicleId = body[ParkingReservationClientModel.kVehicleId];
     }
+    if (body[ParkingReservationClientModel.kSlotId] !== undefined) {
+      res.slotId = body[ParkingReservationClientModel.kSlotId];
+    }
     if (body[ParkingReservationClientModel.kStartTime] !== undefined) {
       res.startTime = new Date(body[ParkingReservationClientModel.kStartTime]);
     }
@@ -26,8 +29,7 @@ export class PartialParkingReservationClientModel {
       res.totalAmount = body[ParkingReservationClientModel.kTotalAmount];
     }
     if (body[ParkingReservationClientModel.kParkingStatus] !== undefined) {
-      res.parkingStatus =
-        body[ParkingReservationClientModel.kParkingStatus];
+      res.parkingStatus = body[ParkingReservationClientModel.kParkingStatus];
     }
     if (body[ParkingReservationClientModel.kPaymentStatus] !== undefined) {
       res.paymentStatus = body[ParkingReservationClientModel.kPaymentStatus];

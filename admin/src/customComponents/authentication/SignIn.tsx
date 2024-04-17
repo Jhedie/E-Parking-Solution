@@ -34,7 +34,7 @@ const SignIn: React.FC<SignInProps> = ({
     password: "",
   };
   return (
-    <div className={"card bg-base-100 shadow-xl p-10 mt-10 text-white"}>
+    <div className={"card bg-base-100 shadow-xl p-10 mt-10 text-black"}>
       <div className="card-body">
         <Formik
           initialValues={initialValues}

@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express-serve-static-core";
 import { ParkingReservationClientModel } from "../../../core/data/models/parkingReservation/client/parkingReservation-client-model";
 import { PartialParkingReservationClientModel } from "../../../core/data/models/parkingReservation/client/partial-parkingReservation-client-model";
 import { ParkingReservation } from "../../../core/data/parkingReservation";
-import { parkingReservationService } from "../../../core/services/parkingReservation-service-refactor";
+import { parkingReservationService } from "../../../core/services/parkingReservation-service";
 import { HttpResponseError } from "../../../core/utils/http-response-error";
 import { Controller, HttpServer } from "../index";
 
@@ -59,7 +59,12 @@ export class ParkingReservationController implements Controller {
     try {
       console.log("Creating parking reservation.. with body", req.body);
       const parkingReservationDataInput: ParkingReservation =
-        ParkingReservationClientModel.validate(req.body, req.auth.uid);
+        ParkingReservationClientModel.validate(
+          req.body,
+          req.auth.uid,
+          req.params.parkingLotId,
+          req.params.parkingSlotId
+        );
 
       console.log(
         "parkingReservationDataInput validated",

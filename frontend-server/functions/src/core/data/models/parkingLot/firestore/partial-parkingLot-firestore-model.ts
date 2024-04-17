@@ -39,6 +39,8 @@ export class PartialParkingLotFirestoreModel {
         if (partialParkingLot.Occupancy)
           res[ParkingLotFirestoreModel.kOccupancy] =
             partialParkingLot.Occupancy;
+        if (partialParkingLot.status)
+          res[ParkingLotFirestoreModel.kStatus] = partialParkingLot.status;
         if (partialParkingLot.LiveStatus)
           res[ParkingLotFirestoreModel.kLiveStatus] =
             partialParkingLot.LiveStatus;

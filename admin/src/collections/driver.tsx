@@ -1,4 +1,5 @@
 import { buildCollection } from "@firecms/core";
+import { VehicleCollection } from "./vehicles";
 
 export type Driver = {
   name: string;
@@ -50,4 +51,5 @@ export const DriverCollection = buildCollection<Driver>({
       name: "Role",
     },
   },
+  subcollections: [VehicleCollection],
 });

@@ -10,7 +10,7 @@ class VehicleService {
     if (!userId) {
       throw new Error("A valid userId must be provided.");
     }
-    return admin.firestore().collection("users").doc(userId);
+    return admin.firestore().collection("driver").doc(userId);
   }
 
   private vehiclesCollection(userId: string) {

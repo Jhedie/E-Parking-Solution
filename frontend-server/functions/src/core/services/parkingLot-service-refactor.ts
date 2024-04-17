@@ -69,6 +69,13 @@ class ParkingLotService {
     ).toDocumentData(parkingLotRef.id, FieldValue.serverTimestamp());
     // Set the document data in Firestore
     await parkingLotRef.set(documentData);
+
+    //add the parking lot to a top level collection called parkingLots
+    //this is to enable easy retrieval of all parking lots without having to query the users collection
+    await this.parkingLotTopLevelCollection()
+      .doc(parkingLotRef.id)
+      .set(documentData);
+
     //Get the created document data from Firestore and convert it back to a ParkingLot entity
     return ParkingLotFirestoreModel.fromDocumentData(
       (await parkingLotRef.get()).data()
@@ -115,134 +122,12 @@ class ParkingLotService {
 
     // Update the parking lot document with the new data
     await this.parkingLotDoc(ownerId, parkingLotId).update(documentData);
+
+    // Update the parking lot in the top level collection
+    await this.parkingLotTopLevelCollection()
+      .doc(parkingLotId)
+      .update(documentData);
   }
-
-  //TODO: TO be refactored
-  // async deleteParkingLotById(
-  //   ownerId: string,
-  //   parkingLotId: string
-  // ): Promise<void> {
-  //   // Delete the parking slots associated with the parking lot
-  //   await this.deleteParkingSlotsByParkingLotId(parkingLotId);
-
-  //   //Delete the parking lot rates associated with the parking lot
-  //   await this.deleteParkingLotRatesByParkingLotId(parkingLotId);
-
-  //   // Delete the parking lot document
-  //   await this.parkingLotDoc(ownerId, parkingLotId).delete();
-  // }
-
-  //TODO: TO be refactored
-  // private async deleteParkingLotRatesByParkingLotId(
-  //   parkingLotId: string
-  // ): Promise<void> {
-  //   // Get a reference to the parking lot rates collection
-  //   const parkingLotRatesCollection = admin
-  //     .firestore()
-  //     .collection("parkingLotRates");
-
-  //   // Query the parking lot rates collection for rates associated with the parking lot
-  //   const parkingLotRatesQuery = parkingLotRatesCollection.where(
-  //     "lotId",
-  //     "==",
-  //     parkingLotId
-  //   );
-
-  //   // Get the parking lot rates associated with the parking lot
-  //   const parkingLotRatesSnapshot = await parkingLotRatesQuery.get();
-
-  //   // Delete the parking lot rates
-  //   const deletePromises = parkingLotRatesSnapshot.docs.map((doc) =>
-  //     doc.ref.delete()
-  //   );
-  //   await Promise.all(deletePromises);
-  // }
-
-  //TODO: TO be refactored
-  // private async deleteParkingSlotsByParkingLotId(
-  //   parkingLotId: string
-  // ): Promise<void> {
-  //   // Logic to delete parking slots associated with the parking lot
-  //   // This function should handle the deletion of parking slots when a parking lot is deleted
-
-  //   // Get a reference to the parking slots collection
-  //   const parkingSlotsCollection = admin.firestore().collection("parkingSlots");
-
-  //   // Query the parking slots collection for parking slots associated with the parking lot
-  //   const parkingSlotsQuery = parkingSlotsCollection.where(
-  //     "lotId",
-  //     "==",
-  //     parkingLotId
-  //   );
-
-  //   // Get the parking slots associated with the parking lot
-  //   const parkingSlotsSnapshot = await parkingSlotsQuery.get();
-
-  //   // Create a promise for each delete operation
-  //   const deletePromises = parkingSlotsSnapshot.docs.map((doc) =>
-  //     doc.ref.delete()
-  //   );
-
-  //   // Wait for all delete operations to complete
-  //   await Promise.all(deletePromises);
-  // }
-
-  //TODO: TO be refactored
-  // async createParkingLotWithSlotsAndRates(
-  //   parkingLot: ParkingLot,
-  //   ownerID: string,
-  //   parkingSlots: ParkingSlot[],
-  //   parkingRates: ParkingLotRate[]
-  // ): Promise<ParkingLot> {
-  //   const db = admin.firestore();
-
-  //   // Generate a new document reference for the parking lot so we can use its ID for slots and rates
-  //   const parkingLotRef = this.collection().doc();
-
-  //   // Start a transaction
-  //   await db.runTransaction(async (transaction) => {
-  //     // Prepare the parking lot data
-  //     const parkingLotData = ParkingLotFirestoreModel.fromEntity(
-  //       parkingLot
-  //     ).toDocumentData(
-  //       parkingLotRef.id,
-  //       firestore.FieldValue.serverTimestamp()
-  //     );
-
-  //     // Set the parking lot document within the transaction
-  //     transaction.set(parkingLotRef, parkingLotData);
-
-  //     // Prepare and set parking slots data
-  //     parkingSlots.forEach((slot) => {
-  //       const slotRef = db.collection("parkingSlots").doc(); // Generate a new doc for each slot
-  //       const slotData = ParkingSlotFirestoreModel.fromEntity({
-  //         ...slot,
-  //         lotId: parkingLotRef.id,
-  //       }).toDocumentData(slotRef.id, firestore.FieldValue.serverTimestamp());
-  //       transaction.set(slotRef, slotData);
-  //     });
-
-  //     // Prepare and set parking rates data
-  //     parkingRates.forEach((rate) => {
-  //       const rateRef = db.collection("parkingLotRates").doc(); // Generate a new doc for each rate
-  //       const rateData = ParkingLotRateFirestoreModel.fromEntity({
-  //         ...rate,
-  //         lotId: parkingLotRef.id,
-  //       }).toDocumentData(rateRef.id, firestore.FieldValue.serverTimestamp());
-  //       transaction.set(rateRef, rateData);
-  //     });
-  //   });
-
-  //   // Since the transaction does not return the created object, manually fetch or construct the parking lot object to return
-  //   // Fetching the created parking lot from Firestore immediately after the transaction
-  //   const createdParkingLotSnapshot = await parkingLotRef.get();
-  //   if (!createdParkingLotSnapshot.exists) {
-  //     throw new Error("Failed to create parking lot.");
-  //   }
-  //   return ParkingLotFirestoreModel.fromDocumentData(
-  //     createdParkingLotSnapshot.data()
-  //   );
-  // }
 
   async geosearchParkingLots(
     lat: number,
@@ -293,6 +178,116 @@ class ParkingLotService {
 
     return parkingLotsFromSearch;
   }
+
+  async approveParkingLotById(
+    ownerId: string,
+    parkingLotId: string
+  ): Promise<void> {
+    //update the status of the parking lot to approved
+    try {
+      await this.updateParkingLotById(ownerId, parkingLotId, {
+        status: "Active",
+      });
+      //get the email of the parking lot owner
+      const user = await admin.auth().getUser(ownerId);
+      const email = user?.email;
+      try {
+        this.sendParkingLotApprovalOrRevocationEmail(
+          email,
+          "Your parking lot has been approved.",
+          "Kindly click the link below to view your parking lot.",
+          "View Parking Lot",
+          `http://localhost:5173/app/dashboard/${parkingLotId}`
+        );
+      } catch (error) {
+        console.log("error", error);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
+  async revokeApprovalParkingLotById(ownerId: string, parkingLotId: string) {
+    try {
+      //update the status of the parking lot to approved
+      await this.updateParkingLotById(ownerId, parkingLotId, {
+        status: "Inactive",
+      });
+
+      try {
+        //get the email of the parking lot owner
+        const user = await admin.auth().getUser(ownerId);
+        const email = user?.email;
+
+        this.sendParkingLotApprovalOrRevocationEmail(
+          email,
+          "Your parking lot has been deactivated.",
+          "Kindly contact the support for further information.",
+          "Contact support",
+          `mailto:${this.adminEmail}`
+        );
+      } catch (error) {
+        console.log("error", error);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
+  sendParkingLotApprovalOrRevocationEmail = async (
+    email: string,
+    message: string,
+    furtherInformation: string,
+    actionMessage: string,
+    link: string
+  ): Promise<any> => {
+    const to: string = email;
+    const from: string = this.adminEmail;
+
+    const msg = {
+      to,
+      from,
+      template_id: "d-47713f0267b84b8dab3ce0f14a6bb8a8",
+      dynamic_template_data: {
+        ApprovalMessage: message,
+        FurtherInformation: furtherInformation,
+        ActionMessage: actionMessage,
+        updateLink: link,
+      },
+    };
+
+    return await sgMail.send(msg);
+  };
+  sendNewParkingLotCreatedEmail = async (
+    email: string,
+    link: string,
+    ownerId: string
+  ): Promise<any> => {
+    const to: string = email;
+    const from: string = this.adminEmail;
+
+    const msg = {
+      to,
+      from,
+      template_id: "d-6b054d0e7234489b9ee0df574a387233",
+      dynamic_template_data: {
+        approvalLink: link,
+        ownerId: ownerId,
+      },
+    };
+
+    return await sgMail.send(msg);
+  };
+
+  async deleteParkingLotById(
+    ownerId: string,
+    parkingLotId: string
+  ): Promise<void> {
+    
+    // Delete the parking lot document
+    await this.parkingLotDoc(ownerId, parkingLotId).delete();
+  }
+
 }
 
 // Export a singleton instance in the global namespace

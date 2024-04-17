@@ -3,6 +3,7 @@ import {
   buildCollection,
   buildEntityCallbacks,
 } from "@firecms/core";
+import { ParkingReservationCollection } from "./parkingReservations";
 
 export type ParkingSlots = {
   type: string;
@@ -138,5 +139,6 @@ export const ParkingSlotsCollection = buildCollection<ParkingSlots>({
       },
     },
   },
+  subcollections: [ParkingReservationCollection],
   initialSort: ["position", "asc"],
 });

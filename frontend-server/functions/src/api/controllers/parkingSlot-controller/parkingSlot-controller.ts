@@ -4,7 +4,7 @@ import { ParkingSlotClientModel } from "../../../core/data/models/parkingSlot/cl
 import { PartialParkingSlotClientModel } from "../../../core/data/models/parkingSlot/client/partial-parkingSlot-client-model";
 import { validateNoDuplicatePositionsInList } from "../../../core/data/models/parkingSlot/client/validators";
 import { ParkingSlot } from "../../../core/data/parkingSlot";
-import { parkingSlotService } from "../../../core/services/parkingSlot-service-refactor";
+import { parkingSlotService } from "../../../core/services/parkingSlot-service";
 import { HttpResponseError } from "../../../core/utils/http-response-error";
 import { Controller, HttpServer } from "../index";
 

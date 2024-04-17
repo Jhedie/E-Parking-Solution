@@ -1,8 +1,9 @@
-import { useModeController } from "@firecms/core";
+import { useAuthController, useModeController } from "@firecms/core";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, Formik, FormikHelpers } from "formik";
-import React, { useState } from "react";
-import { useToaster } from "react-hot-toast";
+import axios from "axios";
+import { Form, Formik, FormikErrors, FormikHelpers } from "formik";
+import React, { useCallback, useEffect, useState } from "react";
+import { useConfig } from "../../providers/Config/ConfigProvider";
 import ParkingLotAddressForm, {
   ParkingLotAddressFormSchema,
 } from "./ParkingLotAddressForm/ParkingLotAddressForm";
@@ -17,17 +18,23 @@ import ParkingSlotsForm, {
 } from "./ParkingSlotsFrom/ParkingSlotsForm";
 import ReviewAndConfirm from "./ReviewAndConfirm/ReviewAndConfirm";
 
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
+import { ZodError } from "zod";
+import Modal from "../../helpers/Modal";
+
 export interface ComprehensiveFormValues {
-  lotName: string;
-  description: string;
-  operatingHours: Array<{
+  LotName: string;
+  Description: string;
+  OperatingHours: Array<{
     day: string;
     start: string;
     end: string;
   }>;
-  images: string[];
-  facilities: string[];
-  address: {
+  Images: string[];
+  Facilities: string[];
+  Address: {
     streetNumber?: string;
     unitNumber?: string;
     streetName: string;
@@ -35,25 +42,25 @@ export interface ComprehensiveFormValues {
     state: string;
     country: string;
     postalCode: string;
-    coordinates?: {
-      latitute: number;
-      longitude: number;
-    };
     formattedAddress?: string;
   };
-  slotsConfig: Array<{
+  Coordinates?: {
+    Latitude: number;
+    Longitude: number;
+  };
+  SlotsConfig: Array<{
     row: string;
     columns: number;
   }>;
-  slotTypes: {
+  SlotTypes: {
     handicapped?: string;
     electric?: string;
   };
-  capacity: number;
-  rates: Array<{
+  Capacity: number;
+  Rates: Array<{
     rateType: string;
-    rate: string;
-    duration: string;
+    rate: number;
+    duration: number;
   }>;
 }
 
@@ -89,16 +96,38 @@ export default function MultiStepCreateParkingLotForm() {
   const currentValidationSchema =
     stepComponents[currentStep - 1].validationSchema;
 
+  const validateForm = async (values: any) => {
+    try {
+      currentValidationSchema?.parse(values);
+      return {}; // Return an empty object if no validation errors
+    } catch (error) {
+      if (error instanceof ZodError) {
+        console.error("Validation error: ", error);
+        // Convert ZodError to FormikErrors format
+        const formikErrors: FormikErrors<any> = {};
+        for (const [key, value] of Object.entries(
+          error.formErrors.fieldErrors
+        )) {
+          // Assuming error messages are in an array, take the first message
+          if (value?.length)
+            formikErrors[key as keyof ComprehensiveFormValues] = value[0];
+        }
+        return formikErrors;
+      }
+      return {}; // Return an empty object if the error is not a ZodError
+    }
+  };
+
   const initialValues = {
     // Step 1: Basic Parking Lot Information
-    lotName: "",
-    description: "",
-    facilities: [], // Array of facilities like 'EV Charging', 'CCTV' etc.
-    operatingHours: [], // [day: Monday: start: "09:00", end: "17:00"...]
-    images: [],
+    LotName: "",
+    Description: "",
+    Facilities: [], // Array of facilities like 'EV Charging', 'CCTV' etc.
+    OperatingHours: [], // [day: Monday: start: "09:00", end: "17:00"...]
+    Images: [],
 
     //Step 2: Parking Location Configuration
-    address: {
+    Address: {
       streetNumber: "",
       unitNumber: "",
       streetName: "",
@@ -106,26 +135,82 @@ export default function MultiStepCreateParkingLotForm() {
       state: "",
       country: "",
       postalCode: "",
-      coordinates: {
-        latitute: 0,
-        longitude: 0,
-      },
       formattedAddress: "",
     },
-
+    Coordinates: {
+      Latitude: 0,
+      Longitude: 0,
+    },
     // Step 3: Parking Slot Configuration
-    capacity: 0,
-    slotsConfig: [],
-    slotTypes: {
+    Capacity: 0,
+    SlotsConfig: [],
+    SlotTypes: {
       handicapped: "",
       electric: "",
     },
     // Step 4: Parking Rates
-    rates: [], // Array of rates like { rateType: "hour", rate: "5", duration: "1" }
+    Rates: [], // Array of rates like { rateType: "hour", rate: "5", duration: "1" }
   };
+  const { BASE_URL } = useConfig();
+  const authController = useAuthController();
+  const navigate = useNavigate();
+  const [token, setToken] = useState<string>("");
+  const [userName, setUserName] = useState<string>("");
+
+  const getAuthDetails = useCallback(() => {
+    setUserName(authController.user?.displayName ?? `user_${Date.now()}`);
+    authController.getAuthToken().then((fetchedToken) => {
+      setToken(fetchedToken);
+    });
+  }, [authController]);
+
+  useEffect(() => {
+    getAuthDetails();
+  }, [getAuthDetails]);
+
+  const storage = getStorage();
+
+  const uploadImages = async (images: string[]): Promise<string[] | false> => {
+    if (!images.length) {
+      toast.error("No images to upload");
+      return [];
+    }
+    const generateFileName = (index: number) =>
+      `${userName}/parkingLots/parkingLotPhoto_${index}.jpg`;
+
+    try {
+      const uploadPromises = images.map(async (image, index) => {
+        const fileName = generateFileName(index);
+        const response = await fetch(image);
+        const blob = await response.blob(); // Convert the image URL to a Blob
+        const storageRef = ref(storage, fileName);
+        const snapshot = await uploadBytes(storageRef, blob); // Upload the Blob
+        return getDownloadURL(snapshot.ref);
+      });
+
+      const urls = await Promise.all(uploadPromises);
+      console.log("All images uploaded successfully: ", urls);
+      return urls; // Returns an array of URLs
+    } catch (error) {
+      console.error("Error uploading image: ", error);
+      return false; // At least one upload failed
+    }
+  };
+  //Handle the loading state of the form
+  const [isUploading, setIsUploading] = useState(false);
+
+  const LoadingOverlay = () => (
+    <div className="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <span className="text-white loading loading-spinner loading-lg"></span>
+    </div>
+  );
+
+  //Modal for submission completion
+  const [showSubmissionModal, setShowSubmissionModal] = useState(false);
 
   return (
     <div className="flex flex-col items-center justify-center space-y-4 mt-10">
+      {isUploading && <LoadingOverlay />}
       <div
         className={`items-center justify-center ${
           modeState.mode === "dark" ? "text-white" : "text-black"
@@ -166,15 +251,51 @@ export default function MultiStepCreateParkingLotForm() {
             if (currentStep < stepComponents.length) {
               setCurrentStep(currentStep + 1);
             } else {
-              console.log(values);
+              if (!isUploading) {
+                setIsUploading(true);
+                console.log(values);
+                uploadImages(values.Images).then((urls) => {
+                  if (urls) {
+                    toast.success("Images uploaded successfully");
+                    axios
+                      .post(
+                        `${BASE_URL}/create-parkingLot`,
+                        {
+                          body: {
+                            ...values,
+                            Images: urls,
+                          },
+                        },
+                        {
+                          headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                          },
+                        }
+                      )
+                      .then((response) => {
+                        console.log(response);
+                        toast.success("Parking Lot Created Successfully");
+                        setShowSubmissionModal(true); // Show the modal here
+                        setIsUploading(false);
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                        toast.error("Error creating parking lot");
+                        setIsUploading(false);
+                      });
+                    actions.setSubmitting(false);
+                  } else {
+                    toast.error("Error uploading images");
+                    setIsUploading(false);
+                  }
+                });
+              }
             }
             actions.setSubmitting(false);
           }}
-          resolver={
-            currentValidationSchema
-              ? zodResolver(currentValidationSchema)
-              : undefined
-          }
+          // Use zod resolver if a validation schema is provided
+          validate={validateForm}
         >
           {(formikProps) => (
             <Form>
@@ -186,7 +307,7 @@ export default function MultiStepCreateParkingLotForm() {
                   <button
                     type="button"
                     onClick={() => setCurrentStep(currentStep - 1)}
-                    className={`btn btn-secondary w-1/2 mr-2 ${
+                    className={`btn bg-red-500 text-black w-1/2 mr-2 ${
                       currentStep <= 1 ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                     disabled={currentStep <= 1}
@@ -195,8 +316,8 @@ export default function MultiStepCreateParkingLotForm() {
                   </button>
                   <button
                     type="submit"
-                    disabled={formikProps.isSubmitting}
-                    className="btn btn-primary w-1/2"
+                    disabled={formikProps.isSubmitting || isUploading}
+                    className="btn bg-blue-700 text-white w-1/2"
                   >
                     {currentStep === stepComponents.length ? "Submit" : "Next"}
                   </button>
@@ -206,6 +327,29 @@ export default function MultiStepCreateParkingLotForm() {
           )}
         </Formik>
       </div>
+      {/* Modal for submission completion */}
+      {showSubmissionModal && (
+        <Modal
+          open={showSubmissionModal}
+          onClose={() => navigate("/app/app/dashboard")}
+        >
+          <div className="text-center">
+            <h3 className="mb-4">Form Submitted</h3>
+            <p>
+              Your form has been submitted. Once approved, it will be activated.
+            </p>
+            <button
+              className="btn btn-primary mt-4"
+              onClick={() => {
+                setShowSubmissionModal(false);
+                navigate("/app/app/dashboard");
+              }}
+            >
+              Continue
+            </button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

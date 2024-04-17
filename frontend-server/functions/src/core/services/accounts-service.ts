@@ -10,6 +10,7 @@ class AccountsService {
   constructor() {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   }
+  private adminEmail: string = process.env.ADMIN_EMAIL;
 
   async approveParkingOwner(uid: string): Promise<void> {
     const user = await admin.auth().getUser(uid);
@@ -56,7 +57,7 @@ class AccountsService {
       // Attempt to send a failure email if there was an error other than email sending
       try {
         await this.sendApprovalUpdateEmail(
-          "jeddiahawuku12@gmail.com",
+          this.adminEmail,
           `Hi, There was an error approving user account ${user.email}`,
           "Kindly Investigate",
           "Admin Dashboard",
@@ -111,7 +112,7 @@ class AccountsService {
           "Hi, Your parking owner account application has been rejected",
           "Kindly contact the team for more information",
           "Contact Support",
-          "mailto:jeddiahawuku12@gmail.com"
+          `mailto:${this.adminEmail}`
         );
       } catch (emailError) {
         console.error(
@@ -123,7 +124,7 @@ class AccountsService {
       console.error("Error during the rejection process:", error);
       try {
         await this.sendApprovalUpdateEmail(
-          "jeddiahawuku12@gmail.com",
+          this.adminEmail,
           `Hi, There was an error rejecting user account ${user.email}`,
           "Kindly Investigate",
           "Admin Dashboard",
@@ -161,7 +162,7 @@ class AccountsService {
         driver: user.role == "driver", //true or false
         parkingOwner: user.role == "parkingOwner", //true or false
         admin: user.role == "admin", //true or false
-        approved: false,
+        approved: user.role == "admin" ? true : false,
       });
 
       const documentData = UserFirestoreModel.fromEntity(user).toDocumentData();
@@ -171,7 +172,7 @@ class AccountsService {
         .doc(user.uid)
         .set(documentData);
 
-      // Additionally, create or update the document in a role-specific collection
+      // Additionally, create or update the document in a role-specific top level collection
       const roleSpecificCollection = admin.firestore().collection(user.role);
       await roleSpecificCollection.doc(user.uid).set(documentData);
 
@@ -235,7 +236,7 @@ class AccountsService {
     const link: string = await admin
       .auth()
       .generateEmailVerificationLink(user.email);
-    this.sendMail(user, link).catch((err) => {
+    this.sendVerificationMail(user, link).catch((err) => {
       throw new HttpResponseError(
         500,
         "EMAIL_SENDING_ERROR",
@@ -326,11 +327,18 @@ class AccountsService {
     await admin.auth().deleteUser(uid);
     //delete the user from the firestore
     await admin.firestore().collection("users").doc(uid).delete();
+
+    //delete the user from the role specific collection
+    const user = await this.getUser(uid);
+    await admin.firestore().collection(user.role).doc(uid).delete();
   }
 
-  sendMail = async (user: UserRecord, link: string): Promise<any> => {
+  sendVerificationMail = async (
+    user: UserRecord,
+    link: string
+  ): Promise<any> => {
     const to: string = user.email;
-    const from: string = "jeddiahawuku12@gmail.com";
+    const from: string = this.adminEmail;
 
     const msg = {
       to,
@@ -348,7 +356,7 @@ class AccountsService {
 
   sendApprovalEmail = async (email: string, link: string): Promise<any> => {
     const to: string = email;
-    const from: string = "jeddiahawuku12@gmail.com";
+    const from: string = this.adminEmail;
 
     const msg = {
       to,
@@ -370,7 +378,7 @@ class AccountsService {
     link: string
   ): Promise<any> => {
     const to: string = email;
-    const from: string = "jeddiahawuku12@gmail.com";
+    const from: string = this.adminEmail;
 
     const msg = {
       to,

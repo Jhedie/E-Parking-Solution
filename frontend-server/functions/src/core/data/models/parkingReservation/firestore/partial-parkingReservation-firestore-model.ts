@@ -19,6 +19,10 @@ export class PartialParkingReservationFirestoreModel {
           res[ParkingReservationFirestoreModel.kVehicleId] =
             partialReservation.vehicleId;
         }
+        if (partialReservation.slotId !== undefined) {
+          res[ParkingReservationFirestoreModel.kSlotId] =
+            partialReservation.slotId;
+        }
         if (partialReservation.startTime !== undefined) {
           res[ParkingReservationFirestoreModel.kStartTime] =
             firestore.Timestamp.fromDate(

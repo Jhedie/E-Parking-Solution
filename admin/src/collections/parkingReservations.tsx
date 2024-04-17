@@ -19,6 +19,7 @@ export const ParkingReservationCollection = buildCollection<ParkingReservation>(
     path: "parkingReservations",
     editable: true,
     icon: "book_online",
+    group: "Parking",
     properties: {
       rateType: {
         dataType: "string",

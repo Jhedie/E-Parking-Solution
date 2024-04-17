@@ -6,17 +6,36 @@ import { ParkingSlot } from "../data/parkingSlot";
 import FieldValue = firestore.FieldValue;
 
 class ParkingSlotService {
-  private collection() {
-    return admin.firestore().collection("parkingSlots");
+  private parkingLotsCollection(ownerId: string) {
+    return admin
+      .firestore()
+      .collection("parkingOwner")
+      .doc(ownerId)
+      .collection("parkingLots");
   }
 
-  private doc(slotId?: string) {
-    if (!slotId) return this.collection().doc();
-    return this.collection().doc(slotId);
+  private parkingSlotsCollection(ownerId: string, lotId: string) {
+    return this.parkingLotsCollection(ownerId)
+      .doc(lotId)
+      .collection("parkingSlots");
   }
 
-  async createParkingSlot(parkingSlot: ParkingSlot): Promise<ParkingSlot> {
-    const parkingSlotRef = this.doc(); // Creates a new document reference for the parking slot
+  private parkingSlotDoc(
+    ownerId: string,
+    lotId: string,
+    slotId?: string
+  ): firestore.DocumentReference {
+    return slotId
+      ? this.parkingSlotsCollection(ownerId, lotId).doc(slotId)
+      : this.parkingSlotsCollection(ownerId, lotId).doc();
+  }
+
+  async createParkingSlot(
+    parkingSlot: ParkingSlot,
+    ownerId: string,
+    lotId: string
+  ): Promise<ParkingSlot> {
+    const parkingSlotRef = this.parkingSlotDoc(ownerId, lotId); // Creates a new document reference for the parking slot
     const documentData = ParkingSlotFirestoreModel.fromEntity(
       parkingSlot
     ).toDocumentData(parkingSlotRef.id, FieldValue.serverTimestamp());
@@ -31,13 +50,15 @@ class ParkingSlotService {
 
   async createMultipleParkingSlots(
     parkingSlots: ParkingSlot[],
+    ownerId: string,
+    lotId: string,
     transaction?: firestore.Transaction
   ): Promise<ParkingSlot[]> {
     const batch = admin.firestore().batch();
     const parkingSlotRefs: firestore.DocumentReference[] = [];
 
     for (const parkingSlot of parkingSlots) {
-      const parkingSlotRef = this.collection().doc(); // Automatically generate a new document ID
+      const parkingSlotRef = this.parkingSlotsCollection(ownerId, lotId).doc(); // Automatically generate a new document ID
       const documentData = ParkingSlotFirestoreModel.fromEntity(
         parkingSlot
       ).toDocumentData(parkingSlotRef.id, FieldValue.serverTimestamp());
@@ -59,66 +80,79 @@ class ParkingSlotService {
       }
       const data = doc.data();
       // Convert the document data to a ParkingSlot object
-      // Ensure your fromDocumentData method properly handles the conversion, including the timestamp
       return ParkingSlotFirestoreModel.fromDocumentData(data);
     });
 
     return createdParkingSlots;
   }
 
-  async getParkingSlotById(slotId: string): Promise<ParkingSlot | null> {
-    const parkingSlotRes = await this.doc(slotId).get();
+  async getParkingSlotById(
+    ownerId: string,
+    lotId: string,
+    slotId: string
+  ): Promise<ParkingSlot | null> {
+    const parkingSlotRes = await this.parkingSlotDoc(
+      ownerId,
+      lotId,
+      slotId
+    ).get();
     if (!parkingSlotRes.exists) {
       return null;
     }
     return ParkingSlotFirestoreModel.fromDocumentData(parkingSlotRes.data());
   }
 
-  async getParkingSlots(): Promise<ParkingSlot[]> {
-    const snapshot = await this.collection().get();
+  async getParkingSlots(
+    ownerId: string,
+    lotId: string
+  ): Promise<ParkingSlot[]> {
+    const snapshot = await this.parkingSlotsCollection(ownerId, lotId).get();
     return snapshot.docs.map((doc) =>
       ParkingSlotFirestoreModel.fromDocumentData(doc.data())
     );
   }
 
   async updateParkingSlotById(
+    ownerId: string,
+    lotId: string,
     slotId: string,
     partialParkingSlot: Partial<Record<keyof ParkingSlot, any>>
   ): Promise<void> {
-    const db = admin.firestore();
-    await db.runTransaction(async (transaction) => {
-      const parkingSlotRef = this.doc(slotId);
-      const documentData =
-        PartialParkingSlotFirestoreModel.fromPartialEntity(
-          partialParkingSlot
-        ).toDocumentData();
-      transaction.update(parkingSlotRef, documentData);
-    });
+    const parkingSlotRef = this.parkingSlotDoc(ownerId, lotId, slotId);
+    const documentData =
+      PartialParkingSlotFirestoreModel.fromPartialEntity(
+        partialParkingSlot
+      ).toDocumentData();
+    await parkingSlotRef.update(documentData);
   }
 
-  async deleteParkingSlotById(slotId: string): Promise<void> {
-    await admin.firestore().runTransaction(async (transaction) => {
-      const parkingSlotRef = this.doc(slotId);
-      transaction.delete(parkingSlotRef);
-    });
+  async deleteParkingSlotById(
+    ownerId: string,
+    lotId: string,
+    slotId: string
+  ): Promise<void> {
+    await this.parkingSlotDoc(ownerId, lotId, slotId).delete();
   }
 
-  async getParkingSlotsByLotId(lotId: string): Promise<ParkingSlot[]> {
-    const snapshot = await this.collection().where("lotId", "==", lotId).get();
+  async getParkingSlotsByLotId(
+    ownerId: string,
+    lotId: string
+  ): Promise<ParkingSlot[]> {
+    const snapshot = await this.parkingSlotsCollection(ownerId, lotId)
+      .where("lotId", "==", lotId)
+      .get();
     return snapshot.docs.map((doc) =>
       ParkingSlotFirestoreModel.fromDocumentData(doc.data())
     );
   }
 
-  async deleteAllParkingSlots(): Promise<void> {
-    const snapshot = await this.collection().get();
-    const batch = admin.firestore().batch();
-    snapshot.docs.forEach((doc) => batch.delete(doc.ref));
-    await batch.commit();
-  }
-
-  async deleteParkingSlotsByLotId(lotId: string): Promise<void> {
-    const snapshot = await this.collection().where("lotId", "==", lotId).get();
+  async deleteParkingSlotsByLotId(
+    ownerId: string,
+    lotId: string
+  ): Promise<void> {
+    const snapshot = await this.parkingSlotsCollection(ownerId, lotId)
+      .where("lotId", "==", lotId)
+      .get();
     const batch = admin.firestore().batch();
     snapshot.docs.forEach((doc) => batch.delete(doc.ref));
     await batch.commit();

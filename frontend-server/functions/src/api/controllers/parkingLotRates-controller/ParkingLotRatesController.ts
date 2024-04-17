@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from "express-serve-static-core";
 import { ParkingLotRatesClientModel } from "../../../core/data/models/parkingLotRates/client/parkingLotRate-client-model";
 import { PartialParkingLotRatesClientModel } from "../../../core/data/models/parkingLotRates/client/partial-parkingLotRate-client-model";
 import { ParkingLotRate } from "../../../core/data/parkingLotRates";
-import { parkingLotRatesService } from "../../../core/services/parkingLotRates-service-refactor";
+import { parkingLotRatesService } from "../../../core/services/parkingLotRates-service";
 import { HttpResponseError } from "../../../core/utils/http-response-error";
 import { Controller, HttpServer } from "../index";
 

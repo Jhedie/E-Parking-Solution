@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express-serve-static-core";
 import { Vehicle } from "../../../core/data/Vehicle";
 import { PartialVehicleClientModel } from "../../../core/data/models/vehicle/client/partial-vehicle-client-model";
 import { VehicleClientModel } from "../../../core/data/models/vehicle/client/vehicle-client-model";
-import { vehicleService } from "../../../core/services/vehicle-service-refactor";
+import { vehicleService } from "../../../core/services/vehicle-service";
 import { HttpResponseError } from "../../../core/utils/http-response-error";
 import { Controller, HttpServer } from "../index";
 

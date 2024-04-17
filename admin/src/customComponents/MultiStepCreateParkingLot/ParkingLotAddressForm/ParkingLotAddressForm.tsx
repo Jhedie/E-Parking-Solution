@@ -4,25 +4,25 @@ import React, { useEffect, useState } from "react";
 import usePlacesService from "react-google-autocomplete/lib/usePlacesAutocompleteService";
 import { z } from "zod";
 export const ParkingLotAddressFormSchema = z.object({
-  address: z.object({
+  Address: z.object({
     streetNumber: z.string().optional(),
     unitNumber: z.string().optional(),
-    streetName: z.string().min(1, "Street Address is required"),
+    streetName: z.string().min(1, "Street Name is required"),
     city: z.string().min(1, "City is required"),
-    state: z.string().min(1, "State is required"),
+    state: z.string(),
     country: z.string().min(1, "Country is required"),
-    postalCode: z.string().min(1, "Zip Code is required"),
-    coordinates: z
-      .object({
-        latitute: z.number(),
-        longitude: z.number(),
-      })
-      .optional(),
+    postalCode: z.string().min(1, "Postal Code is required"),
     formattedAddress: z.string().optional(),
   }),
+  Coordinates: z
+    .object({
+      Latitude: z.number(),
+      Longitude: z.number(),
+    })
+    .optional(),
 });
 
-const API_KEY = "AIzaSyDrEiBP1xoICRITuWU3OBRQwG-8nK5hhBE";
+const API_KEY = import.meta.env.VITE_MAPS_API_KEY;
 const loader = new Loader({
   apiKey: API_KEY,
   version: "weekly",
@@ -31,6 +31,7 @@ const loader = new Loader({
 export default function ParkingLotAddressForm() {
   const formikProps =
     useFormikContext<z.infer<typeof ParkingLotAddressFormSchema>>();
+
   const [placeSelected, setPlaceSelected] =
     useState<google.maps.places.PlaceResult | null>(null);
 
@@ -81,6 +82,7 @@ export default function ParkingLotAddressForm() {
               setLocationSearch(e.target.value);
               getPlacePredictions({ input: e.target.value });
             }}
+            onBlur={formikProps.handleBlur}
             className="input input-bordered bg-white w-full"
           />
 
@@ -111,7 +113,7 @@ export default function ParkingLotAddressForm() {
               console.log(placeSelected);
 
               formikProps.setFieldValue(
-                "address.formattedAddress",
+                "Address.formattedAddress",
                 placeSelected?.formatted_address
               );
               placeSelected?.address_components?.forEach((component) => {
@@ -119,15 +121,15 @@ export default function ParkingLotAddressForm() {
                 switch (type) {
                   case "street_number":
                     formikProps.setFieldValue(
-                      "address.streetNumber",
+                      "Address.streetNumber",
                       component.long_name
                     );
                     break;
                   case "premise": {
                     const currentAddressName =
-                      formikProps.values.address.unitNumber;
+                      formikProps.values.Address.unitNumber;
                     formikProps.setFieldValue(
-                      "address.unitNumber",
+                      "Address.unitNumber",
                       currentAddressName === ""
                         ? component.long_name
                         : `${component.long_name}, ${currentAddressName}`
@@ -136,52 +138,51 @@ export default function ParkingLotAddressForm() {
                   }
                   case "route":
                     formikProps.setFieldValue(
-                      "address.streetName",
+                      "Address.streetName",
                       component.long_name
                     );
                     break;
                   case "postal_town":
                     formikProps.setFieldValue(
-                      "address.city",
+                      "Address.city",
                       component.long_name
                     );
                     break;
                   case "administrative_area_level_2": {
-                    const currentCity = formikProps.values.address.city;
+                    const currentCity = formikProps.values.Address.city;
                     if (
                       currentCity === "" &&
                       component.long_name === "Greater London"
                     ) {
-                      formikProps.setFieldValue("address.city", "London");
+                      formikProps.setFieldValue("Address.city", "London");
                     } else {
                       formikProps.setFieldValue(
-                        "address.city",
+                        "Address.city",
                         component.long_name
                       );
                     }
                     break;
                   }
                   case "neighborhood":
-                    if (formikProps.values.address.city === "")
+                    if (formikProps.values.Address.city === "")
                       formikProps.setFieldValue(
-                        "address.city",
+                        "Address.city",
                         component.long_name
                       );
                     break;
                   case "country":
                     formikProps.setFieldValue(
-                      "address.country",
+                      "Address.country",
                       component.long_name
                     );
                     break;
                   case "postal_code":
                     formikProps.setFieldValue(
-                      "address.postalCode",
+                      "Address.postalCode",
                       component.long_name
                     );
                     break;
                   default:
-                    console.log("irrelevant component type");
                     break;
                 }
               });
@@ -190,11 +191,11 @@ export default function ParkingLotAddressForm() {
               // Set the formik values for latitude and longitude to be used later
               if (coordinates) {
                 formikProps.setFieldValue(
-                  "address.coordinates.latitute",
+                  "Coordinates.Latitude",
                   coordinates.lat()
                 );
                 formikProps.setFieldValue(
-                  "address.coordinates.longitude",
+                  "Coordinates.Longitude",
                   coordinates.lng()
                 );
               }
@@ -209,11 +210,11 @@ export default function ParkingLotAddressForm() {
         <label className="flex items-center mb-4">
           <input
             type="text"
-            name="streetNumber"
+            name="Address.streetNumber"
             placeholder="Street Number"
             onChange={formikProps.handleChange}
             onBlur={formikProps.handleBlur}
-            value={formikProps.values.address.streetNumber}
+            value={formikProps.values.Address.streetNumber}
             className="w-full input input-bordered bg-white p-3"
           />
         </label>
@@ -221,11 +222,11 @@ export default function ParkingLotAddressForm() {
         <label className="flex items-center mb-4">
           <input
             type="text"
-            name="address.unitNumber"
+            name="Address.unitNumber"
             placeholder="Unit Number"
             onChange={formikProps.handleChange}
             onBlur={formikProps.handleBlur}
-            value={formikProps.values.address.unitNumber}
+            value={formikProps.values.Address.unitNumber}
             className="w-full input input-bordered bg-white p-3"
           />
         </label>
@@ -233,36 +234,86 @@ export default function ParkingLotAddressForm() {
         <label className="flex items-center mb-4">
           <input
             type="text"
-            name="address.streetName"
+            name="Address.streetName"
             placeholder="Street Name"
             onChange={formikProps.handleChange}
             onBlur={formikProps.handleBlur}
-            value={formikProps.values.address.streetName}
-            className="w-full input input-bordered bg-white p-3"
+            value={formikProps.values.Address.streetName}
+            className={`w-full input input-bordered bg-white p-3 ${
+              formikProps.touched.Address && formikProps.errors.Address
+                ? "border-red-500"
+                : ""
+            }`}
           />
+          {formikProps.values.Address &&
+            formikProps.touched.Address &&
+            formikProps.errors.Address && (
+              <div
+                className="tooltip tooltip-open tooltip-warning"
+                data-tip={formikProps.errors.Address}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="w-5 h-5 text-red-500 ml-auto"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 00-2 0v3a1 1 0 002 0V6zm-1 8a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            )}
         </label>
 
         <label className="flex items-center mb-4">
           <input
             type="text"
-            name="address.city"
+            name="Address.city"
             placeholder="City"
             onChange={formikProps.handleChange}
             onBlur={formikProps.handleBlur}
-            value={formikProps.values.address.city}
-            className="w-full input input-bordered bg-white p-3"
+            value={formikProps.values.Address.city}
+            className={`w-full input input-bordered bg-white p-3 ${
+              formikProps.touched.Address && formikProps.errors.Address
+                ? "border-red-500"
+                : ""
+            }`}
           />
+          {formikProps.values.Address &&
+            formikProps.touched.Address &&
+            formikProps.errors.Address && (
+              <div
+                className="tooltip tooltip-open tooltip-warning"
+                data-tip={formikProps.errors.Address}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="w-5 h-5 text-red-500 ml-auto"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 00-2 0v3a1 1 0 002 0V6zm-1 8a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            )}
         </label>
 
         {/* state */}
         <label className="flex items-center mb-4">
           <input
             type="text"
-            name="address.state"
+            name="Address.state"
             placeholder="State"
             onChange={formikProps.handleChange}
             onBlur={formikProps.handleBlur}
-            value={formikProps.values.address.state}
+            value={formikProps.values.Address.state}
             className="w-full input input-bordered bg-white p-3"
           />
         </label>
@@ -270,22 +321,49 @@ export default function ParkingLotAddressForm() {
         <label className="flex items-center mb-4">
           <input
             type="text"
-            name="address.postalCode"
+            name="Address.postalCode"
             placeholder="Postal Code"
             onChange={formikProps.handleChange}
             onBlur={formikProps.handleBlur}
-            value={formikProps.values.address.postalCode}
-            className="w-full input input-bordered bg-white p-3"
+            value={formikProps.values.Address.postalCode}
+            className={`w-full input input-bordered bg-white p-3 ${
+              formikProps.touched.Address && formikProps.errors.Address
+                ? "border-red-500"
+                : ""
+            }`}
+            aria-describedby="postalCodeError"
           />
+          {formikProps.values.Address &&
+            formikProps.touched.Address &&
+            formikProps.errors.Address && (
+              <div
+                className="tooltip tooltip-open tooltip-warning"
+                data-tip={formikProps.errors.Address}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className="w-5 h-5 text-red-500 ml-auto"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 00-2 0v3a1 1 0 002 0V6zm-1 8a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            )}
         </label>
+
         <label className="flex items-center">
           <input
             type="text"
-            name="address.country"
+            name="Address.country"
             placeholder="Country"
             onChange={formikProps.handleChange}
             onBlur={formikProps.handleBlur}
-            value={formikProps.values.address.country}
+            value={formikProps.values.Address.country}
             className="w-full input input-bordered bg-white p-3"
           />
         </label>

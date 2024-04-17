@@ -4,10 +4,23 @@ import * as geofirestore from "geofirestore";
 import { ParkingLotFirestoreModel } from "../data/models/parkingLot/firestore/parkingLot-firestore-model";
 import { PartialParkingLotFirestoreModel } from "../data/models/parkingLot/firestore/partial-parkingLot-firestore-model";
 import { ParkingLot } from "../data/parkingLot";
+import {
+  ParkingLotFromDashboard,
+  SlotConfig,
+} from "../data/parkingLotFromForm";
+import { ParkingLotRate, ParkingLotRateType } from "../data/parkingLotRates";
+import { ParkingSlot } from "../data/parkingSlot";
+import { parkingLotRatesService } from "./parkingLotRates-service";
+import { parkingSlotService } from "./parkingSlot-service";
+const sgMail = require("@sendgrid/mail");
 
 import FieldValue = firestore.FieldValue;
 
 class ParkingLotService {
+  constructor() {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  }
+  private adminEmail: string = process.env.ADMIN_EMAIL;
   private geoFirestore: geofirestore.GeoFirestore;
 
   private geocollection: geofirestore.GeoCollectionReference;
@@ -24,15 +37,16 @@ class ParkingLotService {
   private parkingLotsCollection(ownerId: string) {
     return admin
       .firestore()
-      .collection("users")
+      .collection("parkingOwner")
       .doc(ownerId)
       .collection("parkingLots");
   }
 
-  private parkingLotDoc(
-    ownerId: string,
-    lotId?: string
-  ): firestore.DocumentReference {
+  private parkingLotTopLevelCollection() {
+    return admin.firestore().collection("parkingLots");
+  }
+
+  private parkingLotDoc(ownerId: string, lotId?: string) {
     return lotId
       ? this.parkingLotsCollection(ownerId).doc(lotId)
       : this.parkingLotsCollection(ownerId).doc();
@@ -53,7 +67,7 @@ class ParkingLotService {
     const parkingLotRef = this.parkingLotDoc(ownerId);
     console.log("type of lat", typeof parkingLot.Coordinates.Latitude);
     console.log("type of lon", typeof parkingLot.Coordinates.Latitude);
-    
+
     this.geocollection.add({
       coordinates: new firestore.GeoPoint(
         parkingLot.Coordinates.Latitude,
@@ -63,7 +77,7 @@ class ParkingLotService {
       lotId: parkingLotRef.id,
     });
 
-    // Convert the product entity to Firestore document data including the auto-generated ID and the server timestamp
+    // Convert the  entity to Firestore document data including the auto-generated ID and the server timestamp
     const documentData = ParkingLotFirestoreModel.fromEntity(
       parkingLot
     ).toDocumentData(parkingLotRef.id, FieldValue.serverTimestamp());
@@ -77,6 +91,120 @@ class ParkingLotService {
       .set(documentData);
 
     //Get the created document data from Firestore and convert it back to a ParkingLot entity
+    return ParkingLotFirestoreModel.fromDocumentData(
+      (await parkingLotRef.get()).data()
+    );
+  }
+
+  async createParkingLotFromDashboard(
+    parkingLot: ParkingLotFromDashboard,
+    ownerId: string
+  ): Promise<ParkingLot> {
+    console.log(
+      "parkingLot in the service creating parkingLot from dashboard",
+      parkingLot
+    );
+    //create parkingLot and get the reference
+    //strip away unwanted parkingLot properties to create initial parkingLot
+    const parkingLotToCreate = new ParkingLot(
+      undefined,
+      ownerId,
+      parkingLot.LotName,
+      parkingLot.Description,
+      parkingLot.Coordinates,
+      parkingLot.Address,
+      parkingLot.Capacity,
+      0, // Occupancy
+      "Low",
+      parkingLot.OperatingHours,
+      parkingLot.Facilities,
+      parkingLot.Images,
+      "Inactive", // Status
+      new Date()
+    );
+    console.log("parkingLot in the service", parkingLot);
+    // Get a refernce to a new document with an auto-generated ID in the firebase collection
+    const parkingLotRef = this.parkingLotDoc(ownerId);
+    console.log("Coordinates", parkingLotToCreate.Coordinates);
+    console.log("type of lat", typeof parkingLotToCreate.Coordinates.Latitude);
+    console.log("type of lon", typeof parkingLotToCreate.Coordinates.Longitude);
+
+    this.geocollection.add({
+      coordinates: new firestore.GeoPoint(
+        parkingLotToCreate.Coordinates.Latitude,
+        parkingLotToCreate.Coordinates.Longitude
+      ),
+      ownerId: ownerId,
+      lotId: parkingLotRef.id,
+    });
+
+    // Convert the  entity to Firestore document data including the auto-generated ID and the server timestamp
+    const documentData = ParkingLotFirestoreModel.fromEntity(
+      parkingLotToCreate
+    ).toDocumentData(parkingLotRef.id, FieldValue.serverTimestamp());
+    // Set the document data in Firestore
+    await parkingLotRef.set(documentData);
+
+    //add the parking lot to a top level collection called parkingLots
+    //this is to enable easy retrieval of all parking lots without having to query the users collection
+    await this.parkingLotTopLevelCollection()
+      .doc(parkingLotRef.id)
+      .set(documentData);
+
+    //create parkingSlots from slot configuration
+    const newParkingSlots: ParkingSlot[] = [];
+    //create parkingRates from rate configuration
+    const newParkingRates: ParkingLotRate[] = [];
+
+    parkingLot.SlotsConfig.map((config: SlotConfig) => {
+      for (let index = 0; index < config.columns; index++) {
+        let slotType = "Regular"; // Default slot type
+        if (config.row === parkingLot.SlotTypes.handicapped) {
+          slotType = "Handicapped";
+        } else if (config.row === parkingLot.SlotTypes.electric) {
+          slotType = "electric";
+        }
+        let slot = new ParkingSlot(
+          undefined, //id
+          slotType, //type
+          "Available", //status
+          { row: config.row, column: index }, //position
+          new Date() // createdAt
+        );
+        newParkingSlots.push(slot);
+      }
+    });
+    parkingLot.Rates.map((rate) => {
+      let newRate = new ParkingLotRate(
+        undefined, //id
+        rate.rateType as ParkingLotRateType, //rateType
+        rate.rate, //rate
+        rate.duration, //duration
+        new Date() //createdAt
+      );
+      newParkingRates.push(newRate);
+    });
+
+    await Promise.all([
+      parkingSlotService.createMultipleParkingSlots(
+        newParkingSlots,
+        ownerId,
+        parkingLotRef.id
+      ),
+      //create parkingLotRates
+      parkingLotRatesService.createMultipleParkingLotRates(
+        newParkingRates,
+        ownerId,
+        parkingLotRef.id
+      ),
+    ]);
+
+    // if parkinglot, parkingSlots and parkingRates are created successfully, inform admin via email
+    await this.sendNewParkingLotCreatedEmail(
+      this.adminEmail,
+      "http://localhost:5173/app/",
+      ownerId
+    );
     return ParkingLotFirestoreModel.fromDocumentData(
       (await parkingLotRef.get()).data()
     );
@@ -99,11 +227,15 @@ class ParkingLotService {
     ownerId: string,
     parkingLotId: string
   ): Promise<ParkingLot | null> {
+    console.log("Getting parking lot by id");
+    console.log("ownerId", ownerId);
+    console.log("parkingLotId", parkingLotId);
     const parkingLotResult = await this.parkingLotDoc(
       ownerId,
       parkingLotId
     ).get();
     if (!parkingLotResult.exists) {
+      console.log("Parking lot not found.");
       return null;
     }
     return ParkingLotFirestoreModel.fromDocumentData(parkingLotResult.data());
@@ -283,11 +415,9 @@ class ParkingLotService {
     ownerId: string,
     parkingLotId: string
   ): Promise<void> {
-    
     // Delete the parking lot document
     await this.parkingLotDoc(ownerId, parkingLotId).delete();
   }
-
 }
 
 // Export a singleton instance in the global namespace

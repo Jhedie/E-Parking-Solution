@@ -31,6 +31,7 @@ import { Route } from "react-router";
 import { collectionsBuilder } from "./collections/collectionsBuilder";
 import MultiStepCreateParkingLotForm from "./customComponents/MultiStepCreateParkingLot/MultiStepCreateParkingLotForm";
 import AuthComponent from "./customComponents/authentication/AuthComponent";
+import Dashboard from "./customComponents/parkingLotDashboard/Dashboard";
 import { firebaseConfig } from "./firebase-config";
 function App() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -64,22 +65,6 @@ function App() {
     []
   );
 
-  //Now using the collections build to allow for dynamic collections
-  // const collections = useMemo(
-  //   () => [
-  //     ParkingOwnerCollection,
-  //     VehicleCollection,
-  //     DriverCollection,
-  //     UserCollection,
-  //     DbChangesCollection,
-  //     ParkingSlotsCollection,
-  //     ParkingLotRatesCollection,
-  //     ParkingLotCollection,
-  //     AdminCollection,
-  //   ],
-  //   []
-  // );
-
   const collections = useMemo(() => {
     return collectionsBuilder;
   }, []);
@@ -90,6 +75,12 @@ function App() {
       name: "New Parking Lot",
       description: "A custom view for creating a parking lot",
       view: <MultiStepCreateParkingLotForm />,
+    },
+    {
+      path: "app/dashboard",
+      name: "Dashboard",
+      description: "A custom view for the dashboard",
+      view: <Dashboard />,
     },
   ];
 
@@ -140,7 +131,8 @@ function App() {
     collections,
     authController,
     dataSourceDelegate: firestoreDelegate,
-    views: customViews,
+    views: !isAdmin ? customViews : [],
+    basePath: "/app",
   });
 
   if (firebaseConfigLoading || !firebaseApp) {
@@ -191,7 +183,7 @@ function App() {
             return (
               <Scaffold
                 name={isAdmin ? "E-Parking-Admin" : "Parking Owner Dashboard"}
-                autoOpenDrawer={true}
+                // autoOpenDrawer={true}
                 logo="/logo/Icon-192x192.png"
                 includeDrawer={true}
               >
@@ -201,6 +193,11 @@ function App() {
                       key={"MultiStepCreateParkingLotForm"}
                       path="createParkingLot"
                       element={<MultiStepCreateParkingLotForm />}
+                    />,
+                    <Route
+                      key={"Dashboard"}
+                      path="dashboard"
+                      element={<Dashboard />}
                     />,
                   ]}
                 />

@@ -10,7 +10,7 @@ class ParkingLotRatesService {
   private parkingLotsCollection(ownerId: string) {
     return admin
       .firestore()
-      .collection("users")
+      .collection("parkingOwner")
       .doc(ownerId)
       .collection("parkingLots");
   }
@@ -60,40 +60,42 @@ class ParkingLotRatesService {
     );
   }
 
-  // async createMultipleParkingLotRates(
-  //   parkingLotRates: ParkingLotRate[]
-  // ): Promise<ParkingLotRate[]> {
-  //   const batch = admin.firestore().batch();
-  //   const rateRefs: firestore.DocumentReference[] = [];
+  async createMultipleParkingLotRates(
+    parkingLotRates: ParkingLotRate[],
+    ownerId: string,
+    parkingLotId: string
+  ): Promise<ParkingLotRate[]> {
+    const batch = admin.firestore().batch();
+    const rateRefs: firestore.DocumentReference[] = [];
 
-  //   for (const rate of parkingLotRates) {
-  //     const rateRef = this.collection().doc(); // Automatically generate a new document ID
-  //     const documentData = ParkingLotRateFirestoreModel.fromEntity(
-  //       rate
-  //     ).toDocumentData(rateRef.id, FieldValue.serverTimestamp());
+    for (const rate of parkingLotRates) {
+      const rateRef = this.parkingLotRateDoc(ownerId, parkingLotId); // Automatically generate a new document ID
+      const documentData = ParkingLotRateFirestoreModel.fromEntity(
+        rate
+      ).toDocumentData(rateRef.id, FieldValue.serverTimestamp());
 
-  //     batch.set(rateRef, documentData);
-  //     rateRefs.push(rateRef);
-  //   }
+      batch.set(rateRef, documentData);
+      rateRefs.push(rateRef);
+    }
 
-  //   await batch.commit(); // Commit the batch operation
+    await batch.commit(); // Commit the batch operation
 
-  //   // Fetch the actual documents to get the server-set timestamps
-  //   const fetchPromises = rateRefs.map((ref) => ref.get());
-  //   const docs = await Promise.all(fetchPromises);
+    // Fetch the actual documents to get the server-set timestamps
+    const fetchPromises = rateRefs.map((ref) => ref.get());
+    const docs = await Promise.all(fetchPromises);
 
-  //   const createdRates = docs.map((doc) => {
-  //     // Ensure the document exists and has data
-  //     if (!doc.exists) {
-  //       throw new Error("Failed to fetch created parking lot rate.");
-  //     }
-  //     const data = doc.data();
-  //     // Convert the document data to a ParkingLotRate object
-  //     return ParkingLotRateFirestoreModel.fromDocumentData(data);
-  //   });
+    const createdRates = docs.map((doc) => {
+      // Ensure the document exists and has data
+      if (!doc.exists) {
+        throw new Error("Failed to fetch created parking lot rate.");
+      }
+      const data = doc.data();
+      // Convert the document data to a ParkingLotRate object
+      return ParkingLotRateFirestoreModel.fromDocumentData(data);
+    });
 
-  //   return createdRates;
-  // }
+    return createdRates;
+  }
 
   async getParkingLotRateById(
     ownerId: string,

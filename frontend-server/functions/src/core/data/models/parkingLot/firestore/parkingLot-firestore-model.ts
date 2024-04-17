@@ -6,6 +6,7 @@ import DocumentData = firestore.DocumentData;
 
 export class ParkingLotFirestoreModel extends ParkingLot {
   static kLotId = "LotId";
+  static kOwnerId = "OwnerId";
   static kLotName = "LotName";
   static kDescription = "Description";
   static kCoordinates = "Coordinates";
@@ -23,6 +24,7 @@ export class ParkingLotFirestoreModel extends ParkingLot {
   static empty() {
     return new ParkingLotFirestoreModel(
       "", // LotId
+      "", // OwnerId
       "", // LotName
       "", // Description
       null, // Default Coordinates
@@ -60,6 +62,7 @@ export class ParkingLotFirestoreModel extends ParkingLot {
   toDocumentData(lotId?: string, createdAt?: Timestamp | FieldValue) {
     return {
       [ParkingLotFirestoreModel.kLotId]: lotId ?? this.LotId,
+      [ParkingLotFirestoreModel.kOwnerId]: this.OwnerId,
       [ParkingLotFirestoreModel.kLotName]: this.LotName,
       [ParkingLotFirestoreModel.kDescription]: this.Description,
       [ParkingLotFirestoreModel.kCoordinates]: new firestore.GeoPoint(
@@ -81,6 +84,7 @@ export class ParkingLotFirestoreModel extends ParkingLot {
   static fromDocumentData(data: DocumentData) {
     return new ParkingLotFirestoreModel(
       data[ParkingLotFirestoreModel.kLotId],
+      data[ParkingLotFirestoreModel.kOwnerId],
       data[ParkingLotFirestoreModel.kLotName],
       data[ParkingLotFirestoreModel.kDescription],
       data[ParkingLotFirestoreModel.kCoordinates],

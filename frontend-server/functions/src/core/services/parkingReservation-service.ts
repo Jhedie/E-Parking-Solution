@@ -1,82 +1,220 @@
-// import * as admin from "firebase-admin";
-// import { firestore } from "firebase-admin";
-// import { ParkingReservationFirestoreModel } from "../data/models/parkingReservation/firestore/parkingReservation-firestore-model";
-// import { PartialParkingReservationFirestoreModel } from "../data/models/parkingReservation/firestore/partial-parkingReservation-firestore-model";
-// import { ParkingReservation } from "../data/parkingReservation";
-// import FieldValue = firestore.FieldValue;
+import * as admin from "firebase-admin";
+import { firestore } from "firebase-admin";
+import QRCode from "qrcode";
+import { ParkingReservationFirestoreModel } from "../data/models/parkingReservation/firestore/parkingReservation-firestore-model";
+import { PartialParkingReservationFirestoreModel } from "../data/models/parkingReservation/firestore/partial-parkingReservation-firestore-model";
+import { ParkingReservation } from "../data/parkingReservation";
+import FieldValue = firestore.FieldValue;
 
-// class ParkingReservationService {
-//   private collection() {
-//     return admin.firestore().collection("parkingReservations");
-//   }
+class ParkingReservationService {
+  //Top level collection
+  private parkingReservationsTopLevelCollection() {
+    return admin.firestore().collection("parkingReservations");
+  }
+  
 
-//   private doc(reservationId?: string) {
-//     if (!reservationId) return this.collection().doc();
-//     return this.collection().doc(reservationId);
-//   }
+  private usersCollection() {
+    return admin.firestore().collection("parkingOwner");
+  }
 
-//   async createParkingReservation(
-//     reservation: ParkingReservation
-//   ): Promise<ParkingReservation> {
-//     const reservationRef = this.doc();
-//     const documentData = ParkingReservationFirestoreModel.fromEntity(
-//       reservation
-//     ).toDocumentData(reservationRef.id, FieldValue.serverTimestamp());
+  private parkingLotsCollection(userId: string) {
+    return this.usersCollection().doc(userId).collection("parkingLots");
+  }
 
-//     await reservationRef.set(documentData);
+  private parkingSlotsCollection(userId: string, lotId: string) {
+    return this.parkingLotsCollection(userId)
+      .doc(lotId)
+      .collection("parkingSlots");
+  }
 
-//     // Return the new reservation with its Firestore-generated ID
-//     return ParkingReservationFirestoreModel.fromDocumentData(
-//       (await reservationRef.get()).data()
-//     );
-//   }
+  private parkingReservationsCollection(
+    userId: string,
+    lotId: string,
+    slotId: string
+  ) {
+    return this.parkingSlotsCollection(userId, lotId)
+      .doc(slotId)
+      .collection("parkingReservations");
+  }
 
-//   async getParkingReservationById(
-//     reservationId: string
-//   ): Promise<ParkingReservation | null> {
-//     const reservationRes = await this.doc(reservationId).get();
-//     if (!reservationRes.exists) {
-//       return null;
-//     }
-//     return ParkingReservationFirestoreModel.fromDocumentData(
-//       reservationRes.data()
-//     );
-//   }
+  private parkingReservationDoc(
+    userId: string,
+    lotId: string,
+    slotId: string,
+    reservationId?: string
+  ) {
+    return reservationId
+      ? this.parkingReservationsCollection(userId, lotId, slotId).doc(
+          reservationId
+        )
+      : this.parkingReservationsCollection(userId, lotId, slotId).doc();
+  }
 
-//   async getAllParkingReservations(): Promise<ParkingReservation[]> {
-//     const snapshot = await this.collection().get();
-//     return snapshot.docs.map((doc) =>
-//       ParkingReservationFirestoreModel.fromDocumentData(doc.data())
-//     );
-//   }
+  async createParkingReservation(
+    lotId: string,
+    slotId: string,
+    reservation: ParkingReservation
+  ): Promise<ParkingReservation> {
+    let ownerId: string = await this.getParkingOwner(lotId);
 
-//   async updateParkingReservationById(
-//     reservationId: string,
-//     partialReservation: Partial<Record<keyof ParkingReservation, any>>
-//   ): Promise<void> {
-//     const reservationRef = this.doc(reservationId);
-//     const documentData =
-//       PartialParkingReservationFirestoreModel.fromPartialEntity(
-//         partialReservation
-//       ).toDocumentData();
+    const reservationRef = this.parkingReservationDoc(ownerId, lotId, slotId);
 
-//     await reservationRef.update(documentData);
-//   }
+    const qrCodeData = JSON.stringify({
+      lotId,
+      slotId,
+      reservationId: reservationRef.id,
+      ...reservation,
+    });
+    const qrCodeUrl = await QRCode.toDataURL(qrCodeData, {
+      errorCorrectionLevel: "H", // High error correction level meaning more data can be stored in the QR code
+    });
 
-//   async deleteParkingReservationById(reservationId: string): Promise<void> {
-//     await this.doc(reservationId).delete();
-//   }
+    const documentData = ParkingReservationFirestoreModel.fromEntity(
+      reservation
+    ).toDocumentData(
+      qrCodeUrl,
+      FieldValue.serverTimestamp(),
+      reservationRef.id
+    );
 
-//   async getParkingReservationsByUserId(
-//     userId: string
-//   ): Promise<ParkingReservation[]> {
-//     const snapshot = await this.collection()
-//       .where("userId", "==", userId)
-//       .get();
-//     return snapshot.docs.map((doc) =>
-//       ParkingReservationFirestoreModel.fromDocumentData(doc.data())
-//     );
-//   }
-// }
+    await reservationRef.set(documentData);
 
-// export const parkingReservationService = new ParkingReservationService();
+    // Add reservation to top level collection
+    this.parkingReservationsTopLevelCollection()
+      .doc(reservationRef.id)
+      .set(documentData);
+
+    // Return the new reservation with its Firestore-generated ID
+    return ParkingReservationFirestoreModel.fromDocumentData(
+      (await reservationRef.get()).data()
+    );
+  }
+
+  async getParkingReservationById(
+    lotId: string,
+    slotId: string,
+    reservationId: string
+  ): Promise<ParkingReservation | null> {
+    const ownerId: string = await this.getParkingOwner(lotId);
+    const reservationRes = await this.parkingReservationDoc(
+      ownerId,
+      lotId,
+      slotId,
+      reservationId
+    ).get();
+    if (!reservationRes.exists) {
+      return null;
+    }
+    return ParkingReservationFirestoreModel.fromDocumentData(
+      reservationRes.data()
+    );
+  }
+
+  async getAllParkingReservations(
+    lotId: string,
+    slotId: string
+  ): Promise<ParkingReservation[]> {
+    const ownerId: string = await this.getParkingOwner(lotId);
+    const snapshot = await this.parkingReservationsCollection(
+      ownerId,
+      lotId,
+      slotId
+    ).get();
+    return snapshot.docs.map((doc) =>
+      ParkingReservationFirestoreModel.fromDocumentData(doc.data())
+    );
+  }
+
+  async updateParkingReservationById(
+    lotId: string,
+    slotId: string,
+    reservationId: string,
+    partialReservation: Partial<Record<keyof ParkingReservation, any>>
+  ): Promise<void> {
+    const ownerId: string = await this.getParkingOwner(lotId);
+    const reservationRef = this.parkingReservationDoc(
+      ownerId,
+      lotId,
+      slotId,
+      reservationId
+    );
+    const documentData =
+      PartialParkingReservationFirestoreModel.fromPartialEntity(
+        partialReservation
+      ).toDocumentData();
+
+    await reservationRef.update(documentData);
+
+    // Update reservation in top level collection
+    this.parkingReservationsTopLevelCollection()
+      .doc(reservationId)
+      .update(documentData);
+  }
+
+  async deleteParkingReservationById(
+    lotId: string,
+    slotId: string,
+    reservationId: string
+  ): Promise<void> {
+    const ownerId: string = await this.getParkingOwner(lotId);
+    const reservationRef = this.parkingReservationDoc(
+      ownerId,
+      lotId,
+      slotId,
+      reservationId
+    );
+    await reservationRef.delete();
+
+    // Delete reservation from top level collection
+    this.parkingReservationsTopLevelCollection().doc(reservationId).delete();
+  }
+
+  async getParkingReservationsByUserId(
+    userId: string
+  ): Promise<ParkingReservation[]> {
+    const reservations: ParkingReservation[] = [];
+    const groupSnapshot = await admin
+      .firestore()
+      .collectionGroup("parkingReservations")
+      .where("userId", "==", userId)
+      .orderBy("createdAt", "asc")
+      .get();
+
+    groupSnapshot.forEach((doc) => {
+      console.log("doc", doc.data());
+      reservations.push(
+        ParkingReservationFirestoreModel.fromDocumentData(doc.data())
+      );
+    });
+    console.log("reservations", reservations);
+    return reservations;
+  }
+
+  private async getParkingOwner(lotId: string): Promise<string> {
+    // Get all users with the role 'parkingOwner'
+    const usersSnapshot = await admin
+      .firestore()
+      .collection("users")
+      .where("role", "==", "parkingOwner")
+      .get();
+
+    for (const userDoc of usersSnapshot.docs) {
+      // For each user, check their 'parkingLots' subcollection for the lotId
+      const lotsSnapshot = await userDoc.ref
+        .collection("parkingLots")
+        .where(admin.firestore.FieldPath.documentId(), "==", lotId)
+        .get();
+
+      if (!lotsSnapshot.empty) {
+        // Found the lotId within this user's subcollection
+        return userDoc.id; // Return the userId of the parking lot owner
+      }
+    }
+
+    throw new Error(
+      `Parking lot with ID ${lotId} does not have an identifiable owner.`
+    );
+  }
+}
+
+export const parkingReservationService = new ParkingReservationService();

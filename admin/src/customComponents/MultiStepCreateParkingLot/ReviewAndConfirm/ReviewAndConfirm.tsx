@@ -1,12 +1,14 @@
+import { useModeController } from "@firecms/core";
 import { useFormikContext } from "formik";
 import React from "react";
 import { ComprehensiveFormValues } from "../MultiStepCreateParkingLotForm";
 
 export default function ReviewAndConfirm() {
   const { values } = useFormikContext<ComprehensiveFormValues>();
+  const modeState = useModeController();
 
   return (
-    <div className="space-y-4">
+    <div className={"space-y-4 rounded-lg"}>
       <h2 className="text-lg font-semibold mb-4">Review and Confirm</h2>
       <div className="text-lg mb-4">
         Please review the details you have entered for your parking lot. If
@@ -15,26 +17,30 @@ export default function ReviewAndConfirm() {
       </div>
       {values && (
         <div className="space-y-4">
-          <div className="card bg-white shadow-xl p-4">
+          <div
+            className={`card shadow-xl p-4 ${
+              modeState.mode === "dark" ? "bg-gray-700" : "bg-white"
+            }`}
+          >
             <h3 className="font-semibold">Parking Lot Details</h3>
             <div className="card-body">
               <p>
                 <span className="font-semibold">Lot Name:</span>{" "}
-                {values.lotName}
+                {values.LotName}
               </p>
               <p>
                 <span className="font-semibold">Description:</span>{" "}
-                {values.description}
+                {values.Description}
               </p>
               <p>
                 <span className="font-semibold">Facilities:</span>{" "}
-                {values.facilities.join(", ")}
+                {values.Facilities.join(", ")}
               </p>
               <p>
                 <span className="font-semibold">Operating Hours:</span>
               </p>
               <ul>
-                {values.operatingHours.map((hour, index) => (
+                {values.OperatingHours.map((hour, index) => (
                   <li
                     key={index}
                   >{`${hour.day}: ${hour.start} - ${hour.end}`}</li>
@@ -42,56 +48,64 @@ export default function ReviewAndConfirm() {
               </ul>
             </div>
           </div>
-          <div className="card bg-white shadow-xl p-4">
+          <div
+            className={`card shadow-xl p-4 ${
+              modeState.mode === "dark" ? "bg-gray-700" : "bg-white"
+            }`}
+          >
             <h3 className="font-semibold">Parking Lot Address</h3>
             <div className="card-body">
               <p>
                 <span className="font-semibold">Street Number:</span>{" "}
-                {values.address.streetNumber}
+                {values.Address.streetNumber}
               </p>
               <p>
                 <span className="font-semibold">Unit Number:</span>{" "}
-                {values.address.unitNumber}
+                {values.Address.unitNumber}
               </p>
               <p>
                 <span className="font-semibold">Street Name:</span>{" "}
-                {values.address.streetName}
+                {values.Address.streetName}
               </p>
               <p>
                 <span className="font-semibold">City:</span>{" "}
-                {values.address.city}
+                {values.Address.city}
               </p>
               <p>
                 <span className="font-semibold">State:</span>{" "}
-                {values.address.state}
+                {values.Address.state}
               </p>
               <p>
                 <span className="font-semibold">Country:</span>{" "}
-                {values.address.country}
+                {values.Address.country}
               </p>
               <p>
                 <span className="font-semibold">Postal Code:</span>{" "}
-                {values.address.postalCode}
+                {values.Address.postalCode}
               </p>
               <p>
                 <span className="font-semibold">Coordinates:</span> Latitude{" "}
-                {values.address.coordinates?.latitute}, Longitude{" "}
-                {values.address.coordinates?.longitude}
+                {values.Coordinates?.Latitude}, Longitude{" "}
+                {values.Coordinates?.Longitude}
               </p>
             </div>
           </div>
-          <div className="card bg-white shadow-xl p-4">
+          <div
+            className={`card shadow-xl p-4 ${
+              modeState.mode === "dark" ? "bg-gray-700" : "bg-white"
+            }`}
+          >
             <h3 className="font-semibold">Parking Slots Configuration</h3>
             <div className="card-body">
               <p>
                 <span className="font-semibold">Capacity:</span>{" "}
-                {values.capacity}
+                {values.Capacity}
               </p>
               <p>
                 <span className="font-semibold">Slots Configuration:</span>
               </p>
               <ul>
-                {values.slotsConfig.map((slot, index) => (
+                {values.SlotsConfig.map((slot, index) => (
                   <li
                     key={index}
                   >{`Row ${slot.row}, Columns: ${slot.columns}`}</li>
@@ -99,26 +113,30 @@ export default function ReviewAndConfirm() {
               </ul>
               <p>
                 <span className="font-semibold">Handicapped Slots:</span>{" "}
-                {values.slotTypes.handicapped
-                  ? values.slotTypes.handicapped
+                {values.SlotTypes.handicapped
+                  ? values.SlotTypes.handicapped
                   : "No handicapped slots added"}
               </p>
               <p>
                 <span className="font-semibold">Electric Slots:</span>{" "}
-                {values.slotTypes.electric
-                  ? values.slotTypes.electric
+                {values.SlotTypes.electric
+                  ? values.SlotTypes.electric
                   : "No electric slots added"}
               </p>
             </div>
           </div>
-          <div className="card bg-white shadow-xl p-4">
+          <div
+            className={`card shadow-xl p-4 ${
+              modeState.mode === "dark" ? "bg-gray-700" : "bg-white"
+            }`}
+          >
             <h3 className="font-semibold">Parking Rates</h3>
             <div className="card-body">
               <ul>
-                {values.rates.length === 0 ? (
+                {values.Rates.length === 0 ? (
                   <li>No rates added</li>
                 ) : (
-                  values.rates.map((rate, index) => (
+                  values.Rates.map((rate, index) => (
                     <li
                       key={index}
                     >{`Type: ${rate.rateType}, Rate: ${rate.rate}, Duration: ${rate.duration}`}</li>
@@ -128,14 +146,18 @@ export default function ReviewAndConfirm() {
             </div>
           </div>
 
-          <div className="card bg-white shadow-xl p-4">
+          <div
+            className={`card shadow-xl p-4 ${
+              modeState.mode === "dark" ? "bg-gray-700" : "bg-white"
+            }`}
+          >
             <h3 className="font-semibold">Images</h3>
             <div className="card-body">
               <ul>
-                {values.images.length === 0 ? (
+                {values.Images.length === 0 ? (
                   <li>No images uploaded</li>
                 ) : (
-                  values.images.map((image, index) => (
+                  values.Images.map((image, index) => (
                     <li
                       key={index}
                       className="flex justify-center items-center mb-2 "

@@ -28,6 +28,8 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
     return new ParkingReservationFirestoreModel(
       "", // reservationId
       "", // userId
+      "", // slotId
+      "", // lotId
       "", // vehicleId
       null, // startTime
       null, // endTime
@@ -69,7 +71,8 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
       [ParkingReservationFirestoreModel.kReservationId]:
         reservationId ?? this.reservationId,
       [ParkingReservationFirestoreModel.kUserId]: this.userId,
-
+      [ParkingReservationFirestoreModel.kSlotId]: this.slotId,
+      [ParkingReservationFirestoreModel.kLotId]: this.lotId,
       [ParkingReservationFirestoreModel.kVehicleId]: this.vehicleId,
       [ParkingReservationFirestoreModel.kStartTime]:
         firestore.Timestamp.fromDate(this.startTime),
@@ -102,7 +105,8 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
     return new ParkingReservationFirestoreModel(
       data[ParkingReservationFirestoreModel.kReservationId],
       data[ParkingReservationFirestoreModel.kUserId],
-
+      data[ParkingReservationFirestoreModel.kSlotId],
+      data[ParkingReservationFirestoreModel.kLotId],
       data[ParkingReservationFirestoreModel.kVehicleId],
       (data[ParkingReservationFirestoreModel.kStartTime] as Timestamp).toDate(),
       (data[ParkingReservationFirestoreModel.kEndTime] as Timestamp).toDate(),

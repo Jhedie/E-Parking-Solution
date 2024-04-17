@@ -15,17 +15,38 @@ export const AdminCollection = buildCollection<Admin>({
   path: "admin",
   permissions: ({ authController, user }) => ({
     read: true,
-    edit: true,
-    create: true,
-    delete: true,
+    edit: false,
+    create: false,
+    delete: false,
   }),
   properties: {
-    role: {
-      name: "Role",
+    name: {
       dataType: "string",
+      name: "Name",
       validation: {
         required: true,
       },
+    },
+    role: {
+      dataType: "string",
+      name: "Role",
+      validation: {
+        required: true,
+      },
+      enumValues: [
+        {
+          id: "admin",
+          label: "ADMIN",
+        },
+        {
+          id: "parkingOwner",
+          label: "PARKING LOT OWNER",
+        },
+        {
+          id: "driver",
+          label: "DRIVER",
+        },
+      ],
     },
     phoneNumber: {
       name: "PhoneNumber",
@@ -38,13 +59,6 @@ export const AdminCollection = buildCollection<Admin>({
       name: "Email",
       dataType: "string",
       email: true,
-      validation: {
-        required: true,
-      },
-    },
-    name: {
-      dataType: "string",
-      name: "Name",
       validation: {
         required: true,
       },

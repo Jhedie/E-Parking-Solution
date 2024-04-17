@@ -54,6 +54,10 @@ export const DbChangesCollection = buildCollection({
           id: "USER_DELETED",
           label: "USER DELETED",
         },
+        {
+          id: "USER_UPDATED",
+          label: "USER UPDATED",
+        },
       ],
       name: "Code",
       validation: {

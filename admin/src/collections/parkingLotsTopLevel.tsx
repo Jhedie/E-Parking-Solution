@@ -1,13 +1,4 @@
-import {
-  CollectionActionsProps,
-  EntityCallbacks,
-  EntityOnFetchProps,
-  buildCollection,
-} from "@firecms/core";
-import axios from "axios";
-import toast from "react-hot-toast";
-import { ParkingLotRatesCollection } from "./parkingLotRates";
-import { ParkingSlotsCollection } from "./parkingSlots";
+import { buildCollection } from "@firecms/core";
 
 export type Address = {
   streetNumber: string;
@@ -65,7 +56,7 @@ export type ParkingLot = {
   createdAt: Date;
 };
 
-export const ParkingLotCollection = buildCollection<ParkingLot>({
+export const parkingLotsTopLevelCollection = buildCollection<ParkingLot>({
   id: "parkingLots",
   name: "ParkingLots",
   path: "parkingLots",
@@ -73,102 +64,10 @@ export const ParkingLotCollection = buildCollection<ParkingLot>({
   editable: false,
   permissions: ({ authController, user }) => ({
     read: true,
-    edit: true,
-    create: true,
-    delete: true,
+    edit: false,
+    create: false,
+    delete: false,
   }),
-  Actions: ({ selectionController, context }: CollectionActionsProps) => {
-    const isAdmin = JSON.parse(
-      (context.authController.user as any)?.reloadUserInfo?.customAttributes
-    ).admin;
-
-    const BASE_URL = import.meta.env.VITE_FRONTEND_SERVER_BASE_URL;
-
-    console.log("BASE_URL", BASE_URL);
-
-    return (
-      <>
-        {isAdmin && (
-          <>
-            <button
-              className="btn btn-success p-2"
-              onClick={() => {
-                if (selectionController.selectedEntities) {
-                  selectionController.selectedEntities.forEach((entity) => {
-                    context.authController
-                      .getAuthToken()
-                      .then((token: string) => {
-                        axios
-                          .post(
-                            `${BASE_URL}/parkingLot/${entity.id}/approve`,
-                            {
-                              ownerId: entity.values.OwnerId,
-                            },
-                            {
-                              headers: {
-                                Authorization: `Bearer ${token}`,
-                              },
-                            }
-                          )
-                          .then(() => {
-                            toast.success(
-                              `Parking Lot: ${entity.values.LotName} has been activated successfully!`
-                            );
-                          })
-                          .catch((error: any) => {
-                            toast.error(
-                              `Failed to approve Parking Lot ${entity.values.LotName}: ${error}`
-                            );
-                          });
-                      });
-                  });
-                }
-              }}
-            >
-              Activate
-            </button>
-            <button
-              className="btn btn-warning p-2"
-              onClick={() => {
-                if (selectionController.selectedEntities) {
-                  selectionController.selectedEntities.forEach((entity) => {
-                    context.authController
-                      .getAuthToken()
-                      .then((token: string) => {
-                        axios
-                          .post(
-                            `${BASE_URL}/parkingLot/${entity.id}/revokeApproval`,
-                            {
-                              ownerId: entity.values.OwnerId,
-                            },
-                            {
-                              headers: {
-                                Authorization: `Bearer ${token}`,
-                              },
-                            }
-                          )
-                          .then(() => {
-                            toast.success(
-                              `Parking Lot: ${entity.values.LotName} has been deactivated successfully!`
-                            );
-                          })
-                          .catch((error: any) => {
-                            toast.error(
-                              `Failed to revoke approval for Parking Lot ${entity.values.LotName}: ${error}`
-                            );
-                          });
-                      });
-                  });
-                }
-              }}
-            >
-              Deactivate
-            </button>
-          </>
-        )}
-      </>
-    );
-  },
   group: "Parking",
   properties: {
     LotName: {
@@ -180,17 +79,12 @@ export const ParkingLotCollection = buildCollection<ParkingLot>({
     },
     Images: {
       dataType: "array",
-      name: "Images",
       of: {
         dataType: "string",
-        storage: {
-          storagePath: "parkingLotImages",
-          acceptedFiles: ["image/*"],
-          metadata: {
-            cacheControl: "max-age=31536000",
-          },
-        },
+        editable: true,
+        name: "Images",
       },
+      name: "Images",
     },
     Address: {
       properties: {
@@ -334,5 +228,5 @@ export const ParkingLotCollection = buildCollection<ParkingLot>({
       dataType: "date",
     },
   },
-  subcollections: [ParkingLotRatesCollection, ParkingSlotsCollection],
+  subcollections: [],
 });

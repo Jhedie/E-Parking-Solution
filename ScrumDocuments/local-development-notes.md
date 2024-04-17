@@ -319,3 +319,12 @@ https://medium.com/@elijahobara/how-to-send-emails-using-python-django-and-googl
   https://github.com/MichaelSolati/geofirestore-js#geofirestorequeryquerycriteria
 
   https://firebase.google.com/docs/firestore/solutions/geoqueries#web-modular-api
+
+File uploading into firestorage:
+https://firebase.google.com/docs/storage/web/upload-files#web-modular-api_1
+
+Querying firebase:
+https://youtu.be/Ofux_4c94FI
+
+https://firebase.google.com/docs/firestore/security/rules-query
+

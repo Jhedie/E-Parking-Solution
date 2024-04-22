@@ -3,6 +3,7 @@ import React, { PropsWithChildren, createContext, useContext } from "react";
 // Define the shape of your context
 interface ConfigContextType {
   BASE_URL: string;
+  PAYMENT_SERVER_BASE_URL: string;
 }
 
 // Create the context with a default value
@@ -15,7 +16,9 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({
   children
 }: PropsWithChildren<ConfigProviderProps>) => {
   const config: ConfigContextType = {
-    BASE_URL: process.env.FRONTEND_SERVER_BASE_URL || "default_base_url"
+    BASE_URL: process.env.FRONTEND_SERVER_BASE_URL || "default_base_url",
+    PAYMENT_SERVER_BASE_URL:
+      process.env.PAYMENT_SERVER_BASE_URL || "default_payment_base_url"
   };
 
   return (

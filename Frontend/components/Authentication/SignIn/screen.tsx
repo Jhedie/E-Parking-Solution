@@ -1,4 +1,3 @@
-import { useToastController } from "@tamagui/toast";
 import { useRouter } from "expo-router";
 import { Formik } from "formik";
 import { Image, StyleSheet, Text, View } from "react-native";
@@ -15,7 +14,6 @@ type SignInFormValues = z.infer<typeof signInValidationSchema>;
 
 export default function SignInScreen() {
   const router = useRouter();
-  const toaster = useToastController();
   const { signIn } = useAuth();
 
   const initialValues: SignInFormValues = {

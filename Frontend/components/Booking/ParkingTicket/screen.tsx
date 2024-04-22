@@ -1,3 +1,8 @@
+import { BookingDetails } from "@models/BookingDetails";
+import { ParkingLot } from "@models/ParkingLot";
+import { Rate } from "@models/ParkingLotRate";
+import { ParkingSlot } from "@models/ParkingSlot";
+import { Vehicle } from "@models/Vehicle";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { useRouter, useSegments } from "expo-router";
 import React, { useState } from "react";
@@ -6,10 +11,6 @@ import QRCodeStyled from "react-native-qrcode-styled";
 import AwesomeButton from "react-native-really-awesome-button";
 import { YStack } from "tamagui";
 import { StackNavigation } from "../../../app/(auth)/home";
-import { ParkingLot } from "../../Map/screen";
-import { BookingDetails } from "../BookingDetails/screen";
-import { ParkingSlot } from "../SelectSpot/screen";
-import { Vehicle } from "../Vehicle/SelectVehicle/screen";
 
 interface ParkingTicketScreenProps {
   navigation: StackNavigation;
@@ -21,6 +22,7 @@ export type RouteParams = {
     parkingSlot: ParkingSlot;
     vehicle: Vehicle;
     bookingDetails: BookingDetails;
+    selectedRate: Rate;
   };
 };
 

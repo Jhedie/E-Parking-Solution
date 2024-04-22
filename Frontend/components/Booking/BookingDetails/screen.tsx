@@ -1,27 +1,18 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useConfig } from "@providers/Config/ConfigProvider";
+import { BookingDetails } from "@models/BookingDetails";
+import { ParkingLot } from "@models/ParkingLot";
+import { Rate } from "@models/ParkingLotRate";
+import { Vehicle } from "@models/Vehicle";
 import { Picker } from "@react-native-picker/picker";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import { useToastController } from "@tamagui/toast";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import useToken from "hooks/useToken";
 import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Animated,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
+import { Animated, Text, TouchableOpacity, View } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AwesomeButton from "react-native-really-awesome-button";
 import { ScrollView, YStack } from "tamagui";
 import { StackNavigation } from "../../../app/(auth)/home";
-import { ParkingLot, Rate } from "../../Map/screen";
-import { Vehicle } from "../Vehicle/SelectVehicle/screen";
-
 type RouteParams = {
   BookParkingDetailsScreen: {
     parkingLot: ParkingLot;
@@ -33,57 +24,20 @@ interface BookParkingDetailsScreenProps {
   navigation: StackNavigation;
 }
 
-export type BookingDetails = {
-  startDateTime: string;
-  endDateTime: string;
-  totalprice: number;
-  rateType?: string;
-  duration?: number;
-};
-
 export const BookParkingDetailsScreen: React.FC<
   BookParkingDetailsScreenProps
 > = ({ navigation }) => {
   const route = useRoute<RouteProp<RouteParams, "BookParkingDetailsScreen">>();
 
-  const { parkingLot, vehicle } = route.params;
-
   const queryClient = useQueryClient();
-  const toaster = useToastController();
-  const { BASE_URL } = useConfig();
 
-  const token = useToken();
-
-  const getRates = async (token: string): Promise<Rate[]> => {
-    try {
-      const response = await axios.get(
-        `${BASE_URL}/all-parkingLotRates/${parkingLot.LotId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.log("Error getting parking lot rates", error);
-      return [];
-    }
-  };
-
-  const {
-    data: parkingLotRates,
-    isLoading,
-    isError
-  } = useQuery({
-    queryKey: ["parkingLotRates"],
-    queryFn: () => getRates(token as string),
-    enabled: !!token
-  });
-
-  const ratesRevised = parkingLotRates;
+  const parkingLotRates = queryClient.getQueryData(["parkingLotRates"]);
 
   const [startDateTime, setStartDateTime] = useState<Date>(new Date());
+
+  const ratesRevised = parkingLotRates;
+  console.log("ratesRevised", ratesRevised);
+
   const [endDateTime, setEndDateTime] = useState<Date>();
 
   // responsible for showing the time picker when the user clicks on the datetime inputs
@@ -95,11 +49,19 @@ export const BookParkingDetailsScreen: React.FC<
     animateEndDate();
   };
 
+  const defaultRate: Rate = {
+    duration: 0,
+    rate: 0,
+    rateId: "",
+    rateType: "",
+    lotId: ""
+  };
+
   const [selectedRate, setSelectedRate] = useState<Rate>(
-    ratesRevised?.["parkingLotRates"][0]
+    ratesRevised?.["parkingLotRates"]?.[0] ?? defaultRate
   );
   const [totalPrice, setTotalPrice] = useState<number>(
-    ratesRevised?.["parkingLotRates"][0]?.rate
+    ratesRevised?.["parkingLotRates"]?.[0]?.rate ?? 0
   );
 
   const [bookingDetails, setBookingDetails] = useState<BookingDetails>();
@@ -158,7 +120,7 @@ export const BookParkingDetailsScreen: React.FC<
     // Update the end date
     setEndDateTime(newEndDateTime);
 
-    const foundRate = ratesRevised?.["parkingLotRates"].find(
+    const foundRate = ratesRevised?.["parkingLotRates"]?.find(
       (rate: Rate) => rate.rateId === selectedRate?.rateId
     );
 
@@ -169,8 +131,7 @@ export const BookParkingDetailsScreen: React.FC<
         startDateTime: startDateTime.toISOString(),
         endDateTime: newEndDateTime.toISOString(),
         totalprice: totalprice,
-        rateType: selectedRate?.rateType,
-        duration: selectedRate?.duration
+        rate: selectedRate
       });
     }
   }, [startDateTime, selectedRate]);
@@ -191,25 +152,7 @@ export const BookParkingDetailsScreen: React.FC<
     ]).start();
   };
 
-  return isLoading ? (
-    <YStack
-      flex={1}
-      justifyContent="center"
-      alignItems="center"
-    >
-      <ActivityIndicator />
-    </YStack>
-  ) : isError ? (
-    <YStack
-      flex={1}
-      justifyContent="center"
-      alignItems="center"
-    >
-      <Text style={{ fontSize: 15, fontWeight: "500" }}>
-        Error loading parking lot rates
-      </Text>
-    </YStack>
-  ) : (
+  return (
     <YStack flex={1}>
       <ScrollView
         style={{ marginHorizontal: 10 * 2.4 }}
@@ -281,7 +224,7 @@ export const BookParkingDetailsScreen: React.FC<
             selectedValue={selectedRate?.rateId}
             onValueChange={(itemValue) => {
               console.log("itemValue", itemValue);
-              const selectedRate = ratesRevised?.["parkingLotRates"].find(
+              const selectedRate = ratesRevised?.["parkingLotRates"]?.find(
                 (rate: Rate) => rate.rateId === itemValue
               );
               if (selectedRate) {
@@ -298,7 +241,7 @@ export const BookParkingDetailsScreen: React.FC<
             }}
             itemStyle={{ fontSize: 18, fontWeight: "600" }}
           >
-            {ratesRevised?.["parkingLotRates"].map(
+            {ratesRevised?.["parkingLotRates"]?.map(
               (rate: Rate, index: number) => (
                 <Picker.Item
                   key={rate?.rateId}
@@ -411,10 +354,11 @@ export const BookParkingDetailsScreen: React.FC<
               );
               return;
             }
-            navigation.navigate("SelectSpotScreen", {
+            navigation.navigate("SelectSlotScreen", {
               parkingLot: route.params.parkingLot, // Pass the parking lot to the next screen
               vehicle: route.params.vehicle, // Pass the vehicle to the next screen
-              bookingDetails: bookingDetails // Pass the booking details to the next screen
+              bookingDetails: bookingDetails, // Pass the booking details to the next screen
+              selectedRate: selectedRate // Pass the selected rate to the next screen
             });
           }}
           raiseLevel={1}
@@ -422,9 +366,9 @@ export const BookParkingDetailsScreen: React.FC<
           borderRadius={10}
           backgroundShadow="#fff"
           backgroundDarker="#fff"
-          backgroundColor="black"
+          backgroundColor="rgb(253 176 34)"
         >
-          <Text style={{ color: "white" }}>Choose Parking Slot</Text>
+          <Text style={{ color: "black", fontWeight: "500" }}>Next</Text>
         </AwesomeButton>
       </View>
     </YStack>

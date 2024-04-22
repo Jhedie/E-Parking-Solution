@@ -1,162 +1,129 @@
 import { AntDesign } from "@expo/vector-icons";
+import firestore from "@react-native-firebase/firestore";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
-import {
-  ActivityIndicator,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 import AwesomeButton from "react-native-really-awesome-button";
 import { YStack } from "tamagui";
 import { StackNavigation } from "../../../app/(auth)/home";
-import { ParkingLot } from "../../Map/screen";
-import { Vehicle } from "../Vehicle/SelectVehicle/screen";
 
-import { useConfig } from "@providers/Config/ConfigProvider";
-import { useToastController } from "@tamagui/toast";
-import { useQuery } from "@tanstack/react-query";
+import { BookingDetails } from "@models/BookingDetails";
+import { ParkingLot } from "@models/ParkingLot";
+import { Rate } from "@models/ParkingLotRate";
+import { ParkingSlot } from "@models/ParkingSlot";
+import { Vehicle } from "@models/Vehicle";
+import * as Burnt from "burnt";
 import useToken from "hooks/useToken";
-import { BookingDetails } from "../BookingDetails/screen";
-interface SelectSpotScreenProps {
+interface SelectSlotScreenProps {
   navigation: StackNavigation;
 }
 
 type RouteParams = {
-  SelectSpotScreen: {
+  SelectSlotScreen: {
     parkingLot: ParkingLot;
     vehicle: Vehicle;
     bookingDetails: BookingDetails;
+    selectedRate: Rate;
   };
 };
 
-interface Position {
-  row: string;
-  column: number;
-}
-
-export interface ParkingSlot {
-  slotId: number;
-  type: string;
-  status: string;
-  position: Position;
-}
-
-export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
+export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
   navigation
 }) => {
-  const [selectedParkingSlot, setSelectedParkingSlot] = useState<ParkingSlot>();
-  const route = useRoute<RouteProp<RouteParams, "SelectSpotScreen">>();
-
+  const [selectedParkingSlot, setSelectedParkingSlot] = useState<
+    ParkingSlot | undefined
+  >(undefined);
+  const route = useRoute<RouteProp<RouteParams, "SelectSlotScreen">>();
   const token = useToken();
-  const { BASE_URL } = useConfig();
-  const toaster = useToastController();
-  const getAvailableParkingSlots = async (
-    token: string
-  ): Promise<ParkingSlot[]> => {
-    try {
-      const response = await fetch(
-        `${BASE_URL}/parkingSlots/${route.params.parkingLot.LotId}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch parking slots");
-      }
-
-      const data = await response.json();
-
-      return data;
-    } catch (error) {
-      console.error("Error fetching available parking slots", error);
-      return [];
-    }
-  };
-  const {
-    data: parkingSlotsData,
-    isLoading: parkingSlotsLoading,
-    isError: parkingSlotsError
-  } = useQuery({
-    queryKey: ["parkingSlots"],
-    queryFn: () => getAvailableParkingSlots(token as string),
-    enabled: !!token
-  });
-  const parkingSlotFromAPI = parkingSlotsData?.[
-    "parkingSlots"
-  ] as ParkingSlot[];
-
+  const chosenStartTime = route.params.bookingDetails.startDateTime;
+  const chosenEndTime = route.params.bookingDetails.endDateTime;
+  const [slots, setSlots] = useState<ParkingSlot[]>([]);
   useEffect(() => {
-    // Check if there's already a selected parking slot and if parkingSlotsData is available
-    if (
-      !selectedParkingSlot &&
-      parkingSlotFromAPI &&
-      parkingSlotFromAPI.length > 0
-    ) {
-      selectRandomParkingSlot(parkingSlotFromAPI);
+    console.log("Parking Lot", route.params.parkingLot);
+    if (!token || !route.params.parkingLot.LotId) return;
 
-      //scroll to the selected parking slot
-    }
-  }, [parkingSlotFromAPI]);
+    console.log("SelectSlotScreen mounted");
+    const unsubscribeFns: (() => void)[] = []; // To store unsubscribe functions
 
-  // Function to select a random parking slot
-  const selectRandomParkingSlot = (slots: ParkingSlot[]) => {
-    // Filter out only the slots that are not occupied
-    const availableSlots = slots.filter((slot) => slot.status !== "Occupied");
+    // Fetch all slots
+    const slotsRef = firestore().collection(
+      `parkingOwner/${route.params.parkingLot.OwnerId}/parkingLots/${route.params.parkingLot.LotId}/parkingSlots`
+    );
 
-    if (availableSlots.length > 0) {
-      const randomIndex = Math.floor(Math.random() * availableSlots.length);
-      const randomSlot = availableSlots[randomIndex];
-      setSelectedParkingSlot(randomSlot);
-      toaster.show(`Slot Choice`, {
-        title: "Random parking slot selected",
-        message: `Selected spot ${randomSlot.position.row}${randomSlot.position.column}`,
-        intent: "success",
-        timeout: 5000
+    slotsRef.get().then((slotsSnapshot) => {
+      const fetchedSlots = slotsSnapshot.docs.map((doc) => {
+        return {
+          slotId: doc.id,
+          position: doc.data().position,
+          type: doc.data().type,
+          status: "Available" // Assume all slots are available initially
+        };
+      }) as ParkingSlot[];
+
+      console.log("Fetched slots", fetchedSlots);
+      setSlots(fetchedSlots);
+      // Set up listeners for reservations on each slot
+      fetchedSlots.forEach((slot) => {
+        const reservationsRef = firestore()
+          .collection(
+            `parkingOwner/${route.params.parkingLot.OwnerId}/parkingLots/${route.params.parkingLot.LotId}/parkingSlots/${slot.slotId}/parkingReservations`
+          )
+          .where(
+            "startTime",
+            "<=",
+            firestore.Timestamp.fromDate(new Date(chosenEndTime))
+          );
+
+        const unsubscribe = reservationsRef.onSnapshot((snapshot) => {
+          const overlappingReservations = snapshot.docs.filter((doc) => {
+            const reservation = doc.data();
+            const reservationEndTime = reservation.endTime.toDate();
+            return reservationEndTime >= new Date(chosenStartTime);
+          });
+
+          // Determine if the slot is reserved based on the filtered overlapping reservations
+          const isReserved = overlappingReservations.length > 0;
+          setSlots((prevSlots) =>
+            prevSlots.map((s) =>
+              s.slotId === slot.slotId
+                ? { ...s, status: isReserved ? "Reserved" : "Available" }
+                : s
+            )
+          );
+        });
+
+        unsubscribeFns.push(unsubscribe); // Store the unsubscribe function
       });
-    } else {
-      // Handle the case where there are no available slots
-      toaster.show("No available parking slots", {
-        title: "No slots available",
-        message: "All parking slots are currently occupied.",
-        intent: "error"
-      });
-    }
+    });
 
-    if (selectedParkingSlot) {
-      console.log(
-        "scrolling to selected parking slot",
-        selectedParkingSlot.slotId
-      );
-      // Ensure the UI has been updated and positions captured
-      requestAnimationFrame(() => {
-        const xPos = slotPositions[selectedParkingSlot.slotId];
-        scrollViewRef.current?.scrollTo({ x: xPos, animated: true });
-      });
-    }
+    return () => {
+      // Cleanup: Unsubscribe from all listeners
+      unsubscribeFns.forEach((unsubscribe) => unsubscribe());
+    };
+  }, [token, route.params.parkingLot.LotId, chosenStartTime, chosenEndTime]);
+
+  const handleSelectParkingSlot = (slot: ParkingSlot) => {
+    setSelectedParkingSlot(slot);
   };
 
-  const handleSelectParkingSot = (spot: ParkingSlot) => {
-    setSelectedParkingSlot(spot);
-  };
-
-  const columns = [
-    ...new Set(parkingSlotFromAPI?.map((spot) => spot.position.row))
-  ].sort((a, b) => a.localeCompare(b));
+  const [columns, setColumns] = useState<string[]>([]);
+  useEffect(() => {
+    const columns = [...new Set(slots?.map((slot) => slot.position.row))].sort(
+      (a, b) => a.localeCompare(b)
+    );
+    setColumns(columns);
+  }, [slots]);
 
   const slotPositions = useRef<{ [key: number]: number }>({}).current; // To store positions
 
   // Dynamically generate parking spots based on row positions and sort by columns
   const generateParkingSlots = (row: string) => {
+    console.log("Generating parking slots for row", row);
     // Filter out parking slots for the current row
-    const parkingSlotsForPosition = parkingSlotFromAPI
+    const parkingSlotsForPosition = slots
       ?.filter((spot) => spot.position.row === row)
       .sort((a, b) => a.position.column - b.position.column);
 
@@ -183,12 +150,12 @@ export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
           >
             <Text style={{ color: "white" }}>{row}</Text>
           </View>
-          {parkingSlotsForPosition.map((spot, index) => (
+          {parkingSlotsForPosition.map((slot, index) => (
             <View
-              key={spot.slotId}
+              key={slot.slotId}
               onLayout={(event) => {
                 const layout = event.nativeEvent.layout;
-                slotPositions[spot.slotId] = layout.y; // Capture the Y position of each slot
+                slotPositions[slot.slotId] = layout.y; // Capture the Y position of each slot
               }}
               style={{
                 flexDirection: "row",
@@ -202,7 +169,7 @@ export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
                 borderBottomColor: "lightgrey"
               }}
             >
-              {spot.status === "Occupied" ? (
+              {slot.status === "Reserved" ? (
                 <AntDesign
                   name="car"
                   size={30}
@@ -211,7 +178,7 @@ export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
                 />
               ) : (
                 <TouchableOpacity
-                  onPress={() => handleSelectParkingSot(spot)}
+                  onPress={() => handleSelectParkingSlot(slot)}
                   style={{
                     width: 70,
                     height: 30,
@@ -220,15 +187,15 @@ export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
                     borderRadius: 5,
 
                     backgroundColor:
-                      selectedParkingSlot?.slotId === spot.slotId
+                      selectedParkingSlot?.slotId === slot.slotId
                         ? "black"
                         : "white"
                   }}
                 />
               )}
               <Text style={{ marginLeft: 20, fontWeight: "700" }}>
-                {spot.position.row}
-                {spot.position.column}
+                {slot.position.row}
+                {slot.position.column}
               </Text>
             </View>
           ))}
@@ -239,25 +206,55 @@ export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
 
   const scrollViewRef = useRef<ScrollView>(null);
 
-  return parkingSlotsLoading ? (
-    <YStack
-      flex={1}
-      backgroundColor={"white"}
-      alignItems="center"
-      justifyContent="center"
-    >
-      <ActivityIndicator />
-    </YStack>
-  ) : parkingSlotsError ? (
-    <YStack
-      flex={1}
-      backgroundColor={"white"}
-      alignItems="center"
-      justifyContent="center"
-    >
-      <Text>Error fetching parking slots</Text>
-    </YStack>
-  ) : (
+  useEffect(() => {
+    // Wait for the initial render to complete
+    requestAnimationFrame(() => {
+      // Check if the ScrollView is currently in view
+      if (scrollViewRef.current) {
+        // Animate the ScrollView to scroll a small distance to indicate swiping action
+        scrollViewRef.current.scrollTo({ x: 1000, animated: true }); // Scroll further to make it slower
+        setTimeout(() => {
+          // Scroll back, but not to the very beginning. Adjust the x value as needed.
+          scrollViewRef.current?.scrollTo({ x: 10, animated: true });
+        }, 1000); // Delay the scroll back to simulate a slower scroll
+      }
+    });
+  }, []);
+
+  // Function to select a random parking slot
+  useEffect(() => {
+    if (slots.length === 0) return;
+    if (selectedParkingSlot === undefined) {
+      // Filter out only the slots that are not occupied
+      const availableSlots = slots.filter((slot) => slot.status !== "Occupied");
+      //sort by position row and column
+      availableSlots.sort((a, b) => {
+        if (a.position.row === b.position.row) {
+          return a.position.column - b.position.column;
+        }
+        return a.position.row.localeCompare(b.position.row);
+      });
+
+      if (availableSlots.length > 0) {
+        const firstAvailableSlot = availableSlots[0];
+        setSelectedParkingSlot(firstAvailableSlot);
+        Burnt.toast({
+          title: "Parking slot selected",
+          message: `Selected spot ${firstAvailableSlot.position.row}${firstAvailableSlot.position.column}`,
+          preset: "done",
+          duration: 5
+        });
+      } else {
+        Burnt.toast({
+          title: "No available parking slots",
+          preset: "error",
+          duration: 5
+        });
+      }
+    }
+  }, [slots]);
+
+  return (
     <YStack
       flex={1}
       backgroundColor={"white"}
@@ -375,7 +372,8 @@ export const SelectSpotScreen: React.FC<SelectSpotScreenProps> = ({
                 parkingLot: route.params.parkingLot,
                 parkingSlot: selectedParkingSlot,
                 vehicle: route.params.vehicle,
-                bookingDetails: route.params.bookingDetails // Pass the booking details to the next screen
+                bookingDetails: route.params.bookingDetails,
+                selectedRate: route.params.selectedRate
               });
             } else {
               alert("Please select a parking slot");

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
-import { useToastController } from "@tamagui/toast";
 import axios, { AxiosError } from "axios";
+import * as Burnt from "burnt";
 import {
   router,
   useRootNavigationState,
@@ -55,6 +55,7 @@ export const useAuth = () => {
   return context;
 };
 
+//TODO: Will be removed
 // function userProtectedRouter(user: User) {
 //   const segments = useSegments(); // hook that allows all navigation routes defined.
 //   const rootNavigationState = useRootNavigationState(); // hook allows to determine if the router is ready to be used.
@@ -137,7 +138,6 @@ interface AuthProviderProps {}
 export function AuthProvider({
   children
 }: PropsWithChildren<AuthProviderProps>) {
-  const toaster = useToastController();
   const [user, setUser] = useState<User>(null);
 
   userProtectedRouter(user);
@@ -169,11 +169,23 @@ export function AuthProvider({
       auth()
         .createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
-          toaster.show("User account created");
+          // toaster.show("User account created");
+          Burnt.toast({
+            title: "User Account Created",
+            message: "Please verify your email!",
+            duration: 5,
+            preset: "done"
+          });
+
           userCredential.user
             ?.sendEmailVerification()
             .then(() => {
-              toaster.show("Verification email sent!");
+              Burnt.toast({
+                title: "Verification Email Sent",
+                message: "Please verify your email!",
+                duration: 5,
+                preset: "done"
+              });
               console.log("Verification email sent!");
               router.replace("/(public)/verification");
             })
@@ -183,16 +195,33 @@ export function AuthProvider({
         })
         .catch((error) => {
           if (error.code === "auth/email-already-in-use") {
-            toaster.show("That email address is already in use!");
+            // toaster.show("That email address is already in use!");
+            Burnt.toast({
+              title: "Email Already In Use",
+              message: "That email address is already in use!",
+              duration: 5,
+              preset: "error"
+            });
           }
 
           if (error.code === "auth/invalid-email") {
-            toaster.show("That email address is invalid!");
+            Burnt.toast({
+              title: "Invalid Email",
+              message: "That email address is invalid!",
+              duration: 5,
+              preset: "error"
+            });
           }
-          console.log(error);
+          console.log("Error: ", error);
         });
     } catch (error) {
-      console.log(error);
+      Burnt.toast({
+        title: "Unexpected Error",
+        message: "An unexpected error occurred. Please try again later.",
+        duration: 5,
+        preset: "error"
+      });
+      console.error("SignUp error: ", error);
     }
   }
 
@@ -221,9 +250,14 @@ export function AuthProvider({
           phoneNumber
         })
         .then((userFromBackend) => {
-          toaster.show("User account created");
           console.log(userFromBackend.data);
-          toaster.show("User account created. Please verify your email!");
+          // toaster.show("User account created. Please verify your email!");
+          Burnt.toast({
+            title: "User Account Created",
+            message: "Please verify your email!",
+            duration: 5,
+            preset: "done"
+          });
 
           auth()
             .signInWithCustomToken(userFromBackend.data.customToken)
@@ -249,9 +283,21 @@ export function AuthProvider({
                   .then(() => {
                     router.replace("/(public)/verification");
                     console.log("Verification email sent!");
+                    Burnt.toast({
+                      title: "Verification Email Sent",
+                      message: "Please verify your email!",
+                      duration: 5,
+                      preset: "done"
+                    });
                   })
                   .catch((error) => {
                     console.log("Failed to send verification email: ", error);
+                    Burnt.toast({
+                      title: "Failed to send verification email",
+                      message: "Please try again later.",
+                      duration: 5,
+                      preset: "error"
+                    });
                   });
               });
             });
@@ -276,12 +322,18 @@ export function AuthProvider({
       }
 
       // Display a generic error message to the user
-      toaster.show("Failed to sign up. Please try again!");
+      // toaster.show("Failed to sign up. Please try again!");
+      Burnt.toast({
+        title: "Failed to sign up",
+        message: "Please try again!",
+        duration: 5,
+        preset: "error"
+      });
       console.error("Failed to sign up:", axiosError);
     }
   }
 
-  //TODO Deprecated using signUpUserOnPressBackend
+  //TODO Deprecated using signUpUserOnPressBackend - May reuse
   function signInUserOnPress(email: string, password: string) {
     try {
       auth()
@@ -289,24 +341,53 @@ export function AuthProvider({
         .then((userCredential) => {
           setUser(userCredential.user);
           if (userCredential.user?.emailVerified) {
-            toaster.show("Welcome back!");
+            // toaster.show("Welcome back!");
+            Burnt.toast({
+              title: "Welcome back",
+              duration: 5,
+              preset: "done"
+            });
             router.replace("/(auth)/home");
           } else {
-            toaster.show("Please verify your email!");
+            // toaster.show("Please verify your email!");
+            Burnt.toast({
+              title: "Please verify your email",
+              message: "Please verify your email!",
+              duration: 5,
+              preset: "done"
+            });
             router.replace("/(public)/verification");
           }
         })
         .catch((error) => {
           if (error.code === "auth/invalid-email") {
-            toaster.show("That email address is invalid!");
+            // toaster.show("That email address is invalid!");
+            Burnt.toast({
+              title: "Invalid Email",
+              message: "That email address is invalid!",
+              duration: 5,
+              preset: "error"
+            });
           }
 
           if (error.code === "auth/user-not-found") {
-            toaster.show("There is no user with that email address!");
+            // toaster.show("There is no user with that email address!");
+            Burnt.toast({
+              title: "User Not Found",
+              message: "There is no user with that email address!",
+              duration: 5,
+              preset: "error"
+            });
           }
 
           if (error.code === "auth/wrong-password") {
-            toaster.show("That password is incorrect!");
+            // toaster.show("That password is incorrect!");
+            Burnt.toast({
+              title: "Incorrect Password",
+              message: "That password is incorrect!",
+              duration: 5,
+              preset: "error"
+            });
           }
           console.log(error);
         });
@@ -320,7 +401,13 @@ export function AuthProvider({
       auth()
         .sendPasswordResetEmail(email)
         .then(() => {
-          toaster.show("Password reset email sent!");
+          // toaster.show("Password reset email sent!");
+          Burnt.toast({
+            title: "Password Reset Email Sent",
+            message: "Please verify your email!",
+            duration: 5,
+            preset: "done"
+          });
           console.log("Password reset email sent!");
 
           setTimeout(() => {
@@ -329,6 +416,12 @@ export function AuthProvider({
         })
         .catch((error) => {
           console.log("Failed to send password reset email: ", error);
+          Burnt.toast({
+            title: "Failed to send password reset email",
+            message: "Please try again later.",
+            duration: 5,
+            preset: "error"
+          });
         });
     } catch (error) {
       console.log(error);

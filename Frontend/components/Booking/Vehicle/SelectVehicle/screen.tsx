@@ -1,18 +1,19 @@
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { useAuth } from "@providers/Authentication/AuthProvider";
+import { Vehicle } from "@models/Vehicle";
+import { ParkingLot } from "@models/ParkingLot";
 import { useConfig } from "@providers/Config/ConfigProvider";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { CheckCircle, Circle } from "@tamagui/lucide-icons";
-import { useToastController } from "@tamagui/toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import * as Burnt from "burnt";
+import useToken from "hooks/useToken";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 import AwesomeButton from "react-native-really-awesome-button";
 import { ScrollView, Text, YStack } from "tamagui";
 import { StackNavigation } from "../../../../app/(auth)/home";
-import { ParkingLot } from "../../../Map/screen";
 interface VehicleScreenProps {
   navigation: StackNavigation;
 }
@@ -23,35 +24,16 @@ type RouteParams = {
   };
 };
 
-export interface Vehicle {
-  vehicleId?: string;
-  registrationNumber: string;
-  nickName: string;
-  defaultVehicle: boolean;
-}
 export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
   const [selectedVehicle, setselectedVehicle] = useState<Vehicle | null>(null);
   const route = useRoute<RouteProp<RouteParams, "VehicleScreen">>();
   const { parkingLot } = route.params;
 
-  const { user } = useAuth();
   const { BASE_URL } = useConfig();
-  const toaster = useToastController();
   const queryClient = useQueryClient();
-  const [token, setToken] = useState<string>("");
+  const token = useToken();
 
-  useEffect(() => {
-    const fetchToken = async () => {
-      if (user) {
-        const token = await user.getIdToken();
-        setToken(token);
-      }
-    };
-
-    fetchToken();
-  }, [user]);
-
-  const getUserVehicles = async (token: string): Promise<Vehicle[]> => {
+  const getUserVehicles = async (): Promise<Vehicle[]> => {
     console.log("Getting user vehicles");
     try {
       const response = await axios.get(`${BASE_URL}/all-user-vehicles`, {
@@ -73,17 +55,22 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
     isError
   } = useQuery({
     queryKey: ["userVehicles"],
-    queryFn: () => getUserVehicles(token),
+    queryFn: () => getUserVehicles(),
     enabled: !!token
   });
   const userVehicles = userVehiclesFromApi?.["vehicles"] || [];
 
   useEffect(() => {
-    userVehicles?.map((vehicle: Vehicle) => {
-      if (vehicle.defaultVehicle) {
-        setselectedVehicle(vehicle);
-      }
-    });
+    // Immediately find and set the default vehicle once the userVehicles data is available
+    const defaultVehicle = userVehicles.find(
+      (vehicle: Vehicle) => vehicle.defaultVehicle
+    );
+    if (defaultVehicle) {
+      setselectedVehicle(defaultVehicle);
+    } else if (userVehicles.length > 0) {
+      // Optionally, set the first vehicle as selected if no default is marked
+      setselectedVehicle(userVehicles[0]);
+    }
   }, [userVehicles]);
 
   const handleDeleteVehicle = (vehicleToDelete: Vehicle) => {
@@ -96,14 +83,18 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
       .then(() => {
         console.log("Vehicle deleted successfully");
         queryClient.invalidateQueries({ queryKey: ["userVehicles"] });
-        toaster.show("Vehicle deleted successfully", {
-          type: "success"
+        Burnt.toast({
+          title: "Vehicle deleted successfully",
+          preset: "done",
+          duration: 5
         });
       })
       .catch((error) => {
         console.log("Error deleting vehicle", error);
-        toaster.show("Error deleting vehicle", {
-          type: "error"
+        Burnt.toast({
+          title: "Error deleting vehicle",
+          preset: "error",
+          duration: 5
         });
       });
   };
@@ -274,11 +265,9 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
           borderRadius={10}
           backgroundShadow="#fff"
           backgroundDarker="#fff"
-          backgroundColor="black"
+          backgroundColor="rgb(253 176 34)"
         >
-          <Text style={{ fontWeight: "500", color: "white" }}>
-            Select Booking Details
-          </Text>
+          <Text style={{ fontWeight: "500", color: "black" }}>Next</Text>
         </AwesomeButton>
       </View>
     </YStack>

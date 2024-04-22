@@ -1,13 +1,7 @@
 import { Car, Sun, User } from "@tamagui/lucide-icons";
 import { Text, View } from "react-native";
 import AwesomeButton from "react-native-really-awesome-button";
-import {
-  Avatar,
-  ListItem,
-  XStack,
-  YGroup,
-  YStack
-} from "tamagui";
+import { Avatar, ListItem, XStack, YGroup, YStack } from "tamagui";
 import { useAuth } from "../../../providers/Authentication/AuthProvider";
 
 const ProfileScreen = () => {

@@ -1,12 +1,13 @@
 import { Formik, FormikHelpers } from "formik";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import AwesomeButton from "react-native-really-awesome-button";
 
-import { useAuth } from "@providers/Authentication/AuthProvider";
+import { Vehicle } from "@models/Vehicle";
 import { useConfig } from "@providers/Config/ConfigProvider";
-import { useToastController } from "@tamagui/toast";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import * as Burnt from "burnt";
+import useToken from "hooks/useToken";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -18,7 +19,6 @@ import {
 import { YStack } from "tamagui";
 import { ZodError, z } from "zod";
 import { StackNavigation } from "../../../../app/(auth)/home";
-import { Vehicle } from "../SelectVehicle/screen";
 
 interface AddVehicleScreenProps {
   navigation: StackNavigation;
@@ -28,22 +28,38 @@ export const AddVehicleScreen: React.FC<AddVehicleScreenProps> = ({
   navigation
 }) => {
   const { BASE_URL } = useConfig();
-  const { user } = useAuth();
-  const toaster = useToastController();
   const queryClient = useQueryClient();
 
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchToken = async () => {
-      if (user) {
-        const token = await user.getIdToken();
-        setToken(token);
+  const token = useToken();
+  const addVehicle = (newVehicle: Vehicle) => {
+    return axios.post(`${BASE_URL}/vehicle`, newVehicle, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
       }
-    };
-
-    fetchToken();
-  }, [user]);
+    });
+  };
+  const { mutateAsync: addVehicleMutation } = useMutation({
+    mutationFn: addVehicle,
+    onSuccess: (data) => {
+      console.log("Vehicle added successfully", data);
+      Burnt.toast({
+        title: "Vehicle added successfully",
+        preset: "done",
+        duration: 5
+      });
+      queryClient.invalidateQueries({ queryKey: ["userVehicles"] });
+      navigation.goBack();
+    },
+    onError: (error) => {
+      Burnt.toast({
+        title: "Error adding vehicle",
+        preset: "error",
+        duration: 5
+      });
+      console.error("Error adding vehicle", error);
+    }
+  });
 
   const vehicleValidationSchema = z.object({
     registrationNumber: z
@@ -80,30 +96,44 @@ export const AddVehicleScreen: React.FC<AddVehicleScreenProps> = ({
             values: Vehicle,
             { setSubmitting }: FormikHelpers<Vehicle>
           ) => {
-            axios
-              .post(`${BASE_URL}/vehicle`, values, {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  "Content-Type": "application/json"
-                }
-              })
-              .then((response) => {
-                console.log("Vehicle added successfully", response.data);
-                toaster.show("Vehicle added successfully", {
-                  type: "success"
-                });
-                queryClient.invalidateQueries({ queryKey: ["userVehicles"] });
-                navigation.goBack();
-              })
-              .catch((error) => {
-                toaster.show("Error adding vehicle", {
-                  type: "error"
-                });
-                console.error("Error adding vehicle", error);
-              })
-              .finally(() => {
+            addVehicleMutation(values, {
+              onSuccess: () => {
                 setSubmitting(false);
-              });
+              },
+              onError: (error) => {
+                console.error("Error adding vehicle", error);
+                setSubmitting(false);
+              }
+            });
+            //   axios
+            //     .post(`${BASE_URL}/vehicle`, values, {
+            //       headers: {
+            //         Authorization: `Bearer ${token}`,
+            //         "Content-Type": "application/json"
+            //       }
+            //     })
+            //     .then((response) => {
+            //       console.log("Vehicle added successfully", response.data);
+            //       Burnt.toast({
+            //         title: "Vehicle added successfully",
+            //         preset: "done",
+            //         duration: 5
+            //       });
+            //       queryClient.invalidateQueries({ queryKey: ["userVehicles"] });
+            //       navigation.goBack();
+            //     })
+            //     .catch((error) => {
+            //       Burnt.toast({
+            //         title: "Error adding vehicle",
+            //         preset: "error",
+            //         duration: 5
+            //       });
+            //       console.error("Error adding vehicle", error);
+            //     })
+            //     .finally(() => {
+            //       setSubmitting(false);
+            //     });
+            // }}
           }}
         >
           {({
@@ -208,7 +238,7 @@ export const AddVehicleScreen: React.FC<AddVehicleScreenProps> = ({
                   raiseLevel={1}
                   stretch={true}
                   borderRadius={10}
-                  backgroundColor="black"
+                  backgroundColor="rgb(253 176 34)"
                   backgroundShadow="black"
                 >
                   {isSubmitting ? (
@@ -219,7 +249,11 @@ export const AddVehicleScreen: React.FC<AddVehicleScreenProps> = ({
                   ) : (
                     <Text
                       numberOfLines={1}
-                      style={{ overflow: "hidden", color: "white" }}
+                      style={{
+                        overflow: "hidden",
+                        color: "black",
+                        fontWeight: "500"
+                      }}
                     >
                       Next
                     </Text>

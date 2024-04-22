@@ -1,29 +1,39 @@
 import { useAuth } from "@providers/Authentication/AuthProvider";
 import auth from "@react-native-firebase/auth";
+import * as Burnt from "burnt";
 import AwesomeButton from "react-native-really-awesome-button";
 
-import { useToastController } from "@tamagui/toast";
+import { useConfig } from "@providers/Config/ConfigProvider";
 import axios from "axios";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { H3, Spinner, Text, YStack } from "tamagui";
 
-const BASE_URL = process.env.FRONTEND_SERVER_BASE_URL;
-
 export default function VerificationScreen() {
   const router = useRouter();
-  const toaster = useToastController();
   const [isResending, setIsResending] = useState(false);
   const { user } = useAuth();
+  const { BASE_URL } = useConfig();
 
   const checkEmailVerificationStatus = async () => {
     await auth().currentUser?.reload();
     if (auth().currentUser?.emailVerified) {
-      toaster.show("Email verified!");
+      Burnt.toast({
+        title: "Email verified!",
+        message: "Your account has been verified. Please sign in to continue.",
+        duration: 5,
+        preset: "done"
+      });
       console.log("Email verified!");
       router.replace("/(auth)/home"); // Redirect to home page
     } else {
+      Burnt.toast({
+        title: "Email not verified",
+        message: "Please try again later.",
+        duration: 5,
+        preset: "error"
+      });
       console.log("Email not verified");
     }
   };
@@ -33,6 +43,12 @@ export default function VerificationScreen() {
     return () => clearInterval(checkEmailVerified);
   }, []);
   const handleResendEmail = async () => {
+    Burnt.toast({
+      title: "Resending email...",
+      message: "Please wait.",
+      duration: 5,
+      preset: "done"
+    });
     console.log("Resending email...");
     setIsResending(true);
     await user?.getIdToken().then((token) => {
@@ -50,10 +66,22 @@ export default function VerificationScreen() {
           }
         )
         .then(() => {
+          Burnt.toast({
+            title: "Verification email resent!",
+            message: "Please check your email.",
+            duration: 5,
+            preset: "done"
+          });
           console.log("Verification email resent!");
           setIsResending(false);
         })
         .catch((error) => {
+          Burnt.toast({
+            title: "Failed to resend verification email",
+            message: "Please try again later.",
+            duration: 5,
+            preset: "error"
+          });
           console.log("Failed to resend verification email: ", error);
           setIsResending(false);
         });

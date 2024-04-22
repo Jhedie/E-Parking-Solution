@@ -1,15 +1,14 @@
+import { BookingDetails } from "@models/BookingDetails";
+import { ParkingLot } from "@models/ParkingLot";
+import { ParkingSlot } from "@models/ParkingSlot";
+import { Vehicle } from "@models/Vehicle";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import React from "react";
 import { Text, View } from "react-native";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import AwesomeButton from "react-native-really-awesome-button";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { YStack } from "tamagui";
 import { ParkingStackNavigation } from "../../../app/(auth)/parking";
-import { BookingDetails } from "../../Booking/BookingDetails/screen";
-import { ParkingSlot } from "../../Booking/SelectSpot/screen";
-import { Vehicle } from "../../Booking/Vehicle/SelectVehicle/screen";
-import { ParkingLot } from "../../Map/screen";
 
 interface TimerScreenProps {
   navigation: ParkingStackNavigation;

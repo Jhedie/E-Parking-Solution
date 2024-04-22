@@ -16,16 +16,15 @@ export class ParkingLotRatesController implements Controller {
       ["admin", "parkingOwner"]
     );
 
-    // parkingLotrates by parkingLotId
     httpServer.get(
       "/all-parkingLotRates/:parkingLotId",
       this.getAllParkingLotRatesByParkingLotId.bind(this),
-      ["admin", "driver", "parkingOwner"]
+      ["admin", "parkingOwner"]
     );
     httpServer.get(
       "/parkingLotRates/:parkingLotId/:rateId",
       this.getParkingLotRateById.bind(this),
-      ["admin", "driver", "parkingOwner"]
+      ["admin", "parkingOwner"]
     );
     httpServer.put(
       "/parkingLotRates/:parkingLotId/:rateId",
@@ -37,7 +36,46 @@ export class ParkingLotRatesController implements Controller {
       this.deleteRateById.bind(this),
       ["admin", "parkingOwner"]
     );
+
+    httpServer.post(
+      "/parkingLotRates/parkingLot/:parkingLotId",
+      this.getAllParkingLotRatesForParkingLot.bind(this),
+      ["driver"]
+    );
   }
+
+  private readonly getAllParkingLotRatesForParkingLot: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      console.log("Getting all parking lot rates for parking lot...");
+
+      const parkingLotId = req.params.parkingLotId;
+      console.log("Requested parking lot ID:", parkingLotId);
+
+      const ownerId = req.body.ownerId;
+      console.log("Requested owner ID:", ownerId);
+
+      const rates =
+        await parkingLotRatesService.getAllParkingLotRatesByParkingLotId(
+          ownerId,
+          parkingLotId
+        );
+      console.log("Retrieved rates:", rates);
+
+      const parkingLotRates = rates.map((rate) =>
+        ParkingLotRatesClientModel.fromEntity(rate).toBodyPublicRate()
+      );
+      console.log("Mapped parking lot rates:", parkingLotRates);
+
+      res.send({ parkingLotRates: parkingLotRates });
+    } catch (error) {
+      console.error("Error getting parking lot rates for parking lot:", error);
+      res.status(500).send({ error: (error as Error).message });
+    }
+  };
 
   private readonly createParkingLotRate: RequestHandler = async (
     req: Request,

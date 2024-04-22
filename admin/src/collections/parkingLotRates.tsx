@@ -20,7 +20,6 @@ export const ParkingLotRatesCollection = buildCollection<ParkingLotRates>({
         required: true,
       },
     },
-
     rate: {
       dataType: "number",
       name: "Rate",

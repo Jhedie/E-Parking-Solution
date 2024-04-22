@@ -1,10 +1,6 @@
-import {
-  useAuthController,
-  useDataSource,
-  useFireCMSContext,
-} from "@firecms/core";
+import { useFireCMSContext } from "@firecms/core";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { ParkingLotRates } from "../../collections/parkingLotRates";
 import { ParkingLot } from "../../collections/parkingLots";
@@ -76,7 +72,7 @@ const Dashboard = () => {
                 slots.map((slot) =>
                   dataSource
                     .fetchCollection({
-                      path: `parkingOwner/${authController.user?.uid}/parkingLots/${parkingLot.id}/parkingSlots/${slot.id}/parkingReservation`,
+                      path: `parkingOwner/${authController.user?.uid}/parkingLots/${parkingLot.id}/parkingSlots/${slot.id}/parkingReservations`,
                     })
                     .then((reservations) => ({ ...slot, reservations }))
                 )
@@ -215,31 +211,31 @@ const Dashboard = () => {
                   {generateParkingSlots(row)}
                 </div>
               ))}
-              <div className="flex justify-around w-full mt-4 flex-col">
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-blue-500"></div>
-                  <span className="ml-2">Handicapped</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-green-500"></div>
-                  <span className="ml-2">Electric</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-gray-500"></div>
-                  <span className="ml-2">Regular</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-red-500"></div>
-                  <span className="ml-2">Unavailable/Occupied</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-yellow-500"></div>
-                  <span className="ml-2">Reserved</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-6 h-6 bg-white border border-gray-400"></div>
-                  <span className="ml-2">Available</span>
-                </div>
+            </div>
+            <div className="flex justify-around w-full mt-4 flex-col">
+              <div className="flex items-center">
+                <div className="w-6 h-6 bg-blue-500"></div>
+                <span className="ml-2">Handicapped</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-6 h-6 bg-green-500"></div>
+                <span className="ml-2">Electric</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-6 h-6 bg-gray-500"></div>
+                <span className="ml-2">Regular</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-6 h-6 bg-red-500"></div>
+                <span className="ml-2">Unavailable/Occupied</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-6 h-6 bg-yellow-500"></div>
+                <span className="ml-2">Reserved</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-6 h-6 bg-white border border-gray-400"></div>
+                <span className="ml-2">Available</span>
               </div>
             </div>
           </div>
@@ -273,12 +269,7 @@ const Dashboard = () => {
                     <th scope="col" className="px-6 py-3">
                       Status
                     </th>
-                    <th scope="col" className="px-6 py-3">
-                      Price
-                    </th>
-                    <th scope="col" className="px-6 py-3">
-                      Rate Type
-                    </th>
+
                     <th scope="col" className="px-6 py-3">
                       Total Amount
                     </th>
@@ -342,14 +333,9 @@ const Dashboard = () => {
                             {reservation.values.endTime.toLocaleString()}
                           </td>
                           <td className="px-6 py-4">
-                            {reservation.values.status}
+                            {reservation.values.parkingStatus}
                           </td>
-                          <td className="px-6 py-4">
-                            {reservation.values.price}
-                          </td>
-                          <td className="px-6 py-4">
-                            {reservation.values.rateType}
-                          </td>
+
                           <td className="px-6 py-4">
                             {reservation.values.totalAmount}
                           </td>

@@ -158,9 +158,9 @@ class ParkingLotService {
 
     parkingLot.SlotsConfig.map((config: SlotConfig) => {
       for (let index = 0; index < config.columns; index++) {
-        let slotType = "Regular"; // Default slot type
+        let slotType = "regular"; // Default slot type
         if (config.row === parkingLot.SlotTypes.handicapped) {
-          slotType = "Handicapped";
+          slotType = "handicapped";
         } else if (config.row === parkingLot.SlotTypes.electric) {
           slotType = "electric";
         }
@@ -216,7 +216,9 @@ class ParkingLotService {
    */
   async getParkingLots(ownerId: string): Promise<ParkingLot[]> {
     // Fetch all documents from the collection
-    const snapshot = await this.parkingLotsCollection(ownerId).get();
+    const snapshot = await this.parkingLotsCollection(ownerId)
+      .where("Status", "!=", "Inactive")
+      .get();
     // Convert each document to a ParkingLot object and return the array
     return snapshot.docs.map((doc) =>
       ParkingLotFirestoreModel.fromDocumentData(doc.data())
@@ -417,6 +419,18 @@ class ParkingLotService {
   ): Promise<void> {
     // Delete the parking lot document
     await this.parkingLotDoc(ownerId, parkingLotId).delete();
+
+    // Delete the parking lot from the geoloaction collection
+    console.log(`deleting ${parkingLotId} parking lot from geohash`);
+    firestore()
+      .collection("parkingLotsGeohash")
+      .where("lotId", "==", parkingLotId)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          doc.ref.delete();
+        });
+      });
   }
 }
 

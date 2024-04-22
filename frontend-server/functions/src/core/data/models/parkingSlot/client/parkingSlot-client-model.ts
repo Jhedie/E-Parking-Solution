@@ -14,8 +14,8 @@ export class ParkingSlotClientModel extends ParkingSlot {
   static empty(): ParkingSlotClientModel {
     return new ParkingSlotClientModel(
       "", // SlotId
-      "", // Type
-      "", // Status
+      "regular", // Type
+      "Available", // Status
       { row: "", column: 0 }, // Position
       new Date() // createdAt
     );

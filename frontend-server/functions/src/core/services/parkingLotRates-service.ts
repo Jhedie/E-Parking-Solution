@@ -102,6 +102,11 @@ class ParkingLotRatesService {
     parkingLotId: string,
     rateId: string
   ): Promise<ParkingLotRate | null> {
+    // get the owner based on the parkingLotId
+    const parkingLot = await this.parkingLotsCollection(ownerId).doc(parkingLotId).get();
+    if (!parkingLot.exists) {
+      throw new Error(`Parking lot with ID ${parkingLotId} does not exist.`);
+    }
     const rateRes = await this.parkingLotRateDoc(
       ownerId,
       parkingLotId,

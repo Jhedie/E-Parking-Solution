@@ -5,19 +5,19 @@ export type Position = {
 
 export type status = "Occupied" | "Available" | "Reserved";
 
-export type type = "regular" | "handicapped" | "electric";
+export type type = "regular" | "handicapped" | "electric" | string;
 
 class ParkingSlot {
   public readonly slotId: string;
-  public readonly type: string;
-  public readonly status: string;
+  public readonly type: type;
+  public readonly status: status;
   public readonly position: Position;
   public readonly createdAt: Date;
 
   constructor(
     slotId: string | undefined,
-    type: string,
-    status: string,
+    type: type,
+    status: status,
     position: Position,
     createdAt: Date
   ) {
@@ -31,8 +31,8 @@ class ParkingSlot {
   static empty() {
     return new ParkingSlot(
       undefined, // slotId
-      "", // Type
-      "", // Status
+      "regular", // Type
+      "Available", // Status
       { row: "", column: 0 }, // Position
       new Date() // createdAt
     );

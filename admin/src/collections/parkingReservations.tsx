@@ -1,15 +1,31 @@
-import { buildCollection } from "@firecms/core";
+import { buildCollection, buildProperty } from "@firecms/core";
+import { ParkingLotRates } from "./parkingLotRates";
+
+export type ParkingStatus =
+  | "active"
+  | "completed"
+  | "cancelled"
+  | "expired"
+  | "pending"
+  | "no show"
+  | null;
+
+export type PaymentStatus = "completed" | "failed" | "refunded";
+
 export type ParkingReservation = {
-  rateType: string;
-  slotId: string;
-  totalAmount: number;
   userId: string;
-  endTime: Date;
-  status: string;
-  startTime: Date;
-  price: number;
-  rateNumber: number;
+  slotId: string;
   lotId: string;
+  vehicleId: string;
+  startTime: Date;
+  endTime: Date;
+  usedRates: ParkingLotRates[];
+  totalAmount: number;
+  parkingStatus?: ParkingStatus;
+  paymentStatus?: PaymentStatus;
+  qrCodeToken?: string;
+  modifiedAt?: Date;
+  createdAt?: Date;
 };
 
 export const ParkingReservationCollection = buildCollection<ParkingReservation>(
@@ -21,9 +37,9 @@ export const ParkingReservationCollection = buildCollection<ParkingReservation>(
     icon: "book_online",
     group: "Parking",
     properties: {
-      rateType: {
+      userId: {
         dataType: "string",
-        name: "RateType",
+        name: "UserId",
         validation: {
           required: true,
         },
@@ -35,6 +51,20 @@ export const ParkingReservationCollection = buildCollection<ParkingReservation>(
           required: true,
         },
       },
+      lotId: {
+        dataType: "string",
+        name: "LotId",
+        validation: {
+          required: true,
+        },
+      },
+      vehicleId: {
+        dataType: "string",
+        name: "VehicleId",
+        validation: {
+          required: true,
+        },
+      },
       totalAmount: {
         dataType: "number",
         name: "TotalAmount",
@@ -42,14 +72,7 @@ export const ParkingReservationCollection = buildCollection<ParkingReservation>(
           required: true,
         },
       },
-      userId: {
-        dataType: "string",
-        readOnly: true,
-        name: "UserId",
-        validation: {
-          required: true,
-        },
-      },
+
       endTime: {
         dataType: "date",
         name: "EndTime",
@@ -57,39 +80,40 @@ export const ParkingReservationCollection = buildCollection<ParkingReservation>(
           required: true,
         },
       },
-      status: {
-        dataType: "string",
-        name: "Status",
-        validation: {
-          required: true,
-        },
-      },
-      startTime: {
+      startTime: buildProperty({
         dataType: "date",
-        name: "StartTime",
-        validation: {
-          required: true,
-        },
-      },
-      price: {
-        dataType: "number",
-        name: "Price",
-        validation: {
-          required: true,
-        },
-      },
-      rateNumber: {
-        dataType: "number",
-        name: "RateNumber",
-        validation: {
-          required: true,
-        },
-      },
-      lotId: {
-        dataType: "string",
-        name: "LotId",
-        validation: {
-          required: true,
+        name: "Expiry date",
+        mode: "date",
+      }),
+      usedRates: {
+        dataType: "array",
+        name: "UsedRates",
+        of: {
+          dataType: "map",
+          properties: {
+            rateId: {
+              dataType: "string",
+              name: "RateId",
+              validation: {
+                required: true,
+              },
+            },
+            rate: {
+              dataType: "number",
+              name: "Rate",
+              validation: {
+                required: true,
+              },
+            },
+
+            duration: {
+              dataType: "number",
+              name: "Duration",
+              validation: {
+                required: true,
+              },
+            },
+          },
         },
       },
     },

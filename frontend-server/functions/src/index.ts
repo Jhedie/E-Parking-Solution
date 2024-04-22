@@ -4,6 +4,7 @@ import { apiApp } from "./api";
 import { parkingLotService } from "./core/services/parkingLot-service";
 import { eventTriggers } from "./event-triggers";
 import { paymentApp } from "./paymentApi";
+import * as ScheduledTasks from "./scheduled-functions";
 const serviceAccount = require("../e-parking-app-b22cb-firebase-adminsdk-d5yi5-fb98f59c3c.json");
 /**
  * User roles in the system.
@@ -51,3 +52,13 @@ exports.payment = v2.https.onRequest(paymentApp);
  * The functions are defined in `./eventTriggers`.
  */
 Object.assign(exports, eventTriggers());
+
+/**
+ * The scheduled tasks for the application.
+ *
+ * These are Firebase Cloud Functions that are triggered by a schedule.
+ * The functions are defined in `./scheduledTasks`.
+ *
+ */
+
+Object.assign(exports, ScheduledTasks);

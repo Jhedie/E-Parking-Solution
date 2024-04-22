@@ -373,6 +373,8 @@ export class ParkingLotController implements Controller {
     res: Response,
     next: NextFunction
   ) => {
+    console.log("Geosearching parking lots...");
+    console.log("req.body", req.body);
     const { lat, lon, radius } = req.body;
     if (!lat || !lon || !radius) {
       throw new HttpResponseError(

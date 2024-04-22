@@ -18,8 +18,8 @@ export class ParkingSlotFirestoreModel extends ParkingSlot {
   static empty(): ParkingSlotFirestoreModel {
     return new ParkingSlotFirestoreModel(
       "", // slotId
-      "", // Type
-      "", // Status
+      "regular", // Type
+      "Available", // Status
       { row: "", column: 0 }, // Position
       new Date() // createdAt
     );

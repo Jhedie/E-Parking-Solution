@@ -11,7 +11,6 @@ class ParkingReservationService {
   private parkingReservationsTopLevelCollection() {
     return admin.firestore().collection("parkingReservations");
   }
-  
 
   private usersCollection() {
     return admin.firestore().collection("parkingOwner");
@@ -57,37 +56,111 @@ class ParkingReservationService {
   ): Promise<ParkingReservation> {
     let ownerId: string = await this.getParkingOwner(lotId);
 
-    const reservationRef = this.parkingReservationDoc(ownerId, lotId, slotId);
-
     const qrCodeData = JSON.stringify({
       lotId,
       slotId,
-      reservationId: reservationRef.id,
       ...reservation,
     });
     const qrCodeUrl = await QRCode.toDataURL(qrCodeData, {
       errorCorrectionLevel: "H", // High error correction level meaning more data can be stored in the QR code
     });
+    const db = admin.firestore();
+    return db
+      .runTransaction(async (transaction) => {
+        const reservationRef = this.parkingReservationDoc(
+          ownerId,
+          lotId,
+          slotId
+        );
 
-    const documentData = ParkingReservationFirestoreModel.fromEntity(
-      reservation
-    ).toDocumentData(
-      qrCodeUrl,
-      FieldValue.serverTimestamp(),
-      reservationRef.id
-    );
+        const documentData = ParkingReservationFirestoreModel.fromEntity(
+          reservation
+        ).toDocumentData(
+          qrCodeUrl,
+          FieldValue.serverTimestamp(),
+          reservationRef.id
+        );
 
-    await reservationRef.set(documentData);
+        // Use the transaction to set the new reservation
+        transaction.set(reservationRef, documentData);
 
-    // Add reservation to top level collection
-    this.parkingReservationsTopLevelCollection()
-      .doc(reservationRef.id)
-      .set(documentData);
+        // Add reservation to top level collection
+        const topLevelRef = this.parkingReservationsTopLevelCollection().doc(
+          reservationRef.id
+        );
 
-    // Return the new reservation with its Firestore-generated ID
-    return ParkingReservationFirestoreModel.fromDocumentData(
-      (await reservationRef.get()).data()
-    );
+        transaction.set(topLevelRef, documentData);
+
+        // Increment parking lot occupancy
+        const lotRef = this.parkingLotsCollection(ownerId).doc(lotId);
+        transaction.update(lotRef, { occupancy: FieldValue.increment(1) });
+
+        return documentData;
+      })
+      .then((documentData) => {
+        // Return the new reservation with its Firestore-generated ID
+        return ParkingReservationFirestoreModel.fromDocumentData(documentData);
+      })
+      .catch((error) => {
+        console.error("Transaction failed: ", error);
+        throw new Error("Failed to create parking reservation.");
+      });
+  }
+
+  async extendParkingReservationById(
+    lotId: string,
+    slotId: string,
+    reservationId: string,
+    newEndTime: firestore.Timestamp // Assuming newEndTime is a Firestore Timestamp for consistency
+  ): Promise<void> {
+    const ownerId: string = await this.getParkingOwner(lotId);
+    const db = admin.firestore();
+
+    await db.runTransaction(async (transaction) => {
+      const reservationRef = this.parkingReservationDoc(
+        ownerId,
+        lotId,
+        slotId,
+        reservationId
+      );
+      const reservationSnapshot = await transaction.get(reservationRef);
+
+      if (!reservationSnapshot.exists) {
+        throw new Error("Reservation does not exist.");
+      }
+
+      const reservation = reservationSnapshot.data() as ParkingReservation;
+      // Check if the new end time is later than the current end time
+      if (newEndTime.toDate() <= reservation.endTime) {
+        throw new Error(
+          "New end time must be later than the current end time."
+        );
+      }
+
+      // Optional: Check for conflicting reservations
+      const conflictingReservationsQuery = this.parkingReservationsCollection(
+        ownerId,
+        lotId,
+        slotId
+      )
+        .where("startTime", "<", newEndTime)
+        .where("endTime", ">", reservation.endTime); // Only check reservations that start after the current end time and before the new end time
+
+      const conflictingReservationsSnapshot = await transaction.get(
+        conflictingReservationsQuery
+      );
+      if (!conflictingReservationsSnapshot.empty) {
+        throw new Error(
+          "The slot is already booked for part of the requested extension period."
+        );
+      }
+
+      // Update the reservation with the new end time
+      transaction.update(reservationRef, { endTime: newEndTime });
+
+      //add the rate to the updatedRates array
+      //add to the total cost of the reservation
+    });
   }
 
   async getParkingReservationById(
@@ -167,6 +240,9 @@ class ParkingReservationService {
 
     // Delete reservation from top level collection
     this.parkingReservationsTopLevelCollection().doc(reservationId).delete();
+
+    // Decrement parking lot occupancy
+    await this.decrementParkingLotOccupancy(ownerId, lotId);
   }
 
   async getParkingReservationsByUserId(
@@ -192,28 +268,36 @@ class ParkingReservationService {
 
   private async getParkingOwner(lotId: string): Promise<string> {
     // Get all users with the role 'parkingOwner'
-    const usersSnapshot = await admin
+    const parkingOwnerSnapshot = await admin
       .firestore()
-      .collection("users")
-      .where("role", "==", "parkingOwner")
+      .collection("parkingOwner")
       .get();
 
-    for (const userDoc of usersSnapshot.docs) {
-      // For each user, check their 'parkingLots' subcollection for the lotId
-      const lotsSnapshot = await userDoc.ref
+    // Find the user who owns the parking lot
+    for (const parkingOwnerDoc of parkingOwnerSnapshot.docs) {
+      const parkingLotsSnapshot = await parkingOwnerDoc.ref
         .collection("parkingLots")
-        .where(admin.firestore.FieldPath.documentId(), "==", lotId)
         .get();
-
-      if (!lotsSnapshot.empty) {
-        // Found the lotId within this user's subcollection
-        return userDoc.id; // Return the userId of the parking lot owner
+      for (const parkingLotDoc of parkingLotsSnapshot.docs) {
+        if (parkingLotDoc.id === lotId) {
+          return parkingOwnerDoc.id;
+        }
       }
     }
 
     throw new Error(
       `Parking lot with ID ${lotId} does not have an identifiable owner.`
     );
+  }
+
+  private async decrementParkingLotOccupancy(
+    ownerId: string,
+    lotId: string
+  ): Promise<void> {
+    const lotRef = this.parkingLotsCollection(ownerId).doc(lotId);
+    await lotRef.update({
+      occupancy: admin.firestore.FieldValue.increment(-1),
+    });
   }
 }
 

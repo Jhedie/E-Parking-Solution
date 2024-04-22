@@ -95,6 +95,7 @@ export class ParkingLotClientModel extends ParkingLot {
    */
   toBodyPublicParkingLot() {
     return {
+      [ParkingLotClientModel.kLotId]: this.LotId,
       [ParkingLotClientModel.kLotName]: this.LotName,
       [ParkingLotClientModel.kAddress]: this.Address,
       [ParkingLotClientModel.kCoordinates]: this.Coordinates,

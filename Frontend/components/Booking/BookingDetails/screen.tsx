@@ -3,10 +3,13 @@ import { BookingDetails } from "@models/BookingDetails";
 import { ParkingLot } from "@models/ParkingLot";
 import { Rate } from "@models/ParkingLotRate";
 import { Vehicle } from "@models/Vehicle";
+import { useConfig } from "@providers/Config/ConfigProvider";
 import { Picker } from "@react-native-picker/picker";
-import { RouteProp, useRoute } from "@react-navigation/native";
-import { useQueryClient } from "@tanstack/react-query";
+import { RouteProp, useIsFocused, useRoute } from "@react-navigation/native";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 import dayjs from "dayjs";
+import useToken from "hooks/useToken";
 import React, { useEffect, useState } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -31,12 +34,46 @@ export const BookParkingDetailsScreen: React.FC<
 
   const queryClient = useQueryClient();
 
-  const parkingLotRates = queryClient.getQueryData(["parkingLotRates"]);
-
   const [startDateTime, setStartDateTime] = useState<Date>(new Date());
 
-  const ratesRevised = parkingLotRates;
-  console.log("ratesRevised", ratesRevised);
+  const token = useToken();
+  const isFocused = useIsFocused();
+  const { BASE_URL } = useConfig();
+
+  const getRatesForParkingLot = async (): Promise<Rate[]> => {
+    try {
+      console.log("LotId:", route.params.parkingLot.LotId);
+      const response = await axios.post(
+        `${BASE_URL}/parkingLotRates/parkingLot/${route.params.parkingLot.LotId}`,
+        { ownerId: route.params.parkingLot.OwnerId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      console.log("Fetched parking lot rates:", response.data);
+
+      return response.data;
+    } catch (error) {
+      console.log("Failed to fetch parking lot rates:", error);
+      return [];
+    }
+  };
+  const cachedRates = queryClient.getQueryData<Rate[]>([
+    "parkingLotRates",
+    route.params.parkingLot.LotId
+  ]);
+
+  const { data: parkingLotRates, refetch } = useQuery({
+    queryKey: ["parkingLotRates"],
+    queryFn: () => getRatesForParkingLot(),
+    enabled: !!token && isFocused && !cachedRates
+  });
+
+  // Use cachedRates if available, otherwise use data from the query
+  const rates = cachedRates || parkingLotRates;
 
   const [endDateTime, setEndDateTime] = useState<Date>();
 
@@ -58,10 +95,10 @@ export const BookParkingDetailsScreen: React.FC<
   };
 
   const [selectedRate, setSelectedRate] = useState<Rate>(
-    ratesRevised?.["parkingLotRates"]?.[0] ?? defaultRate
+    rates?.["parkingLotRates"]?.[0] ?? defaultRate
   );
   const [totalPrice, setTotalPrice] = useState<number>(
-    ratesRevised?.["parkingLotRates"]?.[0]?.rate ?? 0
+    rates?.["parkingLotRates"]?.[0]?.rate ?? 0
   );
 
   const [bookingDetails, setBookingDetails] = useState<BookingDetails>();
@@ -120,7 +157,7 @@ export const BookParkingDetailsScreen: React.FC<
     // Update the end date
     setEndDateTime(newEndDateTime);
 
-    const foundRate = ratesRevised?.["parkingLotRates"]?.find(
+    const foundRate = rates?.["parkingLotRates"]?.find(
       (rate: Rate) => rate.rateId === selectedRate?.rateId
     );
 
@@ -224,7 +261,7 @@ export const BookParkingDetailsScreen: React.FC<
             selectedValue={selectedRate?.rateId}
             onValueChange={(itemValue) => {
               console.log("itemValue", itemValue);
-              const selectedRate = ratesRevised?.["parkingLotRates"]?.find(
+              const selectedRate = rates?.["parkingLotRates"]?.find(
                 (rate: Rate) => rate.rateId === itemValue
               );
               if (selectedRate) {
@@ -241,15 +278,13 @@ export const BookParkingDetailsScreen: React.FC<
             }}
             itemStyle={{ fontSize: 18, fontWeight: "600" }}
           >
-            {ratesRevised?.["parkingLotRates"]?.map(
-              (rate: Rate, index: number) => (
-                <Picker.Item
-                  key={rate?.rateId}
-                  label={rate?.duration + " " + rate?.rateType}
-                  value={rate?.rateId}
-                />
-              )
-            )}
+            {rates?.["parkingLotRates"]?.map((rate: Rate, index: number) => (
+              <Picker.Item
+                key={rate?.rateId}
+                label={rate?.duration + " " + rate?.rateType}
+                value={rate?.rateId}
+              />
+            ))}
           </Picker>
         </View>
         <View>

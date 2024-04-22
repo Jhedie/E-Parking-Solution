@@ -6,6 +6,7 @@ import BookingConfirmationScreen from "../../components/Booking/BookingConfirmat
 import { ParkingTicketScreen } from "../../components/Booking/ParkingTicket/screen";
 
 import { SelectSlotScreen } from "@components/Booking/SelectSlot/screen";
+import { successfulBookingConfirmation } from "@models/BookingConfirmationDetails";
 import { BookingDetails } from "@models/BookingDetails";
 import { ParkingLot } from "@models/ParkingLot";
 import { Rate } from "@models/ParkingLotRate";
@@ -61,6 +62,7 @@ export type HomeStackParamList = {
     vehicle: Vehicle;
     bookingDetails: BookingDetails;
     selectedRate: Rate;
+    successfulBookingConfirmation: successfulBookingConfirmation;
   };
 };
 export type StackNavigation = NavigationProp<HomeStackParamList>;

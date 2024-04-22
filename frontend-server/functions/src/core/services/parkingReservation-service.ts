@@ -1,6 +1,5 @@
 import * as admin from "firebase-admin";
 import { firestore } from "firebase-admin";
-import QRCode from "qrcode";
 import { ParkingReservationFirestoreModel } from "../data/models/parkingReservation/firestore/parkingReservation-firestore-model";
 import { PartialParkingReservationFirestoreModel } from "../data/models/parkingReservation/firestore/partial-parkingReservation-firestore-model";
 import { ParkingReservation } from "../data/parkingReservation";
@@ -56,14 +55,6 @@ class ParkingReservationService {
   ): Promise<ParkingReservation> {
     let ownerId: string = await this.getParkingOwner(lotId);
 
-    const qrCodeData = JSON.stringify({
-      lotId,
-      slotId,
-      ...reservation,
-    });
-    const qrCodeUrl = await QRCode.toDataURL(qrCodeData, {
-      errorCorrectionLevel: "H", // High error correction level meaning more data can be stored in the QR code
-    });
     const db = admin.firestore();
     return db
       .runTransaction(async (transaction) => {
@@ -75,11 +66,7 @@ class ParkingReservationService {
 
         const documentData = ParkingReservationFirestoreModel.fromEntity(
           reservation
-        ).toDocumentData(
-          qrCodeUrl,
-          FieldValue.serverTimestamp(),
-          reservationRef.id
-        );
+        ).toDocumentData(FieldValue.serverTimestamp(), reservationRef.id);
 
         // Use the transaction to set the new reservation
         transaction.set(reservationRef, documentData);
@@ -93,7 +80,7 @@ class ParkingReservationService {
 
         // Increment parking lot occupancy
         const lotRef = this.parkingLotsCollection(ownerId).doc(lotId);
-        transaction.update(lotRef, { occupancy: FieldValue.increment(1) });
+        transaction.update(lotRef, { Occupancy: FieldValue.increment(1) });
 
         return documentData;
       })

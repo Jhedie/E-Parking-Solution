@@ -16,7 +16,7 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
   static kTotalAmount = "totalAmount";
   static kParkingStatus = "parkingStatus";
   static kPaymentStatus = "paymentStatus";
-  static kQrCodeToken = "qrCodeToken";
+  static kCheckedIn = "checkedIn";
   static kModifiedAt = "modifiedAt";
   static kCreatedAt = "createdAt";
 
@@ -37,7 +37,7 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
       0, // totalAmount
       null, // parkingStatus
       null, // paymentStatus
-      "", // qrCodeToken
+      false, // checkedIn
       new Date(), // modifiedAt
       new Date() // createdAt
     );
@@ -63,7 +63,6 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
    * @returns {DocumentData} Firestore document data format of the ParkingReservation.
    */
   toDocumentData(
-    qrCodeToken: string,
     createdAt: Timestamp | FieldValue,
     reservationId: string
   ): DocumentData {
@@ -83,10 +82,9 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
       [ParkingReservationFirestoreModel.kTotalAmount]: this.totalAmount,
       [ParkingReservationFirestoreModel.kParkingStatus]: this.parkingStatus,
       [ParkingReservationFirestoreModel.kPaymentStatus]: this.paymentStatus,
-      [ParkingReservationFirestoreModel.kQrCodeToken]:
-        qrCodeToken ?? this.qrCodeToken,
+      [ParkingReservationFirestoreModel.kCheckedIn]: this.checkedIn,
       [ParkingReservationFirestoreModel.kModifiedAt]:
-        this.modifiedAt ?? createdAt,
+        createdAt ?? this.modifiedAt,
       [ParkingReservationFirestoreModel.kCreatedAt]:
         createdAt ?? this.createdAt,
     };
@@ -102,6 +100,16 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
   static fromDocumentData(
     data: DocumentData
   ): ParkingReservationFirestoreModel {
+    // Helper function to handle potential ServerTimestampTransform or actual Timestamp
+    const handleTimestamp = (fieldValue: any): Date => {
+      if (fieldValue instanceof firestore.Timestamp) {
+        return fieldValue.toDate();
+      } else {
+        // If not a Timestamp, return a default value
+        return new Date();
+      }
+    };
+
     return new ParkingReservationFirestoreModel(
       data[ParkingReservationFirestoreModel.kReservationId],
       data[ParkingReservationFirestoreModel.kUserId],
@@ -114,11 +122,9 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
       data[ParkingReservationFirestoreModel.kTotalAmount],
       data[ParkingReservationFirestoreModel.kParkingStatus],
       data[ParkingReservationFirestoreModel.kPaymentStatus],
-      data[ParkingReservationFirestoreModel.kQrCodeToken],
-      (
-        data[ParkingReservationFirestoreModel.kModifiedAt] as Timestamp
-      ).toDate(),
-      (data[ParkingReservationFirestoreModel.kCreatedAt] as Timestamp).toDate()
+      data[ParkingReservationFirestoreModel.kCheckedIn],
+      handleTimestamp(data[ParkingReservationFirestoreModel.kModifiedAt]),
+      handleTimestamp(data[ParkingReservationFirestoreModel.kCreatedAt])
     );
   }
 }

@@ -23,7 +23,7 @@ class ParkingReservation {
   public readonly totalAmount: number;
   public readonly parkingStatus: ParkingStatus;
   public readonly paymentStatus: PaymentStatus;
-  public readonly qrCodeToken: string;
+  public readonly checkedIn: boolean;
   public readonly modifiedAt: Date;
   public readonly createdAt: Date;
 
@@ -39,7 +39,7 @@ class ParkingReservation {
     totalAmount: number,
     parkingStatus: ParkingStatus,
     paymentStatus: PaymentStatus,
-    qrCodeToken: string,
+    checkedIn: boolean,
     modifiedAt: Date,
     createdAt: Date
   ) {
@@ -54,7 +54,7 @@ class ParkingReservation {
     this.totalAmount = totalAmount;
     this.parkingStatus = parkingStatus;
     this.paymentStatus = paymentStatus;
-    this.qrCodeToken = qrCodeToken;
+    this.checkedIn = checkedIn;
     this.modifiedAt = modifiedAt;
     this.createdAt = createdAt;
   }
@@ -72,7 +72,7 @@ class ParkingReservation {
       0, // totalAmount
       null, // parkingStatus
       null, // paymentStatus
-      "", // qrCodeToken
+      false, // checkedIn
       new Date(), // modifiedAt
       new Date() // createdAt
     );

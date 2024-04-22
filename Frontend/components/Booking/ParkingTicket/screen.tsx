@@ -1,9 +1,13 @@
+import { ParkingStackNavigation } from "@/(auth)/parking";
+import { successfulBookingConfirmation } from "@models/BookingConfirmationDetails";
 import { BookingDetails } from "@models/BookingDetails";
 import { ParkingLot } from "@models/ParkingLot";
 import { Rate } from "@models/ParkingLotRate";
 import { ParkingSlot } from "@models/ParkingSlot";
 import { Vehicle } from "@models/Vehicle";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { useAuth } from "@providers/Authentication/AuthProvider";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import dayjs from "dayjs";
 import { useRouter, useSegments } from "expo-router";
 import React, { useState } from "react";
 import { Text, View } from "react-native";
@@ -23,21 +27,28 @@ export type RouteParams = {
     vehicle: Vehicle;
     bookingDetails: BookingDetails;
     selectedRate: Rate;
+    successfulBookingConfirmation: successfulBookingConfirmation;
   };
 };
 
 export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
   navigation
 }) => {
-  const router = useRouter();
-
+  const nav = useNavigation<ParkingStackNavigation>();
+  const { user } = useAuth();
   const segments = useSegments(); // hook that allows all navigation routes defined.
 
   const route = useRoute<RouteProp<RouteParams, "ParkingTicketScreen">>();
   const [isLoading, setIsLoading] = useState(false);
 
-  const bookedParkingDetails = route.params.bookingDetails;
-  const initialItemState = bookedParkingDetails;
+  const {
+    parkingLot,
+    parkingSlot,
+    vehicle,
+    bookingDetails,
+    selectedRate,
+    successfulBookingConfirmation
+  } = route.params;
 
   return (
     <YStack flex={1}>
@@ -69,7 +80,7 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
           }}
         >
           <QRCodeStyled
-            data={JSON.stringify(initialItemState)}
+            data={successfulBookingConfirmation.reservationId}
             pieceSize={5}
             color="black"
             style={{ backgroundColor: "white" }}
@@ -94,7 +105,7 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
             >
               {/* Name */}
               <Text style={{ fontWeight: "600" }}>Name</Text>
-              <Text>userName</Text>
+              <Text>{user?.displayName}</Text>
             </View>
 
             <View
@@ -106,7 +117,10 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
               <Text style={{ fontWeight: "600", textAlign: "left" }}>
                 Parking Slot
               </Text>
-              <Text>Position</Text>
+              <Text>
+                {parkingSlot.position.row}
+                {parkingSlot.position.column}
+              </Text>
             </View>
 
             <View
@@ -126,7 +140,7 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
             >
               {/* vehicle */}
               <Text style={{ fontWeight: "600" }}>Vehicle</Text>
-              <Text>Toyota Corolla</Text>
+              <Text>{vehicle.registrationNumber}</Text>
             </View>
           </View>
           <View>
@@ -144,7 +158,7 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
                   textAlign: "right"
                 }}
               >
-                2 hours
+                {bookingDetails.rate.duration} {bookingDetails.rate.rateType}(s)
               </Text>
             </View>
 
@@ -162,7 +176,7 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
                   textAlign: "right"
                 }}
               >
-                12/12/2021
+                {dayjs(bookingDetails.startDateTime).format("DD MMM YYYY")}
               </Text>
             </View>
 
@@ -180,7 +194,8 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
                   textAlign: "right"
                 }}
               >
-                12:00 PM - 1:00 PM
+                {dayjs(bookingDetails.startDateTime).format("h:mm A")} -{" "}
+                {dayjs(bookingDetails.endDateTime).format("h:mm A")}
               </Text>
             </View>
 
@@ -198,7 +213,7 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
                   textAlign: "right"
                 }}
               >
-                £10.00
+                £{successfulBookingConfirmation.totalAmount}
               </Text>
             </View>
           </View>
@@ -223,7 +238,7 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
 
               setTimeout(() => {
                 setIsLoading(false);
-                router.replace("/(auth)/parking");
+                navigation.navigate("Home"); // navigate to the current booking screen
               }, 1000);
             }}
           >

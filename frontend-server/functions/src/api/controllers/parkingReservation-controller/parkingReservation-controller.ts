@@ -56,40 +56,30 @@ export class ParkingReservationController implements Controller {
     res: Response,
     next: NextFunction
   ) => {
-    try {
-      console.log("Creating parking reservation.. with body", req.body);
-      const parkingReservationDataInput: ParkingReservation =
-        ParkingReservationClientModel.validate(
-          req.body,
-          req.auth.uid,
-          req.params.parkingLotId,
-          req.params.parkingSlotId
-        );
+    console.log("Creating parking reservation.. with body", req.body);
+    const parkingReservationDataInput: ParkingReservation =
+      ParkingReservationClientModel.validate(
+        req.body,
+        req.auth.uid,
+        req.params.parkingSlotId,
+        req.params.parkingLotId
+      );
 
-      console.log(
-        "parkingReservationDataInput validated",
+    console.log(
+      "parkingReservationDataInput validated",
+      parkingReservationDataInput
+    );
+    const createdReservation =
+      await parkingReservationService.createParkingReservation(
+        req.params.parkingLotId,
+        req.params.parkingSlotId,
         parkingReservationDataInput
       );
-      const createdReservation =
-        await parkingReservationService.createParkingReservation(
-          req.params.parkingLotId,
-          req.params.parkingSlotId,
-          parkingReservationDataInput
-        );
-      const output =
-        ParkingReservationClientModel.fromEntity(
-          createdReservation
-        ).toBodyFullReservation();
-      res.status(201).send(output);
-    } catch (error) {
-      next(
-        new HttpResponseError(
-          500,
-          "BAD_REQUEST",
-          "Error creating parking reservation., error: " + error
-        )
-      );
-    }
+    const output =
+      ParkingReservationClientModel.fromEntity(
+        createdReservation
+      ).toBodyFullReservation();
+    res.status(201).send(output);
   };
 
   private readonly getAllParkingReservations: RequestHandler = async (

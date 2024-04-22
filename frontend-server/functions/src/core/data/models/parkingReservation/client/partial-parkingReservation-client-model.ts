@@ -34,9 +34,10 @@ export class PartialParkingReservationClientModel {
     if (body[ParkingReservationClientModel.kPaymentStatus] !== undefined) {
       res.paymentStatus = body[ParkingReservationClientModel.kPaymentStatus];
     }
-    if (body[ParkingReservationClientModel.kQrCodeToken] !== undefined) {
-      res.qrCodeToken = body[ParkingReservationClientModel.kQrCodeToken];
+    if (body[ParkingReservationClientModel.kCheckedIn] !== undefined) {
+      res.checkedIn = body[ParkingReservationClientModel.kCheckedIn];
     }
+
     if (body[ParkingReservationClientModel.kModifiedAt] !== undefined) {
       res.modifiedAt = new Date(
         body[ParkingReservationClientModel.kModifiedAt]

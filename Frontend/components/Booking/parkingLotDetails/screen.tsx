@@ -283,7 +283,6 @@ export const ParkingLotDetailsScreen: React.FC<
           backgroundColor="rgb(253 176 34)"
         >
           <Text style={{ color: "black", fontWeight: "500" }}>
-            {" "}
             Proceed to Booking
           </Text>
         </AwesomeButton>

@@ -1,4 +1,7 @@
-import { BookingConfirmationDetails } from "@models/BookingConfirmationDetails";
+import {
+  BookingConfirmationDetails,
+  successfulBookingConfirmation
+} from "@models/BookingConfirmationDetails";
 import { BookingDetails } from "@models/BookingDetails";
 import { ParkingLot } from "@models/ParkingLot";
 import { Rate } from "@models/ParkingLotRate";
@@ -8,15 +11,16 @@ import { useAuth } from "@providers/Authentication/AuthProvider";
 import { useConfig } from "@providers/Config/ConfigProvider";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { useStripe } from "@stripe/stripe-react-native";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { formatAddress } from "@utils/map/formatAddress";
 import axios from "axios";
 import dayjs from "dayjs";
+import { useRouter } from "expo-router";
 import useToken from "hooks/useToken";
 import React, { useEffect, useState } from "react";
 import { Alert, ScrollView, Text, View } from "react-native";
 import AwesomeButton from "react-native-really-awesome-button";
-import { Image, YStack } from "tamagui";
+import { YStack } from "tamagui";
 import { StackNavigation } from "../../../app/(auth)/home";
 import BookingSuccessModal from "./BookingSuccess/screen";
 
@@ -38,20 +42,18 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
   navigation
 }) => {
   const route = useRoute<RouteProp<RouteParams, "BookingConfirmationScreen">>();
+  const { user } = useAuth();
+  const { BASE_URL, PAYMENT_SERVER_BASE_URL } = useConfig();
+  const token = useToken();
+
   const { parkingLot, parkingSlot, vehicle, bookingDetails, selectedRate } =
     route.params;
-
-  const { user } = useAuth();
-
   const [openBookingSuccessModal, setOpenBookingSuccessModal] =
     React.useState(false);
   const successBookingModalClose = () => setOpenBookingSuccessModal(false);
 
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
-
   const [loading, setLoading] = useState(false);
-  const { BASE_URL, PAYMENT_SERVER_BASE_URL } = useConfig();
-  const token = useToken();
 
   const fetchPaymentSheetParams = async () => {
     try {
@@ -122,6 +124,10 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
     }
   };
 
+  const router = useRouter();
+
+  const [isProcessingBooking, setIsProcessingBooking] = useState(false);
+
   const postBookingDetails = async (bookingDetails) => {
     const response = await axios.post(
       `${BASE_URL}/parkingReservations/${parkingLot.LotId}/${parkingSlot.slotId}`,
@@ -135,12 +141,12 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
     return response.data;
   };
 
-  const [isProcessingBooking, setIsProcessingBooking] = useState(false);
-
-  const queryClient = useQueryClient();
+  const [successfulBookingDetailsData, setSuccessfulBookingDetailsData] =
+    useState<successfulBookingConfirmation>();
   const mutation = useMutation({
     mutationFn: postBookingDetails,
-    onSuccess: () => {
+    onSuccess: (data: successfulBookingConfirmation) => {
+      setSuccessfulBookingDetailsData(data);
       setOpenBookingSuccessModal(true);
       setIsProcessingBooking(false);
     },
@@ -196,44 +202,47 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "center",
-            margin: 10 * 2,
-            padding: 10,
-            borderRadius: 5,
+
+            margin: 20,
+            padding: 20,
+            borderRadius: 10,
             backgroundColor: "white"
           }}
         >
-          <View style={{ flex: 2.5 }}>
-            <View
-              style={{
-                backgroundColor: "black",
-                borderRadius: 10
-              }}
-            >
-              <Image
-                source={{ uri: parkingLot.Images[0] }}
-                style={{
-                  overflow: "hidden",
-                  width: 84,
-                  height: 74,
-                  borderRadius: 5
-                }}
-              />
-            </View>
-          </View>
+          <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+            {parkingLot.LotName}
+          </Text>
+        </View>
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 20,
+            paddingVertical: 20,
+            marginBottom: 20,
+            marginHorizontal: 20,
+            borderRadius: 10,
+            backgroundColor: "white",
+            elevation: 3,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 4
+          }}
+        >
           <View
             style={{
-              flex: 7.5,
-              alignItems: "flex-start",
-              marginLeft: 10 * 1.5
+              flex: 7,
+              alignItems: "flex-start"
             }}
           >
-            <Text style={{ fontWeight: "500" }}>{parkingLot.LotName}</Text>
-
+            <Text style={{ fontWeight: "bold", fontSize: 18 }}>Address</Text>
             <Text
               style={{
-                overflow: "hidden",
-                marginVertical: 10 * 0.8
+                marginVertical: 10,
+                fontSize: 16
               }}
             >
               {formatAddress(parkingLot.Address)}
@@ -246,17 +255,22 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-            paddingHorizontal: 10 * 1.5,
-            paddingVertical: 15,
-            marginBottom: 10,
-            marginHorizontal: 10 * 2,
-            borderRadius: 5,
-            backgroundColor: "white"
+            paddingHorizontal: 20,
+            paddingVertical: 20,
+            marginBottom: 20,
+            marginHorizontal: 20,
+            borderRadius: 10,
+            backgroundColor: "white",
+            elevation: 3,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 4
           }}
         >
-          <Text style={{ fontWeight: "500" }}>Parking Slot</Text>
-          <View style={{}}>
-            <Text style={{}}>
+          <Text style={{ fontWeight: "bold", fontSize: 18 }}>Parking Slot</Text>
+          <View>
+            <Text style={{ fontSize: 16 }}>
               {parkingSlot.position.row}
               {parkingSlot.position.column}
             </Text>
@@ -264,12 +278,17 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
         </View>
         <View
           style={{
-            paddingHorizontal: 10 * 1.5,
-            paddingVertical: 15,
-            marginBottom: 10,
-            marginHorizontal: 10 * 2,
-            borderRadius: 5,
-            backgroundColor: "white"
+            paddingHorizontal: 20,
+            paddingVertical: 20,
+            marginBottom: 20,
+            marginHorizontal: 20,
+            borderRadius: 10,
+            backgroundColor: "white",
+            elevation: 3,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 4
           }}
         >
           <View
@@ -278,8 +297,8 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
               justifyContent: "space-between"
             }}
           >
-            <Text style={{ fontWeight: "500" }}>Start Date</Text>
-            <Text>
+            <Text style={{ fontWeight: "bold", fontSize: 18 }}>Start Date</Text>
+            <Text style={{ fontSize: 16 }}>
               {dayjs(bookingDetails.startDateTime).format("dddd, MMMM D, YYYY")}
             </Text>
           </View>
@@ -288,12 +307,12 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
             style={{
               flexDirection: "row",
               alignItems: "center",
-              marginTop: 10 * 0.5,
+              marginTop: 10,
               justifyContent: "space-between"
             }}
           >
-            <Text style={{ fontWeight: "500" }}>End Date</Text>
-            <Text>
+            <Text style={{ fontWeight: "bold", fontSize: 18 }}>End Date</Text>
+            <Text style={{ fontSize: 16 }}>
               {dayjs(bookingDetails.endDateTime).format("dddd, MMMM D, YYYY")}
             </Text>
           </View>
@@ -302,24 +321,25 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
             style={{
               flexDirection: "row",
               alignItems: "center",
-              marginTop: 10 * 0.5,
+              marginTop: 10,
               justifyContent: "space-between"
             }}
           >
-            <Text style={{ fontWeight: "500" }}>Hours</Text>
+            <Text style={{ fontWeight: "bold", fontSize: 18 }}>Hours</Text>
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                marginTop: 10 * 0.5,
                 justifyContent: "space-between"
               }}
             >
-              <Text>
+              <Text style={{ fontSize: 16 }}>
                 {dayjs(bookingDetails.startDateTime).format("h:mm A")}
               </Text>
-              <Text> - </Text>
-              <Text>{dayjs(bookingDetails.endDateTime).format("h:mm A")}</Text>
+              <Text style={{ fontSize: 16 }}> - </Text>
+              <Text style={{ fontSize: 16 }}>
+                {dayjs(bookingDetails.endDateTime).format("h:mm A")}
+              </Text>
             </View>
           </View>
 
@@ -327,13 +347,13 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
             style={{
               flexDirection: "row",
               alignItems: "center",
-              marginTop: 10 * 0.5,
+              marginTop: 10,
               justifyContent: "space-between"
             }}
           >
-            <Text style={{ fontWeight: "500" }}>Duration</Text>
-            <Text style={{}}>
-              {bookingDetails.rate.duration} {bookingDetails.rate.rateType}
+            <Text style={{ fontWeight: "bold", fontSize: 18 }}>Duration</Text>
+            <Text style={{ fontSize: 16 }}>
+              {bookingDetails.rate.duration} {bookingDetails.rate.rateType}(s)
             </Text>
           </View>
         </View>
@@ -343,37 +363,47 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-            paddingHorizontal: 10 * 1.5,
-            paddingVertical: 15,
-            marginBottom: 10,
-            marginHorizontal: 10 * 2,
-            borderRadius: 5,
-            backgroundColor: "white"
+            paddingHorizontal: 20,
+            paddingVertical: 20,
+            marginBottom: 20,
+            marginHorizontal: 20,
+            borderRadius: 10,
+            backgroundColor: "white",
+            elevation: 3,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 4
           }}
         >
-          <Text style={{ fontWeight: "500" }}>Vehicle</Text>
+          <Text style={{ fontWeight: "bold", fontSize: 18 }}>Vehicle</Text>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center"
             }}
           >
-            <Text style={{ marginRight: 6 }}>
+            <Text style={{ marginRight: 6, fontSize: 16 }}>
               {vehicle.nickName}
               {" |"}
             </Text>
 
-            <Text style={{}}>{vehicle.registrationNumber}</Text>
+            <Text style={{ fontSize: 16 }}>{vehicle.registrationNumber}</Text>
           </View>
         </View>
         <View
           style={{
-            paddingHorizontal: 10 * 1.5,
-            paddingVertical: 15,
-            marginBottom: 10,
-            marginHorizontal: 10 * 2,
-            borderRadius: 5,
+            paddingHorizontal: 20,
+            paddingVertical: 20,
+            marginBottom: 20,
+            marginHorizontal: 20,
+            borderRadius: 10,
             backgroundColor: "white",
+            elevation: 3,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
             justifyContent: "space-between"
           }}
         >
@@ -381,14 +411,14 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
           <View
             style={{
               flexDirection: "row",
-              marginTop: 10 * 0.5,
+              marginTop: 10,
               justifyContent: "space-between"
             }}
           >
-            <Text style={{ fontWeight: "500" }}>Total Price</Text>
-            <Text style={{}}>
-              <Text>£{bookingDetails.totalprice}</Text>
+            <Text style={{ fontWeight: "bold", fontSize: 18 }}>
+              Total Price
             </Text>
+            <Text style={{ fontSize: 16 }}>£{bookingDetails.totalprice}</Text>
           </View>
         </View>
       </ScrollView>
@@ -409,10 +439,12 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
           borderRadius={10}
           backgroundShadow="#fff"
           backgroundDarker="#fff"
-          backgroundColor="black"
+          backgroundColor="rgb(253, 176, 34)"
           stretch={true}
         >
-          <Text style={{ color: "white" }}> Confirm Booking</Text>
+          <Text style={{ color: "black", fontWeight: "bold" }}>
+            Confirm Booking
+          </Text>
         </AwesomeButton>
       </View>
       <BookingSuccessModal
@@ -420,16 +452,24 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
         bookingSuccessModalClose={successBookingModalClose}
         onParkingTicketHandler={() => {
           successBookingModalClose();
-          navigation.navigate("ParkingTicketScreen", {
-            parkingLot: parkingLot,
-            parkingSlot: parkingSlot,
-            vehicle: vehicle,
-            bookingDetails: bookingDetails,
-            selectedRate: selectedRate
-          });
+          if (successfulBookingDetailsData) {
+            navigation.navigate("ParkingTicketScreen", {
+              parkingLot: parkingLot,
+              parkingSlot: parkingSlot,
+              vehicle: vehicle,
+              bookingDetails: bookingDetails,
+              selectedRate: selectedRate,
+              successfulBookingConfirmation: successfulBookingDetailsData
+            });
+          } else {
+            Alert.alert(
+              "Error",
+              "Something went wrong with your booking. Please try again"
+            );
+          }
         }}
         onBackToHomeHandler={() => {
-          successBookingModalClose();
+          setOpenBookingSuccessModal(false);
           navigation.navigate("Home");
         }}
       />

@@ -4,8 +4,14 @@ import { ParkingReservationFirestoreModel } from "../data/models/parkingReservat
 import { PartialParkingReservationFirestoreModel } from "../data/models/parkingReservation/firestore/partial-parkingReservation-firestore-model";
 import { ParkingReservation } from "../data/parkingReservation";
 import FieldValue = firestore.FieldValue;
+const sgMail = require("@sendgrid/mail");
 
 class ParkingReservationService {
+  constructor() {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  }
+  private adminEmail: string = process.env.ADMIN_EMAIL;
+
   //Top level collection
   private parkingReservationsTopLevelCollection() {
     return admin.firestore().collection("parkingReservations");
@@ -84,13 +90,84 @@ class ParkingReservationService {
 
         return documentData;
       })
-      .then((documentData) => {
+      .then(async (documentData) => {
         // Return the new reservation with its Firestore-generated ID
-        return ParkingReservationFirestoreModel.fromDocumentData(documentData);
+        const reservation =
+          ParkingReservationFirestoreModel.fromDocumentData(documentData);
+        //get the userEmail from id
+        const userRef = await admin
+          .firestore()
+          .collection("users")
+          .doc(reservation.userId)
+          .get();
+        console.log("userRef", userRef);
+        const userEmail = userRef.data().email;
+        //get parking Lot details
+        const parkingLotRef = await this.parkingLotsCollection(ownerId)
+          .doc(lotId)
+          .get();
+        //get the slot details
+        const slotRef = await this.parkingSlotsCollection(ownerId, lotId)
+          .doc(slotId)
+          .get();
+
+        console.log("email details");
+        console.log("User Email:", userEmail);
+        console.log("Parking Lot Name:", parkingLotRef.data().LotName);
+        console.log(
+          "Parking Lot Address:",
+          parkingLotRef.data().Address.formattedAddress
+        );
+        console.log(
+          "Slot Position:",
+          (
+            slotRef.data().position.column + slotRef.data().position.row
+          ).toString()
+        );
+        console.log(
+          "Reservation Start Time:",
+          reservation.startTime.toDateString()
+        );
+        console.log(
+          "Reservation End Time:",
+          reservation.endTime.toDateString()
+        );
+        console.log("Total Amount:", reservation.totalAmount.toString());
+        console.log("Reservation ID:", reservation.reservationId);
+        console.log("User Display Name:", userRef.data().name);
+        console.log("duration:", reservation.usedRates[0].duration.toString());
+        //format the duration to be displayed in the email
+        const { duration, rateType } = reservation.usedRates[0];
+        const formattedDuration = `${duration} ${rateType}${
+          duration > 1 ? "s" : ""
+        }`;
+        await this.sendNewParkingLotCreatedEmail(
+          userEmail,
+          parkingLotRef.data().LotName,
+          parkingLotRef.data().Address.formattedAddress,
+          (
+            slotRef.data().position.row + slotRef.data().position.column
+          ).toString(),
+          reservation.startTime.toDateString(),
+          reservation.endTime.toDateString(),
+          formattedDuration,
+          reservation.totalAmount.toString(),
+          reservation.reservationId,
+          userRef.data().name
+        )
+          .then(() => {
+            console.log("Email sent successfully");
+          })
+          .catch((error) => {
+            console.error("Error sending email: ", error);
+            throw new Error("Failed to send email.");
+          });
+
+        return reservation;
       })
       .catch((error) => {
-        console.error("Transaction failed: ", error);
-        throw new Error("Failed to create parking reservation.");
+        console.error("Error creating reservation: ", error);
+        throw new Error("Failed to create reservation.");
       });
   }
 
@@ -286,6 +363,42 @@ class ParkingReservationService {
       occupancy: admin.firestore.FieldValue.increment(-1),
     });
   }
+
+  sendNewParkingLotCreatedEmail = async (
+    email: string,
+    parkingLotName: string,
+    parkingLotAddress: string,
+    slot: string,
+    startTime: string,
+    endTime: string,
+    duration: string,
+    totalAmount: string,
+    reservationId: string,
+    first_name: string
+  ): Promise<any> => {
+    const to: string = email;
+    const from: string = this.adminEmail;
+
+    const msg = {
+      to,
+      from,
+      template_id: "d-bc3362cc6b6740188596e0f13b314ab6",
+      dynamic_template_data: {
+        reservationId: reservationId,
+        first_name: first_name,
+        parkingLotName: parkingLotName,
+        Address: parkingLotAddress,
+        parkingSlot: slot,
+        startTime: startTime,
+        endTime: endTime,
+        duration: duration,
+        totalAmount: totalAmount,
+        contactUsLink: `mailto:${this.adminEmail}`,
+      },
+    };
+
+    return await sgMail.send(msg);
+  };
 }
 
 export const parkingReservationService = new ParkingReservationService();

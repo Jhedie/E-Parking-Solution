@@ -1,42 +1,36 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useRouter } from "expo-router";
-import { storage } from '../utils/asyncStorage';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { storage } from "../utils/asyncStorage";
 
-
-
-const OnboardingContext = createContext(
-    {
-        onBoarding: null as boolean | number | string | null,
-        setOnBoarding: (value: boolean | number | string | null) => {}
-    }
-    );
+const OnboardingContext = createContext({
+  onBoarding: null as boolean | number | string | null,
+  setOnBoarding: (value: boolean | number | string | null) => {}
+});
 
 export const OnboardingProvider = ({ children }) => {
-  const [onBoarding, setOnBoarding] = useState<boolean | string  | number | null>(null);
+  const [onBoarding, setOnBoarding] = useState<
+    boolean | string | number | null
+  >(null);
   const router = useRouter();
-
 
   useEffect(() => {
     const checkOnboarding = async () => {
-    const value = await storage.getItem('onBoarding');
+      const value = await storage.getItem("onBoarding");
 
-    if (value == 1) {
-      setOnBoarding(value === 'false' );
-      return;
-    }
+      if (value == 1) {
+        setOnBoarding(value === "false");
+        return;
+      }
 
-    setOnBoarding(value === 'false' );
+      setOnBoarding(value === "false");
 
-    if (value === null) {
+      if (value === null) {
         setOnBoarding(null);
         return;
       }
     };
 
-    
-
     checkOnboarding();
-
   }, []);
 
   useEffect(() => {
@@ -57,7 +51,7 @@ export const OnboardingProvider = ({ children }) => {
 export const useOnboarding = () => {
   const context = useContext(OnboardingContext);
   if (context === undefined) {
-    throw new Error('useOnboarding must be used within a OnboardingProvider');
+    throw new Error("useOnboarding must be used within a OnboardingProvider");
   }
   return context;
 };

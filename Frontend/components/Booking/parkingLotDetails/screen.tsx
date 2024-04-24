@@ -127,7 +127,7 @@ export const ParkingLotDetailsScreen: React.FC<
             </View>
 
             <View style={{ marginTop: 10 }}>
-              <Text style={{ fontWeight: "bold", fontSize: 16 }}>Price</Text>
+              <Text style={{ fontWeight: "bold", fontSize: 16 }}>Rates</Text>
               {parkingLotRates?.["parkingLotRates"]?.map((rate: Rate) => (
                 <View
                   key={rate.rateId}
@@ -138,7 +138,8 @@ export const ParkingLotDetailsScreen: React.FC<
                   }}
                 >
                   <Text style={{ fontSize: 16 }}>
-                    Duration: {rate.duration} hours
+                    Duration: {rate.duration}{" "}
+                    {rate.duration > 1 ? `${rate.rateType}s` : rate.rateType}
                   </Text>
                   <Text style={{ fontSize: 16 }}>Rate: £{rate.rate}</Text>
                 </View>

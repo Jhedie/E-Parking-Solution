@@ -641,7 +641,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                         }}
                       >
                         <Image
-                          source={require("../../assets/images/parking-lot-image.png")}
+                          source={{ uri: parkingLot.Images[0] }}
                           style={{
                             overflow: "hidden",
                             width: 84,

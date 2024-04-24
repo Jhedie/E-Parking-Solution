@@ -1,15 +1,12 @@
+import { ReservationWithLot } from "@models/ReservationWithLot";
+import { useReservations } from "@providers/Reservation/ReservationProvider";
+import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
-import React from "react";
-import {
-  Dimensions,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
-import { H3, Image, YStack } from "tamagui";
+import React, { useCallback, useState } from "react";
+import { Alert, RefreshControl, ScrollView, Text } from "react-native";
+import { YStack } from "tamagui";
 import { ParkingStackNavigation } from "../../../app/(auth)/parking";
-import currentBooking from "../../../assets/data/currentBooking.json";
+import BookingCard from "../bookingCard";
 
 interface CurrentParkingScreenProps {
   navigation: ParkingStackNavigation;
@@ -18,9 +15,37 @@ interface CurrentParkingScreenProps {
 export const CurrentParkingScreen: React.FC<CurrentParkingScreenProps> = ({
   navigation
 }) => {
+  const nav = useNavigation<ParkingStackNavigation>();
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => setRefreshing(false), 2000);
+  }, []);
+  const { activeReservations, pendingReservations } = useReservations();
+  const handleCancelParking = () => {
+    Alert.alert(
+      "Cancel Parking",
+      "Are you sure you want to cancel this parking session?",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            console.log("Cancel parking");
+            navigation.goBack();
+          }
+        },
+        {
+          text: "No",
+          onPress: () => {
+            console.log("No Action");
+          }
+        }
+      ]
+    );
+  };
   return (
     <YStack flex={1}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      {activeReservations.length === 0 && pendingReservations.length === 0 && (
         <Text
           style={{
             marginTop: 10 * 2,
@@ -28,271 +53,103 @@ export const CurrentParkingScreen: React.FC<CurrentParkingScreenProps> = ({
             marginHorizontal: 10 * 2,
             fontWeight: "bold",
             fontSize: 20,
-            color: "grey"
+            color: "grey",
+            textAlign: "center"
           }}
         >
-          Active Now
+          No Active or Pending Reservations
         </Text>
-        <View
-          style={{
-            overflow: "hidden",
-            marginHorizontal: 10 * 2,
-            marginBottom: 10 * 2,
-            borderRadius: 10,
-            backgroundColor: "white"
-          }}
-        >
-          <View
+      )}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+      >
+        {activeReservations.length > 0 && (
+          <Text
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              padding: 10
+              marginTop: 10 * 2,
+              marginBottom: 10,
+              marginHorizontal: 10 * 2,
+              fontWeight: "bold",
+              fontSize: 20,
+              color: "grey"
             }}
           >
-            <View style={{ flex: 3.3 }}>
-              <Image
-                source={require("../../../assets/images/parking-lot-image.png")}
-                style={{
-                  overflow: "hidden",
-                  width: 84,
-                  height: 74,
-                  borderRadius: 5
-                }}
-              />
-            </View>
-            <View
-              style={{
-                flex: 6.7,
-                alignItems: "flex-start",
-                marginLeft: 10 * 1.5,
-                marginRight: 0
-              }}
-            >
-              {/* //TODO Name for parking Lot */}
-              <Text style={{ marginTop: 5 }}>
-                {currentBooking.currentBooking.parkingLot.LotId}
-              </Text>
-              <Text
-                numberOfLines={1}
-                style={{
-                  overflow: "hidden",
-                  marginVertical: 10 * 0.2,
-                  marginTop: 5
-                }}
-              >
-                {/* //TODO address for parking Lot */}
-                Leiceter, United Kingdom
-              </Text>
-              <Text style={{ marginTop: 5 }}>
-                {dayjs(
-                  currentBooking.currentBooking.bookingDetails.startDateTime
-                ).format("dddd, MMMM D, YYYY")}
-              </Text>
-
-              <Text style={{ marginVertical: 10 * 0.2, marginTop: 5 }}>
-                £{currentBooking.currentBooking.bookingDetails.totalprice}
-                {" / "}
-                {currentBooking.currentBooking.bookingDetails.rateNumber}{" "}
-                {currentBooking.currentBooking.bookingDetails.rateType}
-              </Text>
-            </View>
-          </View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              marginTop: 10 * 0.5
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => {
-                console.log("Viewing timer");
+            Active Now
+          </Text>
+        )}
+        {activeReservations.map((reservation: ReservationWithLot, index) => {
+          return (
+            <BookingCard
+              key={index}
+              image={reservation.parkingLotDetails.Images[0]}
+              title={reservation.parkingLotDetails.LotName}
+              address={
+                reservation.parkingLotDetails.Address.formattedAddress ?? ""
+              }
+              date={dayjs(reservation.endTime).format("YYYY-MM-DD - HH:mm")}
+              totalAmount={reservation.totalAmount.toString() ?? ""}
+              duration={reservation.usedRates[0].duration.toString()}
+              rateType={reservation.usedRates[0].rateType}
+              title1={"View Timer"}
+              title2={"View Ticket"}
+              onClickHandler={() => {
                 navigation.navigate("TimerScreen", {
-                  parkingLot: currentBooking.currentBooking.parkingLot,
-                  parkingSlot: currentBooking.currentBooking.parkingSlot,
-                  vehicle: currentBooking.currentBooking.vehicle,
-                  bookingDetails: currentBooking.currentBooking.bookingDetails
+                  reservation: reservation
                 });
               }}
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                padding: 10,
-                backgroundColor: "black"
-              }}
-            >
-              <Text
-                numberOfLines={1}
-                style={{ overflow: "hidden", color: "white" }}
-              >
-                View Timer
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                console.log("View Ticket");
+              onViewTicketHandler={() =>
                 navigation.navigate("ParkingTicket", {
-                  parkingLot: currentBooking.currentBooking.parkingLot,
-                  parkingSlot: currentBooking.currentBooking.parkingSlot,
-                  vehicle: currentBooking.currentBooking.vehicle,
-                  bookingDetails: currentBooking.currentBooking.bookingDetails
-                });
-              }}
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                padding: 10,
-                backgroundColor: "white"
-              }}
-            >
-              <Text
-                numberOfLines={1}
-                style={{ overflow: "hidden" }}
-              >
-                View Ticket
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+                  reservation: reservation
+                })
+              }
+            />
+          );
+        })}
 
-        <Text
-          style={{
-            marginTop: 10 * 2,
-            marginBottom: 10,
-            marginHorizontal: 10 * 2,
-            fontWeight: "bold",
-            fontSize: 20,
-            color: "grey"
-          }}
-        >
-          Pending
-        </Text>
-
-        <View
-          style={{
-            overflow: "hidden",
-            marginHorizontal: 10 * 2,
-            marginBottom: 10 * 2,
-            borderRadius: 10,
-            backgroundColor: "white"
-          }}
-        >
-          <View
+        {pendingReservations.length > 0 && (
+          <Text
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              padding: 10
+              marginTop: 10 * 2,
+              marginBottom: 10,
+              marginHorizontal: 10 * 2,
+              fontWeight: "bold",
+              fontSize: 20,
+              color: "grey"
             }}
           >
-            <View style={{ flex: 3.3 }}>
-              <Image
-                source={require("../../../assets/images/parking-lot-image.png")}
-                style={{
-                  overflow: "hidden",
-                  width: 84,
-                  height: 74,
-                  borderRadius: 5
-                }}
-              />
-            </View>
-            <View
-              style={{
-                flex: 6.7,
-                alignItems: "flex-start",
-                marginLeft: 10 * 1.5,
-                marginRight: 0
-              }}
-            >
-              {/* //TODO Name for parking Lot */}
-              <Text style={{ marginTop: 5 }}>
-                {currentBooking.currentBooking.parkingLot.LotId}
-              </Text>
-              <Text
-                numberOfLines={1}
-                style={{
-                  overflow: "hidden",
-                  marginVertical: 10 * 0.2,
-                  marginTop: 5
-                }}
-              >
-                {/* //TODO address for parking Lot */}
-                Leiceter, United Kingdom
-              </Text>
-              <Text style={{ marginTop: 5 }}>
-                {dayjs(
-                  currentBooking.currentBooking.bookingDetails.startDateTime
-                ).format("dddd, MMMM D, YYYY")}
-              </Text>
-
-              <Text style={{ marginVertical: 10 * 0.2, marginTop: 5 }}>
-                £{currentBooking.currentBooking.bookingDetails.totalprice}
-                {" / "}
-                {currentBooking.currentBooking.bookingDetails.rateNumber}{" "}
-                {currentBooking.currentBooking.bookingDetails.rateType}
-              </Text>
-            </View>
-          </View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              marginTop: 10 * 0.5
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => {
-                console.log("Viewing timer");
-                navigation.navigate("TimerScreen", {
-                  parkingLot: currentBooking.currentBooking.parkingLot,
-                  parkingSlot: currentBooking.currentBooking.parkingSlot,
-                  vehicle: currentBooking.currentBooking.vehicle,
-                  bookingDetails: currentBooking.currentBooking.bookingDetails
-                });
-              }}
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                padding: 10,
-                backgroundColor: "black"
-              }}
-            >
-              <Text
-                numberOfLines={1}
-                style={{ overflow: "hidden", color: "white" }}
-              >
-                View Timer
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                console.log("View Ticket");
+            Pending
+          </Text>
+        )}
+        {pendingReservations.map((reservation: ReservationWithLot, index) => {
+          return (
+            <BookingCard
+              key={index}
+              image={reservation.parkingLotDetails.Images[0]}
+              title={reservation.parkingLotDetails.LotName}
+              address={
+                reservation.parkingLotDetails.Address.formattedAddress ?? ""
+              }
+              date={dayjs(reservation.endTime).format("YYYY-MM-DD HH:mm")}
+              totalAmount={reservation.totalAmount.toString() ?? ""}
+              duration={reservation.usedRates[0].duration.toString()}
+              rateType={reservation.usedRates[0].rateType}
+              title1={"Cancel"}
+              title2={"View Ticket"}
+              onClickHandler={handleCancelParking}
+              onViewTicketHandler={() => {
                 navigation.navigate("ParkingTicket", {
-                  parkingLot: currentBooking.currentBooking.parkingLot,
-                  parkingSlot: currentBooking.currentBooking.parkingSlot,
-                  vehicle: currentBooking.currentBooking.vehicle,
-                  bookingDetails: currentBooking.currentBooking.bookingDetails
+                  reservation: reservation
                 });
               }}
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                padding: 10,
-                backgroundColor: "white"
-              }}
-            >
-              <Text
-                numberOfLines={1}
-                style={{ overflow: "hidden" }}
-              >
-                View Ticket
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+            />
+          );
+        })}
       </ScrollView>
     </YStack>
   );

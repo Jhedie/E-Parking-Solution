@@ -1,6 +1,6 @@
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { Vehicle } from "@models/Vehicle";
 import { ParkingLot } from "@models/ParkingLot";
+import { Vehicle } from "@models/Vehicle";
 import { useConfig } from "@providers/Config/ConfigProvider";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { CheckCircle, Circle } from "@tamagui/lucide-icons";
@@ -9,7 +9,7 @@ import axios from "axios";
 import * as Burnt from "burnt";
 import useToken from "hooks/useToken";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, TouchableOpacity, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 import AwesomeButton from "react-native-really-awesome-button";
 import { ScrollView, Text, YStack } from "tamagui";
@@ -74,29 +74,45 @@ export const VehicleScreen: React.FC<VehicleScreenProps> = ({ navigation }) => {
   }, [userVehicles]);
 
   const handleDeleteVehicle = (vehicleToDelete: Vehicle) => {
-    axios
-      .delete(`${BASE_URL}/vehicle/${vehicleToDelete.vehicleId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
+    Alert.alert(
+      "Delete Vehicle",
+      "Are you sure you want to delete this vehicle?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          onPress: () => {
+            axios
+              .delete(`${BASE_URL}/vehicle/${vehicleToDelete.vehicleId}`, {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
+              })
+              .then(() => {
+                console.log("Vehicle deleted successfully");
+                queryClient.invalidateQueries({ queryKey: ["userVehicles"] });
+                Burnt.toast({
+                  title: "Vehicle deleted successfully",
+                  preset: "done",
+                  duration: 5
+                });
+              })
+              .catch((error) => {
+                console.log("Error deleting vehicle", error);
+                Burnt.toast({
+                  title: "Error deleting vehicle",
+                  preset: "error",
+                  duration: 5
+                });
+              });
+          },
+          style: "destructive"
         }
-      })
-      .then(() => {
-        console.log("Vehicle deleted successfully");
-        queryClient.invalidateQueries({ queryKey: ["userVehicles"] });
-        Burnt.toast({
-          title: "Vehicle deleted successfully",
-          preset: "done",
-          duration: 5
-        });
-      })
-      .catch((error) => {
-        console.log("Error deleting vehicle", error);
-        Burnt.toast({
-          title: "Error deleting vehicle",
-          preset: "error",
-          duration: 5
-        });
-      });
+      ]
+    );
   };
   const renderRightActions = (progress, dragX, vehicle) => {
     const onPress = () => {

@@ -1,14 +1,13 @@
+import { CancelParkingScreen } from "@components/Parking/CancelParking/screen";
+import { ExtendParkingScreen } from "@components/Parking/ExtendParking/screen";
+import { ParkingTicketScreen } from "@components/Parking/ParkingTicket/screen";
+import { ReservationWithLot } from "@models/ReservationWithLot";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationProp } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { ParkingTicketScreen } from "../../components/Booking/ParkingTicket/screen";
 import { CurrentParkingScreen } from "../../components/Parking/Current/screen";
 import { ParkingHistoryScreen } from "../../components/Parking/History/screen";
 import { TimerScreen } from "../../components/Parking/Timer/screen";
-import { ParkingLot } from "@models/ParkingLot";
-import { Vehicle } from "@models/Vehicle";
-import { ParkingSlot } from "@models/ParkingSlot";
-import { BookingDetails } from "@models/BookingDetails";
 
 // This is the top tabs navigator for the parking screen
 function ParkingTopTabsNavigator() {
@@ -32,18 +31,12 @@ function ParkingTopTabsNavigator() {
 export type ParkingStackParamList = {
   ParkingTopTabsNavigator: undefined;
   TimerScreen: {
-    parkingLot: ParkingLot;
-    parkingSlot: ParkingSlot;
-    vehicle: Vehicle;
-    bookingDetails: BookingDetails;
+    reservation: ReservationWithLot;
   };
   ParkingTicket: {
-    parkingLot: ParkingLot;
-    parkingSlot: ParkingSlot;
-    vehicle: Vehicle;
-    bookingDetails: BookingDetails;
+    reservation: ReservationWithLot;
   };
-  // Other screens
+  ExtendParkingScreen: { reservation: ReservationWithLot };
 };
 
 export type ParkingStackNavigation = NavigationProp<ParkingStackParamList>;
@@ -72,6 +65,11 @@ export default function Screen() {
         options={{ headerShown: false, presentation: "modal" }}
       />
       {/* Extend Ticket */}
+      <ParkingScreenStack.Screen
+        name="ExtendParkingScreen"
+        component={ExtendParkingScreen}
+        options={{ headerShown: true }}
+      />
     </ParkingScreenStack.Navigator>
   );
 }

@@ -1,3 +1,4 @@
+import { ParkingStackNavigation } from "@/(auth)/parking";
 import {
   BookingConfirmationDetails,
   successfulBookingConfirmation
@@ -15,7 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 import { formatAddress } from "@utils/map/formatAddress";
 import axios from "axios";
 import dayjs from "dayjs";
-import { useRouter } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import useToken from "hooks/useToken";
 import React, { useEffect, useState } from "react";
 import { Alert, ScrollView, Text, View } from "react-native";
@@ -43,6 +44,8 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
 }) => {
   const route = useRoute<RouteProp<RouteParams, "BookingConfirmationScreen">>();
   const { user } = useAuth();
+  const nav = useNavigation<ParkingStackNavigation>();
+
   const { BASE_URL, PAYMENT_SERVER_BASE_URL } = useConfig();
   const token = useToken();
 
@@ -153,6 +156,7 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
     onError: (error) => {
       console.error("Error posting booking details:", error);
       setIsProcessingBooking(false);
+      navigation.goBack();
     }
   });
   const openPaymentSheet = async () => {
@@ -470,7 +474,7 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
         }}
         onBackToHomeHandler={() => {
           setOpenBookingSuccessModal(false);
-          navigation.navigate("Home");
+          nav.navigate("ParkingTopTabsNavigator");
         }}
       />
     </YStack>

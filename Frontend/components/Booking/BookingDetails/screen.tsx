@@ -97,6 +97,11 @@ export const BookParkingDetailsScreen: React.FC<
   const [selectedRate, setSelectedRate] = useState<Rate>(
     rates?.["parkingLotRates"]?.[0] ?? defaultRate
   );
+  useEffect(() => {
+    if (rates?.["parkingLotRates"]?.[0]) {
+      setSelectedRate(rates?.["parkingLotRates"]?.[0]);
+    }
+  }, [rates]);
   const [totalPrice, setTotalPrice] = useState<number>(
     rates?.["parkingLotRates"]?.[0]?.rate ?? 0
   );
@@ -305,7 +310,9 @@ export const BookParkingDetailsScreen: React.FC<
                   paddingHorizontal: 10,
                   marginTop: 10 * 0.9,
                   borderRadius: 5,
-                  backgroundColor: "#ededed"
+                  backgroundColor: "#ededed",
+                  borderWidth: 1,
+                  borderColor: "lightgrey"
                 }}
               >
                 <Animated.Text

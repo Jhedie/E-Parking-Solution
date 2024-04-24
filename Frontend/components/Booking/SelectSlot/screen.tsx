@@ -163,7 +163,6 @@ export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
   const slotPositions = useRef<{ [key: number]: number }>({}).current; // To store positions
 
   // Dynamically generate parking spots based on row positions and sort by columns
-
   const generateParkingSlots = (row: string) => {
     console.log("Generating parking slots for row", row);
     // Filter out parking slots for the current row
@@ -413,6 +412,48 @@ export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
           </View>
         </ScrollView>
       </View>
+      <View
+        style={{
+          alignSelf: "center",
+          justifyContent: "center",
+          alignItems: "center",
+          marginVertical: 20,
+          padding: 10,
+          borderWidth: 2,
+          borderColor: "rgb(253 176 34)",
+          borderRadius: 10,
+          backgroundColor: "white",
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 2
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: "bold",
+            color: "rgb(253 176 34)"
+          }}
+        >
+          Selected Slot
+        </Text>
+        <Text
+          style={{
+            fontSize: 16,
+            color: "black",
+            marginTop: 5
+          }}
+        >
+          {selectedParkingSlot
+            ? `Row: ${selectedParkingSlot.position.row}, Column: ${selectedParkingSlot.position.column}`
+            : "None"}
+        </Text>
+      </View>
 
       <View
         style={{
@@ -441,10 +482,7 @@ export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
           backgroundDarker="#fff"
           backgroundColor="rgb(253 176 34)"
         >
-          <Text style={{ color: "black", fontWeight: "500" }}>
-            Proceed with Spot {selectedParkingSlot?.position.row}
-            {selectedParkingSlot?.position.column}
-          </Text>
+          <Text style={{ color: "black", fontWeight: "500" }}>Next</Text>
         </AwesomeButton>
       </View>
     </YStack>

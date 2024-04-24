@@ -23,6 +23,7 @@ import { AuthProvider } from "../providers/Authentication/AuthProvider";
 import { UserLocationProvider } from "../providers/UserLocation/UserLocationProvider";
 import config from "../tamagui.config";
 
+import { ReservationProvider } from "@providers/Reservation/ReservationProvider";
 import { focusManager } from "@tanstack/react-query";
 import type { AppStateStatus } from "react-native";
 import { AppState, Platform } from "react-native";
@@ -77,36 +78,38 @@ export default function Layout() {
   return (
     <UserLocationProvider>
       <ConfigProvider>
-        <StripeProvider
-          publishableKey="pk_test_51OlYLWB1AMLkBmu1BFmgWiauMWOF8ceITmtOaLoEKq9lfLPk6aTfSUlBPDVBtPEgHWqSCuuMMwSfrs88Gud7LQ4k00IBlTIko7"
-          merchantIdentifier="merchant.com.jhedie.frontend"
-        >
-          <QueryClientProvider client={queryClient}>
-            <TamaguiProvider config={config}>
-              <Theme name={colorScheme}>
-                <ThemeProvider
-                  value={colorScheme === "light" ? DefaultTheme : DarkTheme}
-                >
-                  <ToastProvider
-                    swipeDirection="horizontal"
-                    duration={6000}
-                    native={["mobile"]}
+        <ReservationProvider>
+          <StripeProvider
+            publishableKey="pk_test_51OlYLWB1AMLkBmu1BFmgWiauMWOF8ceITmtOaLoEKq9lfLPk6aTfSUlBPDVBtPEgHWqSCuuMMwSfrs88Gud7LQ4k00IBlTIko7"
+            merchantIdentifier="merchant.com.jhedie.frontend"
+          >
+            <QueryClientProvider client={queryClient}>
+              <TamaguiProvider config={config}>
+                <Theme name={colorScheme}>
+                  <ThemeProvider
+                    value={colorScheme === "light" ? DefaultTheme : DarkTheme}
                   >
-                    <AuthProvider>
-                      <Stack
-                        screenOptions={{
-                          headerShown: false
-                        }}
-                      ></Stack>
-                    </AuthProvider>
-                    <CustomToast />
-                    <ToastViewport />
-                  </ToastProvider>
-                </ThemeProvider>
-              </Theme>
-            </TamaguiProvider>
-          </QueryClientProvider>
-        </StripeProvider>
+                    <ToastProvider
+                      swipeDirection="horizontal"
+                      duration={6000}
+                      native={["mobile"]}
+                    >
+                      <AuthProvider>
+                        <Stack
+                          screenOptions={{
+                            headerShown: false
+                          }}
+                        ></Stack>
+                      </AuthProvider>
+                      <CustomToast />
+                      <ToastViewport />
+                    </ToastProvider>
+                  </ThemeProvider>
+                </Theme>
+              </TamaguiProvider>
+            </QueryClientProvider>
+          </StripeProvider>
+        </ReservationProvider>
       </ConfigProvider>
     </UserLocationProvider>
   );

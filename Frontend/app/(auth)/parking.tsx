@@ -1,4 +1,3 @@
-import { CancelParkingScreen } from "@components/Parking/CancelParking/screen";
 import { ExtendParkingScreen } from "@components/Parking/ExtendParking/screen";
 import { ParkingTicketScreen } from "@components/Parking/ParkingTicket/screen";
 import { ReservationWithLot } from "@models/ReservationWithLot";

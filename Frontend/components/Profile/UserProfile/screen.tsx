@@ -1,4 +1,7 @@
+import { Vehicle } from "@models/Vehicle";
+import firestore from "@react-native-firebase/firestore";
 import { Car, Sun, User } from "@tamagui/lucide-icons";
+import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import AwesomeButton from "react-native-really-awesome-button";
 import { Avatar, ListItem, XStack, YGroup, YStack } from "tamagui";
@@ -6,6 +9,35 @@ import { useAuth } from "../../../providers/Authentication/AuthProvider";
 
 const ProfileScreen = () => {
   const { user, signOut } = useAuth();
+
+  const [defaultVehicle, setDefaultVehicle] = useState<Vehicle | null>(null);
+
+  useEffect(() => {
+    const fetchDefaultVehicle = async () => {
+      try {
+        const vehicleRef = firestore()
+          .collection("driver")
+          .doc(user?.uid)
+          .collection("vehicles")
+          .where("defaultVehicle", "==", true)
+          .limit(1);
+
+        const docSnapshot = await vehicleRef.get();
+        if (!docSnapshot.empty) {
+          const vehicleData = docSnapshot.docs[0].data() as Vehicle;
+          setDefaultVehicle(vehicleData);
+        } else {
+          console.log("No default vehicle found");
+        }
+      } catch (error) {
+        console.error("Error fetching user's default vehicle:", error);
+      }
+    };
+
+    if (user?.uid) {
+      fetchDefaultVehicle();
+    }
+  }, [user?.uid]);
 
   return (
     <YStack
@@ -57,7 +89,9 @@ const ProfileScreen = () => {
             hoverTheme
             icon={Car}
             title="Your Vehicle"
-            subTitle="ABC-123"
+            subTitle={
+              defaultVehicle?.registrationNumber ?? "No default vehicle"
+            }
           />
         </YGroup.Item>
       </YGroup>

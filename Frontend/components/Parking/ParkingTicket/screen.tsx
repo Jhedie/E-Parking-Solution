@@ -1,53 +1,86 @@
-import { ParkingStackNavigation } from "@/(auth)/parking";
-import { successfulBookingConfirmation } from "@models/BookingConfirmationDetails";
-import { BookingDetails } from "@models/BookingDetails";
-import { ParkingLot } from "@models/ParkingLot";
-import { Rate } from "@models/ParkingLotRate";
-import { ParkingSlot } from "@models/ParkingSlot";
-import { Vehicle } from "@models/Vehicle";
+import {
+  ParkingStackNavigation,
+  ParkingStackParamList
+} from "@/(auth)/parking";
+import { ReservationWithLot } from "@models/ReservationWithLot";
 import { useAuth } from "@providers/Authentication/AuthProvider";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
-import { useRouter, useSegments } from "expo-router";
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import {
+  Alert,
+  AlertButton,
+  Linking,
+  Platform,
+  Text,
+  View
+} from "react-native";
 import QRCodeStyled from "react-native-qrcode-styled";
 import AwesomeButton from "react-native-really-awesome-button";
 import { YStack } from "tamagui";
-import { StackNavigation } from "../../../app/(auth)/home";
 
 interface ParkingTicketScreenProps {
-  navigation: StackNavigation;
+  navigation: ParkingStackNavigation;
 }
 
 export type RouteParams = {
-  ParkingTicketScreen: {
-    parkingLot: ParkingLot;
-    parkingSlot: ParkingSlot;
-    vehicle: Vehicle;
-    bookingDetails: BookingDetails;
-    selectedRate: Rate;
-    successfulBookingConfirmation: successfulBookingConfirmation;
-  };
+  reservation: ReservationWithLot;
 };
 
 export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
   navigation
 }) => {
   const { user } = useAuth();
+  const route = useRoute<RouteProp<RouteParams, "reservation">>();
+  const reservation = route.params["reservation"] as ReservationWithLot;
 
-  const route = useRoute<RouteProp<RouteParams, "ParkingTicketScreen">>();
-  const [isLoading, setIsLoading] = useState(false);
+  const handleChooseMapApp = () => {
+    Alert.alert(
+      "Choose Map App",
+      "Select the map app you want to use:",
+      [
+        {
+          text: "Google Maps",
+          onPress: () => handleNavigateToLocation("google")
+        },
+        Platform.OS === "ios"
+          ? {
+              text: "Apple Maps",
+              onPress: () => handleNavigateToLocation("apple")
+            }
+          : null,
+        {
+          text: "Cancel",
+          onPress: () => {
+            console.log("Cancel");
+          },
+          style: "cancel"
+        } // Add this line
+      ].filter(Boolean) as AlertButton[],
+      { cancelable: true }
+    );
+  };
 
-  const {
-    parkingLot,
-    parkingSlot,
-    vehicle,
-    bookingDetails,
-    selectedRate,
-    successfulBookingConfirmation
-  } = route.params;
+  const handleNavigateToLocation = (mapApp) => {
+    const latitude = reservation.parkingLotDetails.Coordinates["latitude"];
+    const longitude = reservation.parkingLotDetails.Coordinates["longitude"];
+    const label = encodeURIComponent("Parking Location");
+    let url;
 
+    if (mapApp === "google") {
+      url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}&travelmode=driving`;
+    } else if (mapApp === "apple") {
+      url = `http://maps.apple.com/?q=${label}@${latitude},${longitude}`;
+    }
+
+    if (url) {
+      Linking.openURL(url).catch((err) =>
+        console.error("An error occurred", err)
+      );
+    } else {
+      console.error("Unable to generate map URL for the selected app");
+    }
+  };
   return (
     <YStack flex={1}>
       <View
@@ -78,7 +111,7 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
           }}
         >
           <QRCodeStyled
-            data={successfulBookingConfirmation.reservationId}
+            data={reservation.reservationId}
             pieceSize={10}
             color="black"
             style={{ backgroundColor: "white" }}
@@ -116,8 +149,8 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
                 Parking Slot
               </Text>
               <Text>
-                {parkingSlot.position.row}
-                {parkingSlot.position.column}
+                {reservation.slotDetails.position.row}
+                {reservation.slotDetails.position.column}
               </Text>
             </View>
 
@@ -128,7 +161,7 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
             >
               {/* Parking area */}
               <Text style={{ fontWeight: "600" }}>Parking Area</Text>
-              <Text>Leicester, UK</Text>
+              <Text>{reservation.parkingLotDetails.Address.streetName}</Text>
             </View>
 
             <View
@@ -138,7 +171,7 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
             >
               {/* vehicle */}
               <Text style={{ fontWeight: "600" }}>Vehicle</Text>
-              <Text>{vehicle.registrationNumber}</Text>
+              <Text>{reservation.vehicleDetails.registrationNumber}</Text>
             </View>
           </View>
           <View>
@@ -156,7 +189,8 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
                   textAlign: "right"
                 }}
               >
-                {bookingDetails.rate.duration} {bookingDetails.rate.rateType}(s)
+                {reservation.usedRates[0].duration}{" "}
+                {reservation.usedRates[0].rateType}(s)
               </Text>
             </View>
 
@@ -167,14 +201,14 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
             >
               {/* Date */}
               <Text style={{ fontWeight: "600", textAlign: "right" }}>
-                Date
+                End Date
               </Text>
               <Text
                 style={{
                   textAlign: "right"
                 }}
               >
-                {dayjs(bookingDetails.startDateTime).format("DD MMM YYYY")}
+                {dayjs(reservation.endTime).format("DD MMM YYYY")}
               </Text>
             </View>
 
@@ -185,15 +219,15 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
             >
               {/* hour */}
               <Text style={{ fontWeight: "600", textAlign: "right" }}>
-                Hour
+                Hours
               </Text>
               <Text
                 style={{
                   textAlign: "right"
                 }}
               >
-                {dayjs(bookingDetails.startDateTime).format("h:mm A")} -{" "}
-                {dayjs(bookingDetails.endDateTime).format("h:mm A")}
+                {dayjs(reservation.startTime).format("h:mm A")} -{" "}
+                {dayjs(reservation.endTime).format("h:mm A")}
               </Text>
             </View>
 
@@ -211,39 +245,31 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
                   textAlign: "right"
                 }}
               >
-                £{successfulBookingConfirmation.totalAmount}
+                £{reservation.totalAmount}
               </Text>
             </View>
           </View>
         </View>
-      </View>
-
-      <View
-        style={{
-          margin: 10 * 2
-        }}
-      >
-        <AwesomeButton
-          height={50}
-          stretch={true}
-          raiseLevel={1}
-          borderRadius={10}
-          backgroundShadow="#fff"
-          backgroundDarker="#fff"
-          backgroundColor="black"
-          onPress={() => {
-            setIsLoading(true);
-
-            setTimeout(() => {
-              setIsLoading(false);
-              navigation.navigate("Home"); // navigate to the current booking screen
-            }, 1000);
+        <View
+          style={{
+            marginTop: 10 * 5
           }}
         >
-          <Text style={{ color: "white", fontWeight: "500" }}>
-            {isLoading ? "Loading..." : "View Parking Session"}
-          </Text>
-        </AwesomeButton>
+          <AwesomeButton
+            height={50}
+            width={300}
+            raiseLevel={1}
+            borderRadius={10}
+            backgroundShadow="#fff"
+            backgroundDarker="#fff"
+            backgroundColor="black"
+            onPress={handleChooseMapApp}
+          >
+            <Text style={{ color: "white", fontWeight: "500" }}>
+              Navigate to Location
+            </Text>
+          </AwesomeButton>
+        </View>
       </View>
     </YStack>
   );

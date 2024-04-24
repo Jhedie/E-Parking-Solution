@@ -1,7 +1,7 @@
-interface Position {
+type Position = {
   row: string;
   column: number;
-}
+};
 
 type status = "Occupied" | "Available" | "Reserved";
 

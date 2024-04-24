@@ -1,10 +1,9 @@
-import { BookingDetails } from "@models/BookingDetails";
-import { ParkingLot } from "@models/ParkingLot";
-import { ParkingSlot } from "@models/ParkingSlot";
-import { Vehicle } from "@models/Vehicle";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { ReservationWithLot } from "@models/ReservationWithLot";
+import { useAuth } from "@providers/Authentication/AuthProvider";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import dayjs from "dayjs";
 import React from "react";
-import { Text, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import AwesomeButton from "react-native-really-awesome-button";
 import { YStack } from "tamagui";
@@ -15,17 +14,37 @@ interface TimerScreenProps {
 }
 
 export type RouteParams = {
-  ParkingTicketScreen: {
-    parkingLot: ParkingLot;
-    parkingSlot: ParkingSlot;
-    vehicle: Vehicle;
-    bookingDetails: BookingDetails;
-  };
+  reservation: ReservationWithLot;
 };
 
 export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
-  const route = useRoute<RouteProp<RouteParams, "ParkingTicketScreen">>();
-  const bookedParkingDetails = route.params.bookingDetails;
+  const route = useRoute<RouteProp<RouteParams, "reservation">>();
+  const nav = useNavigation<ParkingStackNavigation>();
+  const reservation = route.params["reservation"] as ReservationWithLot;
+  const { user } = useAuth();
+
+  const handleCancelParking = () => {
+    Alert.alert(
+      "Cancel Parking",
+      "Are you sure you want to cancel this parking session?",
+      [
+        {
+          text: "Yes",
+          onPress: () => {
+            console.log("Cancel parking");
+            navigation.goBack();
+          }
+        },
+        {
+          text: "No",
+          onPress: () => {
+            console.log("No Action");
+          }
+        }
+      ]
+    );
+  };
+
   return (
     <YStack flex={1}>
       <View
@@ -39,8 +58,14 @@ export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
         <View style={{}}>
           <CountdownCircleTimer
             isPlaying
-            duration={120}
-            initialRemainingTime={120}
+            duration={dayjs(reservation.endTime).diff(
+              dayjs(reservation.startTime),
+              "seconds"
+            )}
+            initialRemainingTime={dayjs(reservation.endTime).diff(
+              dayjs(),
+              "seconds"
+            )} //get the difference between the end time and the current time
             colors="#232626"
             rotation="counterclockwise"
             strokeLinecap="round"
@@ -100,7 +125,7 @@ export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
               <View style={{}}>
                 {/* Name */}
                 <Text style={{ fontWeight: "600" }}>Name</Text>
-                <Text>userName</Text>
+                <Text>{user?.displayName}</Text>
               </View>
 
               <View
@@ -112,7 +137,10 @@ export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
                 <Text style={{ fontWeight: "600", textAlign: "left" }}>
                   Parking Slot
                 </Text>
-                <Text>Position</Text>
+                <Text>
+                  {reservation.slotDetails.position.row}
+                  {reservation.slotDetails.position.column}
+                </Text>
               </View>
 
               <View
@@ -122,7 +150,7 @@ export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
               >
                 {/* Parking area */}
                 <Text style={{ fontWeight: "600" }}>Parking Area</Text>
-                <Text>Leicester, UK</Text>
+                <Text>{reservation.parkingLotDetails.Address.streetName}</Text>
               </View>
 
               <View
@@ -132,7 +160,7 @@ export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
               >
                 {/* vehicle */}
                 <Text style={{ fontWeight: "600" }}>Vehicle</Text>
-                <Text>Toyota Corolla</Text>
+                <Text>{reservation.vehicleDetails.registrationNumber}</Text>
               </View>
             </View>
             <View>
@@ -157,14 +185,14 @@ export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
               >
                 {/* Date */}
                 <Text style={{ fontWeight: "600", textAlign: "right" }}>
-                  Date
+                  End Date
                 </Text>
                 <Text
                   style={{
                     textAlign: "right"
                   }}
                 >
-                  12/12/2021
+                  {dayjs(reservation.endTime).format("DD/MM/YYYY")}
                 </Text>
               </View>
 
@@ -182,7 +210,8 @@ export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
                     textAlign: "right"
                   }}
                 >
-                  12:00 PM - 1:00 PM
+                  {dayjs(reservation.startTime).format("h:mm A")} -{" "}
+                  {dayjs(reservation.endTime).format("h:mm A")}
                 </Text>
               </View>
 
@@ -200,31 +229,51 @@ export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
                     textAlign: "right"
                   }}
                 >
-                  £10.00
+                  {"£" + reservation.totalAmount.toFixed(2)}
                 </Text>
               </View>
             </View>
           </View>
         </View>
-        {/* Extend time button */}
+        {/* buttons */}
         <View
           style={{
-            margin: 10 * 2
+            marginTop: 10 * 5
           }}
         >
           <AwesomeButton
             height={50}
+            width={300}
             raiseLevel={1}
             borderRadius={10}
             backgroundShadow="#fff"
             backgroundDarker="#fff"
-            backgroundColor="black"
-            onPress={() => console.log("Extend Parking Session")}
+            backgroundColor="rgb(253, 176, 34)"
+            onPress={() => {
+              navigation.goBack();
+              nav.navigate("ExtendParkingScreen", { reservation });
+            }}
           >
-            <Text style={{ color: "white", fontWeight: "500" }}>
+            <Text style={{ color: "black", fontWeight: "500" }}>
               Extend Parking Session
             </Text>
           </AwesomeButton>
+          <View style={{ marginTop: 10 }}>
+            <AwesomeButton
+              height={50}
+              width={300}
+              raiseLevel={1}
+              borderRadius={10}
+              backgroundShadow="#fff"
+              backgroundDarker="#fff"
+              backgroundColor="#FF474D"
+              onPress={handleCancelParking}
+            >
+              <Text style={{ color: "white", fontWeight: "500" }}>
+                Cancel Parking Session
+              </Text>
+            </AwesomeButton>
+          </View>
         </View>
       </View>
     </YStack>

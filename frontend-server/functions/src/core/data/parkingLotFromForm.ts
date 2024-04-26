@@ -16,7 +16,7 @@ export type SlotConfig = {
 };
 
 export type SlotTypes = {
-  handicapped?: string;
+  disabled?: string;
   electric?: string;
 };
 

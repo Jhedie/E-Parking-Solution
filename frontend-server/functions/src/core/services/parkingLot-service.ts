@@ -9,7 +9,7 @@ import {
   SlotConfig,
 } from "../data/parkingLotFromForm";
 import { ParkingLotRate, ParkingLotRateType } from "../data/parkingLotRates";
-import { ParkingSlot } from "../data/parkingSlot";
+import { ParkingSlot, type } from "../data/parkingSlot";
 import { parkingLotRatesService } from "./parkingLotRates-service";
 import { parkingSlotService } from "./parkingSlot-service";
 const sgMail = require("@sendgrid/mail");
@@ -155,18 +155,22 @@ class ParkingLotService {
     const newParkingSlots: ParkingSlot[] = [];
     //create parkingRates from rate configuration
     const newParkingRates: ParkingLotRate[] = [];
-
+    const typeMapping: { [key: string]: type } = {
+      regular: "regular",
+      disabled: "disabled",
+      electric: "electric",
+    };
     parkingLot.SlotsConfig.map((config: SlotConfig) => {
       for (let index = 0; index < config.columns; index++) {
         let slotType = "regular"; // Default slot type
-        if (config.row === parkingLot.SlotTypes.handicapped) {
-          slotType = "handicapped";
+        if (config.row === parkingLot.SlotTypes.disabled) {
+          slotType = "disabled";
         } else if (config.row === parkingLot.SlotTypes.electric) {
           slotType = "electric";
         }
         let slot = new ParkingSlot(
           undefined, //id
-          slotType, //type
+          typeMapping[slotType], //type
           "Available", //status
           { row: config.row, column: index }, //position
           new Date() // createdAt
@@ -271,8 +275,6 @@ class ParkingLotService {
     console.log("lat", lat);
     console.log("lon", lon);
     console.log("radius", radius);
-
-    console.log("geocollection", this.geocollection);
 
     // Perform the geosearch query
     const query = this.geocollection.near({

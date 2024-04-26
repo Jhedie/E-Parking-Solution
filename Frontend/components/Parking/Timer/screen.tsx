@@ -2,6 +2,7 @@ import { ReservationWithLot } from "@models/ReservationWithLot";
 import { useAuth } from "@providers/Authentication/AuthProvider";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
+import { useCancelReservation } from "hooks/useCancelReservation";
 import React from "react";
 import { Alert, Text, View } from "react-native";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
@@ -22,8 +23,8 @@ export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
   const nav = useNavigation<ParkingStackNavigation>();
   const reservation = route.params["reservation"] as ReservationWithLot;
   const { user } = useAuth();
-
-  const handleCancelParking = () => {
+  const cancelReservationMutation = useCancelReservation(navigation);
+  const handleCancelParking = (reservation: ReservationWithLot) => {
     Alert.alert(
       "Cancel Parking",
       "Are you sure you want to cancel this parking session?",
@@ -32,6 +33,7 @@ export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
           text: "Yes",
           onPress: () => {
             console.log("Cancel parking");
+            cancelReservationMutation(reservation);
             navigation.goBack();
           }
         },
@@ -267,7 +269,7 @@ export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
               backgroundShadow="#fff"
               backgroundDarker="#fff"
               backgroundColor="#FF474D"
-              onPress={handleCancelParking}
+              onPress={() => handleCancelParking(reservation)}
             >
               <Text style={{ color: "white", fontWeight: "500" }}>
                 Cancel Parking Session

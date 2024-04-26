@@ -49,6 +49,20 @@ export class ParkingReservationController implements Controller {
       this.deleteParkingReservation.bind(this),
       ["driver"]
     );
+
+    //driver cancel reservation
+    httpServer.delete(
+      "/parkingReservations/:parkingLotId/:parkingSlotId/:reservationId/cancel",
+      this.cancelParkingReservation.bind(this),
+      ["driver"]
+    );
+
+    //driver extend reservation
+    httpServer.post(
+      "/parkingReservations/:parkingLotId/:parkingSlotId/:reservationId/extend",
+      this.extendParkingReservation.bind(this),
+      ["driver"]
+    );
   }
 
   private readonly createParkingReservation: RequestHandler = async (
@@ -280,6 +294,81 @@ export class ParkingReservationController implements Controller {
     res.status(204).send({
       message:
         "Reservation " + reservationId + " has been deleted successfully.",
+    });
+  };
+
+  private readonly cancelParkingReservation: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const reservationId = req.params.reservationId;
+
+    if (!reservationId?.length) {
+      throw new HttpResponseError(
+        400,
+        "BAD_REQUEST",
+        "Please inform a reservation ID on the route."
+      );
+    }
+    const reservation =
+      await parkingReservationService.getParkingReservationById(
+        req.params.parkingLotId,
+        req.params.parkingSlotId,
+        reservationId
+      );
+    if (!reservation || reservation.userId !== req.auth.uid) {
+      throw new HttpResponseError(
+        404,
+        "NOT_FOUND",
+        "Reservation " + reservationId + " not found."
+      );
+    }
+
+    await parkingReservationService.cancelParkingReservation(
+      req.params.parkingLotId,
+      req.params.parkingSlotId,
+      reservationId
+    );
+    res.status(204).send({
+      message:
+        "Reservation " + reservationId + " has been canceled successfully.",
+    });
+  };
+
+  private readonly extendParkingReservation: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    console.log("Extending parking reservation.. with body", req.body);
+    const reservationId = req.params.reservationId;
+    const lotId = req.params.parkingLotId;
+    const slotId = req.params.parkingSlotId;
+
+    const extensionStartTime = req.body.extensionStartTime;
+    const extensionEndTime = req.body.extensionEndTime;
+    const rate = req.body.rate;
+    const totalAmount = req.body.totalAmount;
+    console.group("Extending reservation");
+    console.log("Extension Start Time", extensionStartTime);
+    console.log("Extension End Time", extensionEndTime);
+    console.log("Rate", rate);
+    console.log("Total Amount", totalAmount);
+    console.groupEnd();
+
+    await parkingReservationService.extendParkingReservation(
+      lotId,
+      slotId,
+      reservationId,
+      extensionStartTime,
+      extensionEndTime,
+      rate,
+      totalAmount
+    );
+
+    res.status(201).send({
+      message: "Reservation extended successfully",
     });
   };
 }

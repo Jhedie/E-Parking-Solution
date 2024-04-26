@@ -34,64 +34,73 @@ export const ReservationProvider = ({ children }) => {
         .where("userId", "==", user?.uid)
         .where("parkingStatus", "==", status)
         .onSnapshot(async (querySnapshot) => {
-          const promises = querySnapshot.docs.map(async (doc) => {
-            const reservation = {
-              id: doc.id,
-              ...(doc.data() as successfulBookingConfirmation)
-            };
+          try {
+            const promises = querySnapshot.docs.map(async (doc) => {
+              const reservation = {
+                id: doc.id,
+                ...(doc.data() as successfulBookingConfirmation)
+              };
 
-            const processedStartTime = new Date(
-              reservation.startTime["seconds"] * 1000
+              const processedStartTime = new Date(
+                reservation.startTime["seconds"] * 1000
+              );
+              console.log("reservation.startTime", reservation.startTime);
+              console.log("processedStartTime", processedStartTime);
+
+              const processedEndTime = new Date(
+                reservation.endTime["seconds"] * 1000
+              );
+              console.log("reservation.endTime", reservation.endTime);
+              console.log("processedEndTime", processedEndTime);
+              const parkingLotDoc = await firestore()
+                .collection("parkingLots")
+                .doc(reservation.lotId)
+                .get();
+              const ownerId = parkingLotDoc.data()?.OwnerId;
+
+              const slotDoc = await firestore()
+                .collection("parkingOwner")
+                .doc(ownerId)
+                .collection("parkingLots")
+                .doc(reservation.lotId)
+                .collection("parkingSlots")
+                .doc(reservation.slotId)
+                .get();
+
+              const vehicleDoc = await firestore()
+                .collection("driver")
+                .doc(reservation.userId)
+                .collection("vehicles")
+                .doc(reservation.vehicleId)
+                .get();
+
+              return {
+                ...reservation,
+                startTime: processedStartTime.toISOString(),
+                endTime: processedEndTime.toISOString(),
+                parkingLotDetails: parkingLotDoc.data() as ParkingLot,
+                slotDetails: slotDoc.data() as ParkingSlot,
+                vehicleDetails: vehicleDoc.data() as Vehicle
+              };
+            });
+            const results = await Promise.all(promises);
+
+            //Collection Group Query may return duplicates, so we filter them out
+            const uniqueResults = results.filter(
+              (value, index, self) =>
+                index ===
+                self.findIndex((t) => t.reservationId === value.reservationId)
             );
-            const processedEndTime = new Date(
-              reservation.endTime["seconds"] * 1000
-            );
-            const parkingLotDoc = await firestore()
-              .collection("parkingLots")
-              .doc(reservation.lotId)
-              .get();
-            const ownerId = parkingLotDoc.data()?.OwnerId;
-
-            const slotDoc = await firestore()
-              .collection("parkingOwner")
-              .doc(ownerId)
-              .collection("parkingLots")
-              .doc(reservation.lotId)
-              .collection("parkingSlots")
-              .doc(reservation.slotId)
-              .get();
-
-            const vehicleDoc = await firestore()
-              .collection("driver")
-              .doc(reservation.userId)
-              .collection("vehicles")
-              .doc(reservation.vehicleId)
-              .get();
-
-            return {
-              ...reservation,
-              startTime: processedStartTime.toISOString(),
-              endTime: processedEndTime.toISOString(),
-              parkingLotDetails: parkingLotDoc.data() as ParkingLot,
-              slotDetails: slotDoc.data() as ParkingSlot,
-              vehicleDetails: vehicleDoc.data() as Vehicle
-            };
-          });
-          const results = await Promise.all(promises);
-
-          //Collection Group Query may return duplicates, so we filter them out
-          const uniqueResults = results.filter(
-            (value, index, self) =>
-              index ===
-              self.findIndex((t) => t.reservationId === value.reservationId)
-          );
-          console.log("uniqueResults", uniqueResults, uniqueResults.length);
-          if (status === "active") {
-            setActiveReservations(uniqueResults);
-          } else if (status === "pending") {
-            setPendingReservations(uniqueResults);
-          } else if (status === "expired") {
-            setExpiredReservations(uniqueResults);
+            console.log("uniqueResults", uniqueResults, uniqueResults.length);
+            if (status === "active") {
+              setActiveReservations(uniqueResults);
+            } else if (status === "pending") {
+              setPendingReservations(uniqueResults);
+            } else if (status === "expired") {
+              setExpiredReservations(uniqueResults);
+            }
+          } catch (error) {
+            console.log("Error fetching reservations:", error);
           }
         });
       return unsubscribe; // Return the unsubscribe function directly

@@ -24,6 +24,7 @@ class ParkingReservation {
   public readonly parkingStatus: ParkingStatus;
   public readonly paymentStatus: PaymentStatus;
   public readonly checkedIn: boolean;
+  public readonly stripeCustomerId: string;
   public readonly modifiedAt: Date;
   public readonly createdAt: Date;
 
@@ -40,6 +41,7 @@ class ParkingReservation {
     parkingStatus: ParkingStatus,
     paymentStatus: PaymentStatus,
     checkedIn: boolean,
+    stripeCustomerId: string,
     modifiedAt: Date,
     createdAt: Date
   ) {
@@ -55,6 +57,7 @@ class ParkingReservation {
     this.parkingStatus = parkingStatus;
     this.paymentStatus = paymentStatus;
     this.checkedIn = checkedIn;
+    this.stripeCustomerId = stripeCustomerId;
     this.modifiedAt = modifiedAt;
     this.createdAt = createdAt;
   }
@@ -73,6 +76,7 @@ class ParkingReservation {
       null, // parkingStatus
       null, // paymentStatus
       false, // checkedIn
+      "", // stripeCustomerId
       new Date(), // modifiedAt
       new Date() // createdAt
     );

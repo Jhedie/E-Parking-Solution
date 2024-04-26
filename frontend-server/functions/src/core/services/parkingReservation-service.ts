@@ -2,6 +2,7 @@ import * as admin from "firebase-admin";
 import { firestore } from "firebase-admin";
 import { ParkingReservationFirestoreModel } from "../data/models/parkingReservation/firestore/parkingReservation-firestore-model";
 import { PartialParkingReservationFirestoreModel } from "../data/models/parkingReservation/firestore/partial-parkingReservation-firestore-model";
+import { Rate } from "../data/parkingLotFromForm";
 import { ParkingReservation } from "../data/parkingReservation";
 import FieldValue = firestore.FieldValue;
 const sgMail = require("@sendgrid/mail");
@@ -141,7 +142,7 @@ class ParkingReservationService {
         const formattedDuration = `${duration} ${rateType}${
           duration > 1 ? "s" : ""
         }`;
-        await this.sendNewParkingLotCreatedEmail(
+        await this.sendNewReservationCreatedEmail(
           userEmail,
           parkingLotRef.data().LotName,
           parkingLotRef.data().Address.formattedAddress,
@@ -171,11 +172,14 @@ class ParkingReservationService {
       });
   }
 
-  async extendParkingReservationById(
+  async extendParkingReservation(
     lotId: string,
     slotId: string,
     reservationId: string,
-    newEndTime: firestore.Timestamp // Assuming newEndTime is a Firestore Timestamp for consistency
+    extensionStartTime: Date,
+    extensionEndTime: Date,
+    rate: Rate,
+    totalAmount: number
   ): Promise<void> {
     const ownerId: string = await this.getParkingOwner(lotId);
     const db = admin.firestore();
@@ -187,6 +191,7 @@ class ParkingReservationService {
         slotId,
         reservationId
       );
+
       const reservationSnapshot = await transaction.get(reservationRef);
 
       if (!reservationSnapshot.exists) {
@@ -195,7 +200,7 @@ class ParkingReservationService {
 
       const reservation = reservationSnapshot.data() as ParkingReservation;
       // Check if the new end time is later than the current end time
-      if (newEndTime.toDate() <= reservation.endTime) {
+      if (extensionEndTime <= reservation.endTime) {
         throw new Error(
           "New end time must be later than the current end time."
         );
@@ -207,8 +212,8 @@ class ParkingReservationService {
         lotId,
         slotId
       )
-        .where("startTime", "<", newEndTime)
-        .where("endTime", ">", reservation.endTime); // Only check reservations that start after the current end time and before the new end time
+        .where("startTime", "<", extensionEndTime)
+        .where("endTime", ">", extensionStartTime); // Only check reservations that start after the current end time and before the new end time
 
       const conflictingReservationsSnapshot = await transaction.get(
         conflictingReservationsQuery
@@ -220,10 +225,64 @@ class ParkingReservationService {
       }
 
       // Update the reservation with the new end time
-      transaction.update(reservationRef, { endTime: newEndTime });
+      transaction.update(reservationRef, {
+        endTime: firestore.Timestamp.fromDate(new Date(extensionEndTime)),
+        usedRates: [...reservation.usedRates, rate],
+        totalAmount: FieldValue.increment(totalAmount),
+        modifiedAt: FieldValue.serverTimestamp(),
+        duration: FieldValue.increment(rate.duration),
+      });
 
-      //add the rate to the updatedRates array
-      //add to the total cost of the reservation
+      //update reservation top level collection
+      const topLevelRef =
+        this.parkingReservationsTopLevelCollection().doc(reservationId);
+      transaction.update(topLevelRef, {
+        endTime: firestore.Timestamp.fromDate(new Date(extensionEndTime)),
+        usedRates: [...reservation.usedRates, rate],
+        totalAmount: FieldValue.increment(totalAmount),
+        modifiedAt: FieldValue.serverTimestamp(),
+      });
+      const userRef = await admin
+        .firestore()
+        .collection("users")
+        .doc(reservation.userId)
+        .get();
+      //get parking Lot details
+      const parkingLotRef = await this.parkingLotsCollection(ownerId)
+        .doc(lotId)
+        .get();
+      //get the slot details
+      const slotRef = await this.parkingSlotsCollection(ownerId, lotId)
+        .doc(slotId)
+        .get();
+
+      //format the duration to be displayed in the email
+      const { duration, rateType } = rate;
+      const formattedDuration = `${duration} ${rateType}${
+        duration > 1 ? "s" : ""
+      }`;
+
+      await this.sendReservationUpdatedEmail(
+        userRef.data().email,
+        parkingLotRef.data().LotName,
+        parkingLotRef.data().Address.formattedAddress,
+        (
+          slotRef.data().position.row + slotRef.data().position.column
+        ).toString(),
+        extensionStartTime.toDateString(),
+        extensionEndTime.toDateString(),
+        formattedDuration,
+        totalAmount.toString(),
+        reservation.reservationId,
+        userRef.data().name
+      )
+        .then(() => {
+          console.log("Email sent successfully");
+        })
+        .catch((error) => {
+          console.error("Error sending email: ", error);
+          throw new Error("Failed to send email.");
+        });
     });
   }
 
@@ -330,6 +389,87 @@ class ParkingReservationService {
     return reservations;
   }
 
+  async cancelParkingReservation(
+    lotId: string,
+    slotId: string,
+    reservationId: string
+  ): Promise<void> {
+    const ownerId: string = await this.getParkingOwner(lotId);
+    const reservationRef = this.parkingReservationDoc(
+      ownerId,
+      lotId,
+      slotId,
+      reservationId
+    );
+    const reservationSnapshot = await reservationRef.get();
+
+    if (!reservationSnapshot.exists) {
+      throw new Error("Reservation does not exist.");
+    }
+
+    const reservation = reservationSnapshot.data() as ParkingReservation;
+
+    if (reservation.parkingStatus !== "active") {
+      throw new Error("Reservation is already cancelled or completed.");
+    }
+
+    // Decrement parking lot occupancy
+    await this.decrementParkingLotOccupancy(ownerId, lotId);
+
+    //delete from parkingReservationsTopLevelCollection and ParkingSlotsCollection
+    await admin
+      .firestore()
+      .runTransaction(async (transaction) => {
+        //delete reservation from  parkingSlotsCollection
+        transaction.delete(reservationRef);
+        //delete reservation from parkingReservationsTopLevelCollection
+        transaction.delete(
+          this.parkingReservationsTopLevelCollection().doc(reservationId)
+        );
+      })
+      .then(async () => {
+        const userRef = await admin
+          .firestore()
+          .collection("users")
+          .doc(reservation.userId)
+          .get();
+        const parkingLotRef = await this.parkingLotsCollection(ownerId)
+          .doc(lotId)
+          .get();
+        const slotRef = await this.parkingSlotsCollection(ownerId, lotId)
+          .doc(slotId)
+          .get();
+
+        //getting the last rate used
+        const { duration, rateType } =
+          reservation.usedRates[reservation.usedRates.length - 1];
+        const formattedDuration = `${duration} ${rateType}${
+          duration > 1 ? "s" : ""
+        }`;
+        await this.sendBookingCancelledEmail(
+          userRef.data().email,
+          parkingLotRef.data().LotName,
+          parkingLotRef.data().Address.formattedAddress,
+          (
+            slotRef.data().position.row + slotRef.data().position.column
+          ).toString(),
+          reservation.startTime.toDateString(),
+          reservation.endTime.toDateString(),
+          formattedDuration,
+          reservation.totalAmount.toString(),
+          reservation.reservationId,
+          userRef.data().name
+        )
+          .then(() => {
+            console.log("Email sent successfully");
+          })
+          .catch((error) => {
+            console.error("Error sending email: ", error);
+            throw new Error("Failed to send email.");
+          });
+      });
+  }
+
   private async getParkingOwner(lotId: string): Promise<string> {
     // Get all users with the role 'parkingOwner'
     const parkingOwnerSnapshot = await admin
@@ -360,11 +500,11 @@ class ParkingReservationService {
   ): Promise<void> {
     const lotRef = this.parkingLotsCollection(ownerId).doc(lotId);
     await lotRef.update({
-      occupancy: admin.firestore.FieldValue.increment(-1),
+      Occupancy: admin.firestore.FieldValue.increment(-1),
     });
   }
 
-  sendNewParkingLotCreatedEmail = async (
+  sendNewReservationCreatedEmail = async (
     email: string,
     parkingLotName: string,
     parkingLotAddress: string,
@@ -399,6 +539,55 @@ class ParkingReservationService {
 
     return await sgMail.send(msg);
   };
+
+  sendReservationUpdatedEmail = async (
+    email: string,
+    parkingLotName: string,
+    parkingLotAddress: string,
+    slot: string,
+    startTime: string,
+    endTime: string,
+    duration: string,
+    totalAmount: string,
+    reservationId: string,
+    first_name: string
+  ): Promise<any> => {
+    const to: string = email;
+    const from: string = this.adminEmail;
+
+    const msg = {
+      to,
+      from,
+      template_id: "d-230d2aac52664dc99c86222f424ca5a7",
+      dynamic_template_data: {
+        reservationId: reservationId,
+        first_name: first_name,
+        parkingLotName: parkingLotName,
+        Address: parkingLotAddress,
+        parkingSlot: slot,
+        startTime: startTime,
+        endTime: endTime,
+        duration: duration,
+        totalAmount: totalAmount,
+        contactUsLink: `mailto:${this.adminEmail}`,
+      },
+    };
+
+    return await sgMail.send(msg);
+  };
+
+  sendBookingCancelledEmail = async (
+    email: string,
+    parkingLotName: string,
+    parkingLotAddress: string,
+    slot: string,
+    startTime: string,
+    endTime: string,
+    duration: string,
+    totalAmount: string,
+    reservationId: string,
+    first_name: string
+  ) => {};
 }
 
 export const parkingReservationService = new ParkingReservationService();

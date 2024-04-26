@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 
 import { useReservations } from "@providers/Reservation/ReservationProvider";
+import { useCancelReservation } from "hooks/useCancelReservation";
 import React from "react";
 import { FlatList, Text } from "react-native";
 import { YStack } from "tamagui";
@@ -15,7 +16,7 @@ export const ParkingHistoryScreen: React.FC<ParkingHistoryScreenProps> = ({
   navigation
 }) => {
   const { expiredReservations } = useReservations();
-
+  const cancelReservationMutation = useCancelReservation(navigation);
   const renderReservations = ({ reservation }) => {
     return (
       <BookingCard
@@ -27,9 +28,9 @@ export const ParkingHistoryScreen: React.FC<ParkingHistoryScreenProps> = ({
         totalAmount={reservation.totalAmount.toString() ?? ""}
         duration={reservation.usedRates[0].duration.toString()}
         rateType={reservation.usedRates[0].rateType}
-        title1={"Buy Again"}
+        title1={"Delete"}
         title2={"View Ticket"}
-        onClickHandler={() => console.log("Book Again")}
+        onClickHandler={() => cancelReservationMutation(reservation)}
         onViewTicketHandler={() =>
           navigation.navigate("ParkingTicket", { reservation })
         }

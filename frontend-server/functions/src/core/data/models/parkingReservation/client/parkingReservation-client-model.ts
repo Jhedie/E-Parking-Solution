@@ -13,6 +13,7 @@ export class ParkingReservationClientModel extends ParkingReservation {
   static kParkingStatus = "parkingStatus";
   static kPaymentStatus = "paymentStatus";
   static kCheckedIn = "checkedIn";
+  static kStripeCustomerId = "stripeCustomerId";
   static kModifiedAt = "modifiedAt";
   static kCreatedAt = "createdAt";
 
@@ -34,6 +35,7 @@ export class ParkingReservationClientModel extends ParkingReservation {
       null, // parkingStatus
       null, // paymentStatus
       false, // checkedIn
+      "", // stripeCustomerId
       new Date(), // modifiedAt
       new Date() // createdAt
     );
@@ -62,6 +64,7 @@ export class ParkingReservationClientModel extends ParkingReservation {
       body[this.kParkingStatus],
       body[this.kPaymentStatus],
       false, // checkedIn
+      body[this.kStripeCustomerId],
       new Date(), // modifiedAt
       new Date() // createdAt
     );
@@ -71,6 +74,7 @@ export class ParkingReservationClientModel extends ParkingReservation {
     return {
       [ParkingReservationClientModel.kReservationId]: this.reservationId,
       [ParkingReservationClientModel.kSlotId]: this.slotId,
+      [ParkingReservationClientModel.kUserId]: this.userId,
       [ParkingReservationClientModel.kLotId]: this.lotId,
       [ParkingReservationClientModel.kVehicleId]: this.vehicleId,
       [ParkingReservationClientModel.kStartTime]: this.startTime.toISOString(),
@@ -87,6 +91,7 @@ export class ParkingReservationClientModel extends ParkingReservation {
     return {
       ...this.toBodyPublicReservation(),
       [ParkingReservationClientModel.kUserId]: this.userId,
+      [ParkingReservationClientModel.kStripeCustomerId]: this.stripeCustomerId,
       [ParkingReservationClientModel.kCreatedAt]: this.createdAt,
       [ParkingReservationClientModel.kModifiedAt]: this.modifiedAt,
     };

@@ -1,13 +1,16 @@
 import { ReservationWithLot } from "@models/ReservationWithLot";
+import { useAuth } from "@providers/Authentication/AuthProvider";
+import { useConfig } from "@providers/Config/ConfigProvider";
 import { useReservations } from "@providers/Reservation/ReservationProvider";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
+import { useCancelReservation } from "hooks/useCancelReservation";
+import useToken from "hooks/useToken";
 import React, { useCallback, useState } from "react";
 import { Alert, RefreshControl, ScrollView, Text } from "react-native";
 import { YStack } from "tamagui";
 import { ParkingStackNavigation } from "../../../app/(auth)/parking";
 import BookingCard from "../bookingCard";
-
 interface CurrentParkingScreenProps {
   navigation: ParkingStackNavigation;
 }
@@ -22,7 +25,10 @@ export const CurrentParkingScreen: React.FC<CurrentParkingScreenProps> = ({
     setTimeout(() => setRefreshing(false), 2000);
   }, []);
   const { activeReservations, pendingReservations } = useReservations();
-  const handleCancelParking = () => {
+
+  const cancelReservationMutation = useCancelReservation(navigation);
+
+  const handleCancelParking = (reservation: ReservationWithLot) => {
     Alert.alert(
       "Cancel Parking",
       "Are you sure you want to cancel this parking session?",
@@ -30,7 +36,7 @@ export const CurrentParkingScreen: React.FC<CurrentParkingScreenProps> = ({
         {
           text: "Yes",
           onPress: () => {
-            console.log("Cancel parking");
+            cancelReservationMutation(reservation);
             navigation.goBack();
           }
         },
@@ -135,13 +141,13 @@ export const CurrentParkingScreen: React.FC<CurrentParkingScreenProps> = ({
               address={
                 reservation.parkingLotDetails.Address.formattedAddress ?? ""
               }
-              date={dayjs(reservation.endTime).format("YYYY-MM-DD HH:mm")}
+              date={dayjs(reservation.startTime).format("YYYY-MM-DD HH:mm")}
               totalAmount={reservation.totalAmount.toString() ?? ""}
               duration={reservation.usedRates[0].duration.toString()}
               rateType={reservation.usedRates[0].rateType}
               title1={"Cancel"}
               title2={"View Ticket"}
-              onClickHandler={handleCancelParking}
+              onClickHandler={() => handleCancelParking(reservation)}
               onViewTicketHandler={() => {
                 navigation.navigate("ParkingTicket", {
                   reservation: reservation

@@ -1,4 +1,3 @@
-import { ParkingStackNavigation } from "@/(auth)/parking";
 import {
   BookingConfirmationDetails,
   successfulBookingConfirmation
@@ -16,7 +15,7 @@ import { useMutation } from "@tanstack/react-query";
 import { formatAddress } from "@utils/map/formatAddress";
 import axios from "axios";
 import dayjs from "dayjs";
-import { useNavigation, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import useToken from "hooks/useToken";
 import React, { useEffect, useState } from "react";
 import { Alert, ScrollView, Text, View } from "react-native";
@@ -44,7 +43,7 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
 }) => {
   const route = useRoute<RouteProp<RouteParams, "BookingConfirmationScreen">>();
   const { user } = useAuth();
-  const nav = useNavigation<ParkingStackNavigation>();
+  const router = useRouter();
 
   const { BASE_URL, PAYMENT_SERVER_BASE_URL } = useConfig();
   const token = useToken();
@@ -57,6 +56,7 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
 
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [loading, setLoading] = useState(false);
+  const [customer, setCustomer] = useState<string>("");
 
   const fetchPaymentSheetParams = async () => {
     try {
@@ -68,21 +68,22 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
         body: JSON.stringify({
           amount: route.params.bookingDetails.totalprice * 100,
           currency: "gbp",
-          description:
-            "Payment for parking - " +
-            parkingLot.LotId +
-            " - " +
-            parkingSlot.position.row +
-            parkingSlot.position.column,
-          customer: {
+          parkingDetails: {
+            lotId: parkingLot.LotId,
+            slotId: parkingSlot.slotId,
+            ownerId: parkingLot.OwnerId
+          },
+
+          customerDetails: {
             id: `${user?.uid}`,
             name: `${user?.displayName}`,
-            email: `${user?.email}`
+            email: `${user?.email}`,
+            phone: `${user?.phoneNumber}`
           }
         })
       });
       const { paymentIntent, ephemeralKey, customer } = await response.json();
-
+      setCustomer(customer);
       return {
         paymentIntent,
         ephemeralKey,
@@ -90,44 +91,39 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
       };
     } catch (error) {
       console.error("Error fetching payment sheet params:", error);
-      throw error; // Throw the error so it can be caught and handled outside
+      throw error;
     }
   };
 
   const initializePaymentSheet = async () => {
-    try {
-      const { paymentIntent, ephemeralKey, customer } =
-        await fetchPaymentSheetParams();
+    // Make a request to your server to create a PaymentIntent
+    const { paymentIntent, ephemeralKey, customer } =
+      await fetchPaymentSheetParams();
 
-      const { error } = await initPaymentSheet({
-        merchantDisplayName: "E-Parking-Solution",
-        customerId: customer,
-        customerEphemeralKeySecret: ephemeralKey,
-        paymentIntentClientSecret: paymentIntent,
-        // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
-        //methods that complete payment after a delay, like SEPA Debit and Sofort.
-        allowsDelayedPaymentMethods: true,
-        defaultBillingDetails: {
-          name: `${user?.displayName}`
-        },
-        style: "alwaysDark",
-        appearance: {
-          primaryButton: {
-            colors: {
-              background: "#FFCC00"
-            }
+    const { error } = await initPaymentSheet({
+      merchantDisplayName: "E-Parking-Solution",
+      customerId: customer,
+      customerEphemeralKeySecret: ephemeralKey,
+      paymentIntentClientSecret: paymentIntent,
+      // Set `allowsDelayedPaymentMethods` to true if your business can handle payment
+      //methods that complete payment after a delay, like SEPA Debit and Sofort.
+      allowsDelayedPaymentMethods: true,
+      defaultBillingDetails: {
+        name: `${user?.displayName}`
+      },
+      style: "alwaysDark",
+      appearance: {
+        primaryButton: {
+          colors: {
+            background: "#FFCC00"
           }
         }
-      });
-      if (!error) {
-        setLoading(true);
       }
-    } catch (error) {
-      console.log("initializePaymentSheet", error);
+    });
+    if (!error) {
+      setLoading(true);
     }
   };
-
-  const router = useRouter();
 
   const [isProcessingBooking, setIsProcessingBooking] = useState(false);
 
@@ -163,8 +159,15 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
     const { error } = await presentPaymentSheet();
 
     if (error) {
-      Alert.alert("Something went wrong. Please try again");
-      console.log("Error opening payment sheet:", error);
+      if (error.code === "Failed") {
+        Alert.alert("Payment failed. Please try again");
+      }
+      if (error.code === "Canceled") {
+        Alert.alert("Payment was cancelled");
+      }
+      if (error.code === "Timeout") {
+        Alert.alert("Something went wrong. Please try again");
+      }
     } else {
       // Payment was successful
       //prepare bookingDetails to be sent to the backend
@@ -179,13 +182,15 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
         usedRates: [bookingDetails.rate],
         totalAmount: bookingDetails.totalprice,
         parkingStatus: "pending",
-        paymentStatus: "completed"
+        paymentStatus: "completed",
+        stripeCustomerId: customer
       };
 
       mutation.mutate(bookingConfirmationDetails);
     }
   };
 
+  // Initialize payment sheet
   useEffect(() => {
     initializePaymentSheet();
   }, []);
@@ -303,7 +308,7 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
           >
             <Text style={{ fontWeight: "bold", fontSize: 18 }}>Start Date</Text>
             <Text style={{ fontSize: 16 }}>
-              {dayjs(bookingDetails.startDateTime).format("dddd, MMMM D, YYYY")}
+              {dayjs(bookingDetails.startDateTime).format("DD/MM/YYYY")}
             </Text>
           </View>
 
@@ -317,7 +322,7 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
           >
             <Text style={{ fontWeight: "bold", fontSize: 18 }}>End Date</Text>
             <Text style={{ fontSize: 16 }}>
-              {dayjs(bookingDetails.endDateTime).format("dddd, MMMM D, YYYY")}
+              {dayjs(bookingDetails.endDateTime).format("DD/MM/YYYY")}
             </Text>
           </View>
 
@@ -436,9 +441,6 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
           height={50}
           width={200}
           onPress={openPaymentSheet}
-          // onPress={() => {
-          //   setOpenBookingSuccessModal(true);
-          // }}
           raiseLevel={1}
           borderRadius={10}
           backgroundShadow="#fff"
@@ -474,7 +476,7 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
         }}
         onBackToHomeHandler={() => {
           setOpenBookingSuccessModal(false);
-          nav.navigate("ParkingTopTabsNavigator");
+          router.replace("/(auth)/parking");
         }}
       />
     </YStack>

@@ -235,7 +235,8 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
         markerPosition.longitude,
         markerPosition.radius
       ),
-    enabled: !!token && isFocused
+    enabled: !!token && isFocused,
+    staleTime: 0 // always fetch from server
   });
 
   useEffect(() => {
@@ -455,7 +456,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
               longitude: markerPosition.longitude
             }}
             radius={markerPosition.radius * 1000} // Radius in meters and convert to Kilometers
-            fillColor="rgba(0, 0, 0, 0)" // No fill color
+            fillColor="rgba(0, 0, 0, 0.1)" // No fill color
             strokeColor="rgba(192, 192, 192, 1.0)" // Lighter solid grey border
             strokeWidth={2} // Border width
           />

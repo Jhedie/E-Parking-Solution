@@ -2,7 +2,7 @@ import * as admin from "firebase-admin";
 import { onSchedule } from "firebase-functions/v2/scheduler";
 
 exports.reservationStatusUpdater = onSchedule(
-  "every 5 minutes",
+  "every 2 minutes",
   async (event) => {
     const now = admin.firestore.Timestamp.now();
     const reservationsRef = admin

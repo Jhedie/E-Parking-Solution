@@ -5,7 +5,7 @@ type Position = {
 
 type status = "Occupied" | "Available" | "Reserved";
 
-type type = "regular" | "handicapped" | "electric";
+type type = "regular" | "disabled" | "electric";
 
 export interface ParkingSlot {
   slotId: string;

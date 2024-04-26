@@ -123,7 +123,7 @@ function HomeStack() {
         name="ParkingTicketScreen"
         component={ParkingTicketScreen}
         options={{
-          headerTitle: "Parking Ticket"
+          headerShown: true
         }}
       />
     </HomeScreenStack.Navigator>

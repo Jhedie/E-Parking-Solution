@@ -3,9 +3,9 @@ export type Position = {
   column: number;
 };
 
-export type status = "Occupied" | "Available" | "Reserved";
+export type status = "Occupied" | "Available" | "Reserved" | "Unavailable";
 
-export type type = "regular" | "handicapped" | "electric" | string;
+export type type = "regular" | "electric" | "disabled";
 
 class ParkingSlot {
   public readonly slotId: string;

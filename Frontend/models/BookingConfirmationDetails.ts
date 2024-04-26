@@ -24,6 +24,7 @@ export type BookingConfirmationDetails = {
   paymentStatus?: PaymentStatus;
   modifiedAt?: Date;
   createdAt?: Date;
+  stripeCustomerId?: string;
 };
 
 export type successfulBookingConfirmation = {
@@ -40,4 +41,5 @@ export type successfulBookingConfirmation = {
   paymentStatus?: PaymentStatus;
   modifiedAt?: Date;
   createdAt?: Date;
+  stripeCustomerId?: string;
 };

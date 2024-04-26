@@ -39,7 +39,7 @@ const debouncedSelectAndToast = debounce(
     const availableSlots = slots.filter(
       (slot) =>
         slot.status !== "Reserved" &&
-        !slot.type.includes("Handicapped") &&
+        !slot.type.includes("Disabled") &&
         !slot.type.includes("electric")
     );
     //sort by position row and column
@@ -68,7 +68,7 @@ const debouncedSelectAndToast = debounce(
       });
     }
   },
-  1000
+  2000
 );
 
 export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
@@ -123,7 +123,7 @@ export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
           const unsubscribe = reservationsRef.onSnapshot((snapshot) => {
             const overlappingReservations = snapshot.docs.filter((doc) => {
               const reservation = doc.data();
-              const reservationEndTime = reservation.endTime.toDate();
+              const reservationEndTime = reservation.endTime;
               return reservationEndTime >= new Date(chosenStartTime);
             });
 
@@ -240,14 +240,14 @@ export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
                     flexDirection: "row",
                     justifyContent: "center",
                     alignItems: "center",
-                    backgroundColor: slot.type.includes("Handicapped")
+                    backgroundColor: slot.type.includes("Disabled")
                       ? "#ADD8E6"
                       : slot.type.includes("electric")
                       ? "#90EE90"
                       : "white"
                   }}
                 >
-                  {slot.type.includes("Handicapped") && (
+                  {slot.type.includes("Disabled") && (
                     <FontAwesome
                       name="wheelchair"
                       size={24}

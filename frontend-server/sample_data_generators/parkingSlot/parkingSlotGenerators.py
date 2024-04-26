@@ -4,7 +4,7 @@ import json
 # Define the parameters for generating parking slots
 rows = ["A", "B", "C", "D", "E", "F"]
 columns = range(1, 7)
-types = ["regular", "handicapped", "electric", "motorcycle"]
+types = ["regular", "disabled", "electric"]
 statuses = ["Occupied", "Available", "Reserved"]
 
 # Generate parking slots

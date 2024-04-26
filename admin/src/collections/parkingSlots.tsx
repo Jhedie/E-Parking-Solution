@@ -1,52 +1,40 @@
-import {
-  EntityOnPreSaveProps,
-  buildCollection,
-  buildEntityCallbacks,
-} from "@firecms/core";
+import { buildCollection, buildEntityCallbacks } from "@firecms/core";
 import { ParkingReservationCollection } from "./parkingReservations";
 
 export type ParkingSlots = {
   type: string;
   status: string;
-  lotId: string;
   position: {
     row: string;
     column: number;
   };
 };
 
-const checkIfPositionIsAvailable = async (
-  entitySaveProps: EntityOnPreSaveProps
-): Promise<boolean> => {
-  const allParkingSlots =
-    await entitySaveProps.context.dataSource.fetchCollection<ParkingSlots>({
-      path: "parkingSlots",
-    });
-
-  const isAvailable =
-    allParkingSlots.filter(
-      (slot) =>
-        slot.values.position.row === entitySaveProps.values.position.row &&
-        slot.values.position.column === entitySaveProps.values.position.column
-    ).length === 0;
-
-  return isAvailable;
-};
-
 const parkingSlotCallbacks = buildEntityCallbacks<ParkingSlots>({
   onPreSave: async (entitySaveProps) => {
     console.log("Creating parking slot", entitySaveProps);
-    //check if the position is already avalable
-    const isPositionAvailable = await checkIfPositionIsAvailable(
-      entitySaveProps
-    );
+    //current row and column
+    const row = entitySaveProps.values.position?.row;
+    const column = entitySaveProps.values.position?.column;
 
-    if (isPositionAvailable) {
-      console.log("Position is available");
-      return entitySaveProps;
-    } else {
+    const parkingLotsPath = entitySaveProps.resolvedPath;
+
+    const positionExists = await entitySaveProps.context.dataSource
+      .fetchCollection({ path: parkingLotsPath })
+      .then((parkingSlots) => {
+        console.log("parkingSlots", parkingSlots);
+        return parkingSlots.some(
+          (parkingSlot) =>
+            parkingSlot.values.position?.row === row &&
+            parkingSlot.values.position?.column === column
+        );
+      });
+
+    if (positionExists) {
       throw new Error("Position is already occupied");
     }
+
+    return entitySaveProps.values;
   },
 });
 
@@ -71,20 +59,16 @@ export const ParkingSlotsCollection = buildCollection<ParkingSlots>({
           label: "Electric",
         },
         {
-          id: "handicapped",
-          label: "Handicapped",
+          id: "Disabled",
+          label: "Disabled",
         },
         {
           id: "motorcycle",
           label: "Motorcycle",
         },
         {
-          id: "regular",
+          id: "Regular",
           label: "Regular",
-        },
-        {
-          id: "Standard",
-          label: "Standard",
         },
       ],
       name: "Type",
@@ -109,14 +93,6 @@ export const ParkingSlotsCollection = buildCollection<ParkingSlots>({
         },
       ],
       name: "Status",
-      validation: {
-        required: true,
-      },
-    },
-
-    lotId: {
-      dataType: "string",
-      name: "LotId",
       validation: {
         required: true,
       },

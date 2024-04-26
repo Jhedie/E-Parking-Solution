@@ -1,7 +1,8 @@
-import { EntityCollectionsBuilder } from "@firecms/core";
+import { EntityCollectionsBuilder, buildCollection } from "@firecms/core";
 import { AdminCollection } from "./admins";
 import { DbChangesCollection } from "./dbchanges";
 import { DriverCollection } from "./driver";
+import { ParkingLotCollection } from "./parkingLots";
 import { parkingLotsTopLevelCollection } from "./parkingLotsTopLevel";
 import { ParkingOwnerCollection } from "./parkingOwners";
 import { ParkingReservationCollection } from "./parkingReservations";
@@ -27,7 +28,80 @@ export const collectionsBuilder: EntityCollectionsBuilder = async ({
   })();
 
   if (!isAdmin) {
-    return [];
+    return [
+      buildCollection({
+        id: "parkingOwner",
+        name: "Manage",
+        path: "parkingOwner",
+        icon: "hail",
+        editable: true,
+        group: "users",
+        permissions: {
+          read: true,
+          create: false,
+          edit: true,
+          delete: false,
+        },
+        properties: {
+          uid: {
+            dataType: "string",
+            name: "ID",
+          },
+          name: {
+            dataType: "string",
+
+            name: "Name",
+          },
+          email: {
+            email: true,
+            name: "Email",
+            dataType: "string",
+          },
+          phoneNumber: {
+            dataType: "string",
+
+            name: "PhoneNumber",
+          },
+          role: {
+            dataType: "string",
+            name: "Role",
+
+            enumValues: [
+              {
+                id: "admin",
+                label: "ADMIN",
+              },
+              {
+                id: "parkingOwner",
+                label: "PARKING LOT OWNER",
+              },
+              {
+                id: "driver",
+                label: "DRIVER",
+              },
+            ],
+          },
+          status: {
+            dataType: "string",
+            name: "Status",
+            enumValues: [
+              {
+                id: "approved",
+                label: "APPROVED",
+              },
+              {
+                id: "rejected",
+                label: "REJECTED",
+              },
+            ],
+          },
+        },
+        forceFilter: {
+          uid: ["==", authController.user?.uid], // Use the dynamically set UID
+        },
+        subcollections: [ParkingLotCollection],
+      }),
+    ];
   }
   return [
     UserCollection,

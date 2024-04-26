@@ -13,24 +13,24 @@ export const ParkingSlotsFormSchema = z.object({
     )
     .min(1, "At least one row is required"),
   SlotTypes: z.object({
-    handicapped: z.string().optional(),
+    disabled: z.string().optional(),
     electric: z.string().optional(),
   }),
   Capacity: z.number(),
 });
 
-export type slotTypes = "handicapped" | "electric";
+export type slotTypes = "disabled" | "electric";
 
 export default function ParkingSlotsForm() {
   const formikProps =
     useFormikContext<z.infer<typeof ParkingSlotsFormSchema>>();
-  const slotTypesArray: slotTypes[] = ["handicapped", "electric"];
+  const slotTypesArray: slotTypes[] = ["disabled", "electric"];
 
   // State to track selected rows for each type
   const [selectedTypes, setSelectedTypes] = useState<
     Record<string, string | null>
   >({
-    handicapped: null,
+    disabled: null,
     electric: null,
   });
 

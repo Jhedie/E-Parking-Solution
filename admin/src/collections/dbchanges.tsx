@@ -58,6 +58,22 @@ export const DbChangesCollection = buildCollection({
           id: "USER_UPDATED",
           label: "USER UPDATED",
         },
+        {
+          id: "PARKING_LOT_DELETED",
+          label: "PARKING LOT DELETED",
+        },
+        {
+          id: "PARKING_RESERVATION_CREATED",
+          label: "RESERVATION CREATED",
+        },
+        {
+          id: "PARKING_RESERVATION_DELETED",
+          label: "RESERVATION DELETED",
+        },
+        {
+          id: "PARKING_RESERVATION_UPDATED",
+          label: "RESERVATION UPDATED",
+        },
       ],
       name: "Code",
       validation: {

@@ -53,7 +53,7 @@ export interface ComprehensiveFormValues {
     columns: number;
   }>;
   SlotTypes: {
-    handicapped?: string;
+    disabled?: string;
     electric?: string;
   };
   Capacity: number;
@@ -145,7 +145,7 @@ export default function MultiStepCreateParkingLotForm() {
     Capacity: 0,
     SlotsConfig: [],
     SlotTypes: {
-      handicapped: "",
+      disabled: "",
       electric: "",
     },
     // Step 4: Parking Rates

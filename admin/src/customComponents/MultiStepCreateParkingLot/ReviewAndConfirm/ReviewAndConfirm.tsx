@@ -112,10 +112,10 @@ export default function ReviewAndConfirm() {
                 ))}
               </ul>
               <p>
-                <span className="font-semibold">Handicapped Slots:</span>{" "}
-                {values.SlotTypes.handicapped
-                  ? values.SlotTypes.handicapped
-                  : "No handicapped slots added"}
+                <span className="font-semibold">Disabled Slots:</span>{" "}
+                {values.SlotTypes.disabled
+                  ? values.SlotTypes.disabled
+                  : "No disabled slots added"}
               </p>
               <p>
                 <span className="font-semibold">Electric Slots:</span>{" "}

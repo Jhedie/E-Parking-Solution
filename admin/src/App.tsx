@@ -70,12 +70,12 @@ function App() {
   }, []);
 
   const customViews: CMSView[] = [
-    {
-      path: "app/createParkingLot",
-      name: "New Parking Lot",
-      description: "A custom view for creating a parking lot",
-      view: <MultiStepCreateParkingLotForm />,
-    },
+    // {
+    //   path: "app/createParkingLot",
+    //   name: "New Parking Lot",
+    //   description: "A custom view for creating a parking lot",
+    //   view: <MultiStepCreateParkingLotForm />,
+    // },
     {
       path: "app/dashboard",
       name: "Dashboard",
@@ -190,14 +190,14 @@ function App() {
                 <NavigationRoutes
                   customRoutes={[
                     <Route
-                      key={"MultiStepCreateParkingLotForm"}
-                      path="createParkingLot"
-                      element={<MultiStepCreateParkingLotForm />}
-                    />,
-                    <Route
                       key={"Dashboard"}
                       path="dashboard"
                       element={<Dashboard />}
+                    />,
+                    <Route
+                      key={"MultiStepCreateParkingLotForm"}
+                      path="createParkingLot"
+                      element={<MultiStepCreateParkingLotForm />}
                     />,
                   ]}
                 />

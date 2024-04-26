@@ -1,4 +1,5 @@
-import { buildCollection } from "@firecms/core";
+import { CollectionActionsProps, buildCollection } from "@firecms/core";
+import { useNavigate } from "react-router";
 
 export type Address = {
   streetNumber: string;
@@ -62,6 +63,36 @@ export const parkingLotsTopLevelCollection = buildCollection<ParkingLot>({
   path: "parkingLots",
   icon: "local_parking",
   editable: false,
+  selectionEnabled: true,
+  exportable: false,
+  inlineEditing: false,
+  Actions: ({ selectionController, context }: CollectionActionsProps) => {
+    const isAdmin = JSON.parse(
+      (context.authController.user as any)?.reloadUserInfo?.customAttributes
+    ).admin;
+
+    const BASE_URL = import.meta.env.VITE_FRONTEND_SERVER_BASE_URL;
+
+    console.log("BASE_URL", BASE_URL);
+    const navigate = useNavigate();
+    return (
+      <>
+        {isAdmin && (
+          <>
+            <button
+              className="btn btn-success p-2"
+              onClick={() => {
+                // const entity = selectionController.selectedEntities[0];
+                navigate("/app/c/parkingOwner");
+              }}
+            >
+              Manage
+            </button>
+          </>
+        )}
+      </>
+    );
+  },
   permissions: ({ authController, user }) => ({
     read: true,
     edit: false,
@@ -79,12 +110,17 @@ export const parkingLotsTopLevelCollection = buildCollection<ParkingLot>({
     },
     Images: {
       dataType: "array",
+      name: "Images",
       of: {
         dataType: "string",
-        editable: true,
-        name: "Images",
+        storage: {
+          storagePath: "parkingLotImages",
+          acceptedFiles: ["image/*"],
+          metadata: {
+            cacheControl: "max-age=31536000",
+          },
+        },
       },
-      name: "Images",
     },
     Address: {
       properties: {

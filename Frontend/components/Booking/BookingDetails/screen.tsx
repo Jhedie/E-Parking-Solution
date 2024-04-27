@@ -86,16 +86,16 @@ export const BookParkingDetailsScreen: React.FC<
     animateEndDate();
   };
 
-  const defaultRate: Rate = {
-    duration: 0,
-    rate: 0,
-    rateId: "",
-    rateType: "",
-    lotId: ""
-  };
+  // const defaultRate: Rate = {
+  //   duration: 0,
+  //   rate: 0,
+  //   rateId: "",
+  //   rateType: "",
+  //   lotId: ""
+  // };
 
   const [selectedRate, setSelectedRate] = useState<Rate>(
-    rates?.["parkingLotRates"]?.[0] ?? defaultRate
+    rates?.["parkingLotRates"]?.[0]
   );
   useEffect(() => {
     if (rates?.["parkingLotRates"]?.[0]) {
@@ -114,9 +114,8 @@ export const BookParkingDetailsScreen: React.FC<
   useEffect(() => {
     // Calculate the new end date based on the selected rate type and number
     let newEndDateTime: Date = new Date();
-
+    console.log("selectedRate", selectedRate);
     const rateTypeLower = selectedRate?.rateType.toLowerCase(); // Convert to lowercase
-
     switch (rateTypeLower) {
       case "minute":
       case "minutes":
@@ -140,12 +139,16 @@ export const BookParkingDetailsScreen: React.FC<
           .toDate();
         break;
       case "week":
+      case "Week":
       case "weeks":
+      case "Weeks":
         newEndDateTime = dayjs(startDateTime)
           .add(selectedRate?.duration, "week")
           .toDate();
         break;
       case "month":
+      case "Months":
+      case "Month":
       case "months":
         newEndDateTime = dayjs(startDateTime)
           .add(selectedRate?.duration, "month")

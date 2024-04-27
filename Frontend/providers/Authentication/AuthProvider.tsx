@@ -360,11 +360,11 @@ export function AuthProvider({
           }
         })
         .catch((error) => {
-          if (error.code === "auth/invalid-email") {
+          if (error.code === "auth/invalid-credential") {
             // toaster.show("That email address is invalid!");
             Burnt.toast({
               title: "Invalid Email",
-              message: "That email address is invalid!",
+              message: "Email address is invalid!",
               duration: 5,
               preset: "error"
             });
@@ -379,6 +379,14 @@ export function AuthProvider({
               preset: "error"
             });
           }
+          if (error.code === "auth/credential-already-in-use") {
+            Burnt.toast({
+              title: "User Already Exists",
+              message: "That user already exists!",
+              duration: 5,
+              preset: "error"
+            });
+          }
 
           if (error.code === "auth/wrong-password") {
             // toaster.show("That password is incorrect!");
@@ -389,7 +397,7 @@ export function AuthProvider({
               preset: "error"
             });
           }
-          console.log(error);
+          console.log("caught", error.code);
         });
     } catch (error) {
       console.log(error);

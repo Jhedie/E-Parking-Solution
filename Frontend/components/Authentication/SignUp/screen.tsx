@@ -1,5 +1,13 @@
 import { Formik, FormikValues } from "formik";
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
+} from "react-native";
 import AwesomeButton from "react-native-really-awesome-button";
 import { Input, Spinner, YStack } from "tamagui";
 import validator from "validator";
@@ -48,183 +56,189 @@ export default function SignUpScreen() {
   };
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={{ flexGrow: 0, height: "100%", backgroundColor: "white" }}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
     >
-      <YStack
-        flex={1}
-        alignItems="center"
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ flexGrow: 0, height: "100%", backgroundColor: "white" }}
       >
-        <View
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            marginBottom: 30,
-            marginTop: 30
-          }}
+        <YStack
+          flex={1}
+          alignItems="center"
         >
-          <Image
-            source={require("../../../assets/static/logo/Icon-1024x1024.png")}
-            style={{ width: 200, height: 200 }}
-          />
-        </View>
-        <Formik
-          initialValues={initialValues}
-          onSubmit={function (
-            values: FormikValues,
-            actions
-          ): void | Promise<User> {
-            signUpBackend(
-              values.email,
-              values.password,
-              values.userName,
-              values.phoneNumber
-            );
-            setTimeout(() => {
-              actions.setSubmitting(false);
-            }, 1000);
-          }}
-          validate={validateForm}
-        >
-          {(formikProps) => (
-            <YStack
-              width={300}
-              gap={20}
-            >
-              <YStack gap={10}>
-                <Input
-                  placeholder={"Username"}
-                  onChangeText={formikProps.handleChange("userName")}
-                  onBlur={formikProps.handleBlur("userName")}
-                  value={formikProps.values.userName}
-                  style={{
-                    ...(formikProps.errors.userName &&
-                      formikProps.touched.userName && {
-                        borderBottomColor: "rgb(100, 0, 0)",
-                        borderWidth: 1
-                      })
-                  }}
-                />
-                {formikProps.errors.userName &&
-                  formikProps.touched.userName && (
-                    <Text style={styles.error}>
-                      {formikProps.errors.userName}
-                    </Text>
-                  )}
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 30,
+              marginTop: 30
+            }}
+          >
+            <Image
+              source={require("../../../assets/static/logo/Icon-1024x1024.png")}
+              style={{ width: 200, height: 200 }}
+            />
+          </View>
+          <Formik
+            initialValues={initialValues}
+            onSubmit={function (
+              values: FormikValues,
+              actions
+            ): void | Promise<User> {
+              signUpBackend(
+                values.email,
+                values.password,
+                values.userName,
+                values.phoneNumber
+              );
+              setTimeout(() => {
+                actions.setSubmitting(false);
+              }, 1000);
+            }}
+            validate={validateForm}
+          >
+            {(formikProps) => (
+              <YStack
+                width={300}
+                gap={20}
+              >
+                <YStack gap={10}>
+                  <Input
+                    placeholder={"Username"}
+                    onChangeText={formikProps.handleChange("userName")}
+                    onBlur={formikProps.handleBlur("userName")}
+                    value={formikProps.values.userName}
+                    style={{
+                      ...(formikProps.errors.userName &&
+                        formikProps.touched.userName && {
+                          borderBottomColor: "rgb(100, 0, 0)",
+                          borderWidth: 1
+                        })
+                    }}
+                  />
+                  {formikProps.errors.userName &&
+                    formikProps.touched.userName && (
+                      <Text style={styles.error}>
+                        {formikProps.errors.userName}
+                      </Text>
+                    )}
 
-                <Input
-                  placeholder="Email"
-                  onChangeText={formikProps.handleChange("email")}
-                  value={formikProps.values.email}
-                  autoCapitalize="none"
-                  onBlur={formikProps.handleBlur("email")}
-                  style={{
-                    ...(formikProps.errors.email &&
-                      formikProps.touched.email && {
-                        borderBottomColor: "rgb(100, 0, 0)",
-                        borderWidth: 1
-                      })
-                  }}
-                />
-                {formikProps.errors.email && formikProps.touched.email && (
-                  <Text style={styles.error}>{formikProps.errors.email}</Text>
-                )}
-                <Input
-                  size="$4"
-                  placeholder="Password"
-                  secureTextEntry
-                  textContentType="none"
-                  onBlur={formikProps.handleBlur("password")}
-                  onChangeText={formikProps.handleChange("password")}
-                  value={formikProps.values.password}
-                  style={{
-                    ...(formikProps.errors.password &&
-                      formikProps.touched.password && {
-                        borderBottomColor: "rgb(100, 0, 0)",
-                        borderWidth: 1
-                      })
-                  }}
-                />
-                {formikProps.errors.password &&
-                  formikProps.touched.password && (
-                    <Text style={styles.error}>
-                      {formikProps.errors.password}
-                    </Text>
+                  <Input
+                    placeholder="Email"
+                    onChangeText={formikProps.handleChange("email")}
+                    value={formikProps.values.email}
+                    autoCapitalize="none"
+                    onBlur={formikProps.handleBlur("email")}
+                    style={{
+                      ...(formikProps.errors.email &&
+                        formikProps.touched.email && {
+                          borderBottomColor: "rgb(100, 0, 0)",
+                          borderWidth: 1
+                        })
+                    }}
+                  />
+                  {formikProps.errors.email && formikProps.touched.email && (
+                    <Text style={styles.error}>{formikProps.errors.email}</Text>
                   )}
-                <Input
-                  size="$4"
-                  placeholder="Confirm Password"
-                  secureTextEntry
-                  textContentType="none"
-                  onBlur={formikProps.handleBlur("confirmPassword")}
-                  onChangeText={formikProps.handleChange("confirmPassword")}
-                  value={formikProps.values.confirmPassword}
-                  style={{
-                    ...(formikProps.errors.confirmPassword &&
-                      formikProps.touched.confirmPassword && {
-                        borderBottomColor: "rgb(100, 0, 0)",
-                        borderWidth: 1
-                      })
-                  }}
-                />
-                {formikProps.errors.confirmPassword &&
-                  formikProps.touched.confirmPassword && (
-                    <Text style={styles.error}>
-                      {formikProps.errors.confirmPassword}
-                    </Text>
-                  )}
-                <Input
-                  size="$4"
-                  placeholder="Phone Number"
-                  onChangeText={formikProps.handleChange("phoneNumber")}
-                  onBlur={formikProps.handleBlur("phoneNumber")}
-                  style={{
-                    ...(formikProps.errors.phoneNumber &&
-                      formikProps.touched.phoneNumber && {
-                        borderBottomColor: "rgb(100, 0, 0)",
-                        borderWidth: 1
-                      })
-                  }}
-                />
-                {formikProps.errors.phoneNumber &&
-                  formikProps.touched.phoneNumber && (
-                    <Text style={styles.error}>
-                      {formikProps.errors.phoneNumber}
-                    </Text>
-                  )}
-              </YStack>
-              {formikProps.isSubmitting ? (
-                <Spinner />
-              ) : (
-                <View
-                  style={{
-                    marginTop: 10 * 2
-                  }}
-                >
-                  <AwesomeButton
-                    height={50}
-                    onPress={() => formikProps.handleSubmit()}
-                    raiseLevel={1}
-                    stretch={true}
-                    borderRadius={10}
-                    backgroundColor="black"
-                    backgroundShadow="black"
+                  <Input
+                    size="$4"
+                    placeholder="Password"
+                    secureTextEntry
+                    textContentType="none"
+                    onBlur={formikProps.handleBlur("password")}
+                    onChangeText={formikProps.handleChange("password")}
+                    value={formikProps.values.password}
+                    style={{
+                      ...(formikProps.errors.password &&
+                        formikProps.touched.password && {
+                          borderBottomColor: "rgb(100, 0, 0)",
+                          borderWidth: 1
+                        })
+                    }}
+                  />
+                  {formikProps.errors.password &&
+                    formikProps.touched.password && (
+                      <Text style={styles.error}>
+                        {formikProps.errors.password}
+                      </Text>
+                    )}
+                  <Input
+                    size="$4"
+                    placeholder="Confirm Password"
+                    secureTextEntry
+                    textContentType="none"
+                    onBlur={formikProps.handleBlur("confirmPassword")}
+                    onChangeText={formikProps.handleChange("confirmPassword")}
+                    value={formikProps.values.confirmPassword}
+                    style={{
+                      ...(formikProps.errors.confirmPassword &&
+                        formikProps.touched.confirmPassword && {
+                          borderBottomColor: "rgb(100, 0, 0)",
+                          borderWidth: 1
+                        })
+                    }}
+                  />
+                  {formikProps.errors.confirmPassword &&
+                    formikProps.touched.confirmPassword && (
+                      <Text style={styles.error}>
+                        {formikProps.errors.confirmPassword}
+                      </Text>
+                    )}
+                  <Input
+                    size="$4"
+                    placeholder="Phone Number"
+                    onChangeText={formikProps.handleChange("phoneNumber")}
+                    onBlur={formikProps.handleBlur("phoneNumber")}
+                    style={{
+                      ...(formikProps.errors.phoneNumber &&
+                        formikProps.touched.phoneNumber && {
+                          borderBottomColor: "rgb(100, 0, 0)",
+                          borderWidth: 1
+                        })
+                    }}
+                  />
+                  {formikProps.errors.phoneNumber &&
+                    formikProps.touched.phoneNumber && (
+                      <Text style={styles.error}>
+                        {formikProps.errors.phoneNumber}
+                      </Text>
+                    )}
+                </YStack>
+                {formikProps.isSubmitting ? (
+                  <Spinner />
+                ) : (
+                  <View
+                    style={{
+                      marginTop: 10 * 2
+                    }}
                   >
-                    <Text
-                      numberOfLines={1}
-                      style={{ overflow: "hidden", color: "white" }}
+                    <AwesomeButton
+                      height={50}
+                      onPress={() => formikProps.handleSubmit()}
+                      raiseLevel={1}
+                      stretch={true}
+                      borderRadius={10}
+                      backgroundColor="black"
+                      backgroundShadow="black"
                     >
-                      Sign Up
-                    </Text>
-                  </AwesomeButton>
-                </View>
-              )}
-            </YStack>
-          )}
-        </Formik>
-      </YStack>
-    </ScrollView>
+                      <Text
+                        numberOfLines={1}
+                        style={{ overflow: "hidden", color: "white" }}
+                      >
+                        Sign Up
+                      </Text>
+                    </AwesomeButton>
+                  </View>
+                )}
+              </YStack>
+            )}
+          </Formik>
+        </YStack>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

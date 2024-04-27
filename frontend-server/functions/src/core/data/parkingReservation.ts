@@ -14,6 +14,7 @@ export type PaymentStatus = "completed" | "failed" | "refunded";
 class ParkingReservation {
   public readonly reservationId: string;
   public readonly userId: string;
+  public readonly userEmail: string;
   public readonly slotId: string;
   public readonly lotId: string;
   public readonly vehicleId: string;
@@ -27,10 +28,13 @@ class ParkingReservation {
   public readonly stripeCustomerId: string;
   public readonly modifiedAt: Date;
   public readonly createdAt: Date;
+  public readonly startNotificationSent?: boolean;
+  public readonly endNotificationSent?: boolean;
 
   constructor(
     reservationId: string,
     userId: string,
+    userEmail: string,
     slotId: string,
     lotId: string,
     vehicleId: string,
@@ -43,10 +47,13 @@ class ParkingReservation {
     checkedIn: boolean,
     stripeCustomerId: string,
     modifiedAt: Date,
-    createdAt: Date
+    createdAt: Date,
+    startNotificationSent?: boolean,
+    endNotificationSent?: boolean
   ) {
     this.reservationId = reservationId;
     this.userId = userId;
+    this.userEmail = userEmail;
     this.slotId = slotId;
     this.lotId = lotId;
     this.vehicleId = vehicleId;
@@ -60,12 +67,15 @@ class ParkingReservation {
     this.stripeCustomerId = stripeCustomerId;
     this.modifiedAt = modifiedAt;
     this.createdAt = createdAt;
+    this.startNotificationSent = startNotificationSent;
+    this.endNotificationSent = endNotificationSent;
   }
 
   static empty(): ParkingReservation {
     return new ParkingReservation(
       "", // reservationId
       "", // userId
+      "", // userEmail
       "", // slotId
       "", // lotId
       "", // vehicleId
@@ -78,7 +88,9 @@ class ParkingReservation {
       false, // checkedIn
       "", // stripeCustomerId
       new Date(), // modifiedAt
-      new Date() // createdAt
+      new Date(), // createdAt
+      false, // startNotificationSent
+      false // endNotificationSent
     );
   }
 }

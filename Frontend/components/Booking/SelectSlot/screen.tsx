@@ -39,7 +39,7 @@ const debouncedSelectAndToast = debounce(
     const availableSlots = slots.filter(
       (slot) =>
         slot.status !== "Reserved" &&
-        !slot.type.includes("Disabled") &&
+        !slot.type.includes("disabled") &&
         !slot.type.includes("electric")
     );
     //sort by position row and column
@@ -115,16 +115,16 @@ export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
               `parkingOwner/${route.params.parkingLot.OwnerId}/parkingLots/${route.params.parkingLot.LotId}/parkingSlots/${slot.slotId}/parkingReservations`
             )
             .where(
-              "startTime",
-              "<=",
-              firestore.Timestamp.fromDate(new Date(chosenEndTime))
+              "endTime",
+              ">=",
+              firestore.Timestamp.fromDate(new Date(chosenStartTime))
             );
 
           const unsubscribe = reservationsRef.onSnapshot((snapshot) => {
             const overlappingReservations = snapshot.docs.filter((doc) => {
               const reservation = doc.data();
-              const reservationEndTime = reservation.endTime;
-              return reservationEndTime >= new Date(chosenStartTime);
+              const reservationStartTime = reservation.startTime;
+              return reservationStartTime <= new Date(chosenStartTime);
             });
 
             // Determine if the slot is reserved based on the filtered overlapping reservations
@@ -240,14 +240,14 @@ export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
                     flexDirection: "row",
                     justifyContent: "center",
                     alignItems: "center",
-                    backgroundColor: slot.type.includes("Disabled")
+                    backgroundColor: slot.type.includes("disabled")
                       ? "#ADD8E6"
                       : slot.type.includes("electric")
                       ? "#90EE90"
                       : "white"
                   }}
                 >
-                  {slot.type.includes("Disabled") && (
+                  {slot.type.includes("disabled") && (
                     <FontAwesome
                       name="wheelchair"
                       size={24}

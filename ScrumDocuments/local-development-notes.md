@@ -328,3 +328,5 @@ https://youtu.be/Ofux_4c94FI
 
 https://firebase.google.com/docs/firestore/security/rules-query
 
+Firebase query limitations:
+https://stackoverflow.com/questions/52065946/firestore-compound-query-with

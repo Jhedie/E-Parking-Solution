@@ -7,7 +7,7 @@ import { onSchedule } from "firebase-functions/v2/scheduler";
  * Batch Update: It uses a batch update to efficiently handle multiple updates in a single transaction.
  */
 
-exports.parkingLotStatusUpdater = onSchedule("every 30 minutes", async (event) => {
+exports.parkingLotStatusUpdater = onSchedule("every 5 minutes", async (event) => {
   const lotsRef = admin.firestore().collectionGroup("parkingLots");
   const batch = admin.firestore().batch();
 

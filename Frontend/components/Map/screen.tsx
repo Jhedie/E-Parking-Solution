@@ -196,12 +196,12 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
 
       if (isFocused) {
         if (response.data.parkingLots.length > 0) {
-          Burnt.toast({
-            title: "Parking lots found",
-            duration: 5,
-            preset: "done",
-            haptic: "success"
-          });
+          // Burnt.toast({
+          //   title: "Parking lots found",
+          //   duration: 5,
+          //   preset: "done",
+          //   haptic: "success"
+          // });
         } else {
           Burnt.toast({
             title: "No parking lots found",
@@ -235,8 +235,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
         markerPosition.longitude,
         markerPosition.radius
       ),
-    enabled: !!token && isFocused,
-    staleTime: 0 // always fetch from server
+    enabled: !!token && isFocused
   });
 
   useEffect(() => {

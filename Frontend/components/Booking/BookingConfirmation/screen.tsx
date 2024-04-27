@@ -15,7 +15,6 @@ import { useMutation } from "@tanstack/react-query";
 import { formatAddress } from "@utils/map/formatAddress";
 import axios from "axios";
 import dayjs from "dayjs";
-import { useRouter } from "expo-router";
 import useToken from "hooks/useToken";
 import React, { useEffect, useState } from "react";
 import { Alert, ScrollView, Text, View } from "react-native";
@@ -43,7 +42,6 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
 }) => {
   const route = useRoute<RouteProp<RouteParams, "BookingConfirmationScreen">>();
   const { user } = useAuth();
-  const router = useRouter();
 
   const { BASE_URL, PAYMENT_SERVER_BASE_URL } = useConfig();
   const token = useToken();
@@ -174,6 +172,7 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
       setIsProcessingBooking(true);
       const bookingConfirmationDetails: BookingConfirmationDetails = {
         userId: user?.uid ?? "",
+        userEmail: user?.email ?? "",
         slotId: parkingSlot.slotId,
         lotId: parkingLot.LotId ?? "",
         vehicleId: vehicle.vehicleId ?? "",
@@ -476,7 +475,7 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
         }}
         onBackToHomeHandler={() => {
           setOpenBookingSuccessModal(false);
-          router.replace("/(auth)/parking");
+          navigation.navigate("Home");
         }}
       />
     </YStack>

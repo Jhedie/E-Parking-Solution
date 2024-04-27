@@ -1,4 +1,3 @@
-import { ParkingStackNavigation } from "@/(auth)/parking";
 import { successfulBookingConfirmation } from "@models/BookingConfirmationDetails";
 import { BookingDetails } from "@models/BookingDetails";
 import { ParkingLot } from "@models/ParkingLot";
@@ -6,9 +5,8 @@ import { Rate } from "@models/ParkingLotRate";
 import { ParkingSlot } from "@models/ParkingSlot";
 import { Vehicle } from "@models/Vehicle";
 import { useAuth } from "@providers/Authentication/AuthProvider";
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { RouteProp, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
-import { useRouter, useSegments } from "expo-router";
 import React, { useState } from "react";
 import { Text, View } from "react-native";
 import QRCodeStyled from "react-native-qrcode-styled";
@@ -241,7 +239,7 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
           }}
         >
           <Text style={{ color: "white", fontWeight: "500" }}>
-            {isLoading ? "Loading..." : "View Parking Session"}
+            {isLoading ? "Loading..." : "Go Home"}
           </Text>
         </AwesomeButton>
       </View>

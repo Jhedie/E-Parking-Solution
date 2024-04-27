@@ -12,6 +12,7 @@ class ParkingReservationService {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   }
   private adminEmail: string = process.env.ADMIN_EMAIL;
+  private firecmsURL: string = process.env.FIRECMS_URL;
 
   //Top level collection
   private parkingReservationsTopLevelCollection() {
@@ -127,11 +128,11 @@ class ParkingReservationService {
         );
         console.log(
           "Reservation Start Time:",
-          reservation.startTime.toDateString()
+          new Date(reservation.startTime).toUTCString()
         );
         console.log(
           "Reservation End Time:",
-          reservation.endTime.toDateString()
+          new Date(reservation.endTime).toUTCString()
         );
         console.log("Total Amount:", reservation.totalAmount.toString());
         console.log("Reservation ID:", reservation.reservationId);
@@ -149,8 +150,8 @@ class ParkingReservationService {
           (
             slotRef.data().position.row + slotRef.data().position.column
           ).toString(),
-          reservation.startTime.toDateString(),
-          reservation.endTime.toDateString(),
+          new Date(reservation.startTime).toTimeString(),
+          new Date(reservation.endTime).toTimeString(),
           formattedDuration,
           reservation.totalAmount.toString(),
           reservation.reservationId,
@@ -269,8 +270,8 @@ class ParkingReservationService {
         (
           slotRef.data().position.row + slotRef.data().position.column
         ).toString(),
-        extensionStartTime.toDateString(),
-        extensionEndTime.toDateString(),
+        new Date(extensionStartTime).toTimeString(),
+        new Date(extensionEndTime).toTimeString(),
         formattedDuration,
         totalAmount.toString(),
         reservation.reservationId,
@@ -453,8 +454,8 @@ class ParkingReservationService {
           (
             slotRef.data().position.row + slotRef.data().position.column
           ).toString(),
-          reservation.startTime.toDateString(),
-          reservation.endTime.toDateString(),
+          new Date(reservation.startTime).toTimeString(),
+          new Date(reservation.endTime).toTimeString(),
           formattedDuration,
           reservation.totalAmount.toString(),
           reservation.reservationId,
@@ -587,7 +588,30 @@ class ParkingReservationService {
     totalAmount: string,
     reservationId: string,
     first_name: string
-  ) => {};
+  ) => {
+    const to: string = email;
+    const from: string = this.adminEmail;
+
+    const msg = {
+      to,
+      from,
+      template_id: "d-d0ee3f5512d5468484da90dd60f84f9e",
+      dynamic_template_data: {
+        reservationId: reservationId,
+        first_name: first_name,
+        parkingLotName: parkingLotName,
+        Address: parkingLotAddress,
+        parkingSlot: slot,
+        startTime: startTime,
+        endTime: endTime,
+        duration: duration,
+        totalAmount: totalAmount,
+        contactUsLink: `mailto:${this.adminEmail}`,
+      },
+    };
+
+    return await sgMail.send(msg);
+  };
 }
 
 export const parkingReservationService = new ParkingReservationService();

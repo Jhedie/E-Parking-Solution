@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { successfulBookingConfirmation } from "@models/BookingConfirmationDetails";
 import { ParkingLot } from "@models/ParkingLot";
 import { ParkingSlot } from "@models/ParkingSlot";
@@ -10,7 +11,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 const ReservationContext = createContext({
   activeReservations: Array<ReservationWithLot>(),
   pendingReservations: Array<ReservationWithLot>(),
-  expiredReservations: Array<ReservationWithLot>()
+  expiredReservations: Array<ReservationWithLot>(),
 });
 
 export const useReservations = () => useContext(ReservationContext);
@@ -24,7 +25,9 @@ export const ReservationProvider = ({ children }) => {
   const [expiredReservations, setExpiredReservations] = useState<
     ReservationWithLot[]
   >([]);
+
   const { user } = useAuth();
+
   useEffect(() => {
     const unsubscribes: (() => void)[] = [];
 
@@ -44,14 +47,11 @@ export const ReservationProvider = ({ children }) => {
               const processedStartTime = new Date(
                 reservation.startTime["seconds"] * 1000
               );
-              console.log("reservation.startTime", reservation.startTime);
-              console.log("processedStartTime", processedStartTime);
 
               const processedEndTime = new Date(
                 reservation.endTime["seconds"] * 1000
               );
-              console.log("reservation.endTime", reservation.endTime);
-              console.log("processedEndTime", processedEndTime);
+
               const parkingLotDoc = await firestore()
                 .collection("parkingLots")
                 .doc(reservation.lotId)
@@ -91,7 +91,11 @@ export const ReservationProvider = ({ children }) => {
                 index ===
                 self.findIndex((t) => t.reservationId === value.reservationId)
             );
-            console.log("uniqueResults", uniqueResults, uniqueResults.length);
+            console.log(
+              "uniqueResults and length",
+              uniqueResults,
+              uniqueResults.length
+            );
             if (status === "active") {
               setActiveReservations(uniqueResults);
             } else if (status === "pending") {
@@ -116,7 +120,7 @@ export const ReservationProvider = ({ children }) => {
     return () => {
       unsubscribes.forEach((unsubscribe) => unsubscribe()); // Unsubscribe on cleanup
     };
-  }, []);
+  }, [user]);
 
   return (
     <ReservationContext.Provider

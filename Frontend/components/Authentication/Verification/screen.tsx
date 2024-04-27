@@ -28,12 +28,6 @@ export default function VerificationScreen() {
       console.log("Email verified!");
       router.replace("/(auth)/home"); // Redirect to home page
     } else {
-      Burnt.toast({
-        title: "Email not verified",
-        message: "Please try again later.",
-        duration: 5,
-        preset: "error"
-      });
       console.log("Email not verified");
     }
   };

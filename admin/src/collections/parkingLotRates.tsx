@@ -1,9 +1,11 @@
 import { buildCollection } from "@firecms/core";
 
 export type ParkingLotRates = {
+  rateId: string;
   rateType: string;
   rate: number;
   duration: number;
+  createdAt?: Date;
 };
 
 export const ParkingLotRatesCollection = buildCollection<ParkingLotRates>({
@@ -12,6 +14,13 @@ export const ParkingLotRatesCollection = buildCollection<ParkingLotRates>({
   path: "parkingLotRates",
   icon: "currency_pound",
   properties: {
+    rateId: {
+      dataType: "string",
+      name: "Rate ID",
+      validation: {
+        required: true,
+      },
+    },
     rateType: {
       dataType: "string",
       name: "RateType",
@@ -33,6 +42,10 @@ export const ParkingLotRatesCollection = buildCollection<ParkingLotRates>({
       validation: {
         required: true,
       },
+    },
+    createdAt: {
+      dataType: "date",
+      name: "Created At",
     },
   },
 });

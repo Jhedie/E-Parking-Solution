@@ -13,6 +13,7 @@ export type PaymentStatus = "completed" | "failed" | "refunded";
 
 export type BookingConfirmationDetails = {
   userId: string;
+  userEmail: string;
   slotId: string;
   lotId: string;
   vehicleId: string;
@@ -30,6 +31,7 @@ export type BookingConfirmationDetails = {
 export type successfulBookingConfirmation = {
   reservationId: string;
   userId: string;
+  userEmail: string;
   slotId: string;
   lotId: string;
   vehicleId: string;

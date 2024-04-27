@@ -1,3 +1,5 @@
+import { ReportOccupiedSlotScreen } from "@components/Parking/Arrival/reportOccupiedSlot/screen";
+import { ArrivalScreen } from "@components/Parking/Arrival/screen";
 import { ExtendParkingScreen } from "@components/Parking/ExtendParking/screen";
 import { ParkingTicketScreen } from "@components/Parking/ParkingTicket/screen";
 import { ReservationWithLot } from "@models/ReservationWithLot";
@@ -36,6 +38,12 @@ export type ParkingStackParamList = {
     reservation: ReservationWithLot;
   };
   ExtendParkingScreen: { reservation: ReservationWithLot };
+  ArrivalScreen: {
+    reservation: ReservationWithLot;
+  };
+  ReportOccupiedSlotScreen: {
+    reservation: ReservationWithLot;
+  };
 };
 
 export type ParkingStackNavigation = NavigationProp<ParkingStackParamList>;
@@ -50,7 +58,7 @@ export default function Screen() {
       <ParkingScreenStack.Screen
         name="ParkingTopTabsNavigator"
         component={ParkingTopTabsNavigator}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, headerTitle: "Parking" }}
       />
       <ParkingScreenStack.Screen
         name="TimerScreen"
@@ -67,7 +75,26 @@ export default function Screen() {
       <ParkingScreenStack.Screen
         name="ExtendParkingScreen"
         component={ExtendParkingScreen}
-        options={{ headerShown: true }}
+        options={{ headerShown: true, headerTitle: "Extend Parking" }}
+      />
+      {/* Arrived Screen */}
+      <ParkingScreenStack.Screen
+        name="ArrivalScreen"
+        component={ArrivalScreen}
+        options={{
+          headerShown: true,
+          headerTitle: "Arrived",
+          presentation: "modal"
+        }}
+      />
+      {/* Report Occupied Slot */}
+      <ParkingScreenStack.Screen
+        name="ReportOccupiedSlotScreen"
+        component={ReportOccupiedSlotScreen}
+        options={{
+          headerShown: true,
+          headerTitle: "Report Occupied Slot"
+        }}
       />
     </ParkingScreenStack.Navigator>
   );

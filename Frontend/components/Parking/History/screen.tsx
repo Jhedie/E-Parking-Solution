@@ -28,9 +28,9 @@ export const ParkingHistoryScreen: React.FC<ParkingHistoryScreenProps> = ({
         totalAmount={reservation.totalAmount.toString() ?? ""}
         duration={reservation.usedRates[0].duration.toString()}
         rateType={reservation.usedRates[0].rateType}
-        title1={"Delete"}
+        title1={""}
         title2={"View Ticket"}
-        onClickHandler={() => cancelReservationMutation(reservation)}
+        onClickHandler={() => void 0}
         onViewTicketHandler={() =>
           navigation.navigate("ParkingTicket", { reservation })
         }

@@ -11,12 +11,14 @@ class Vehicle {
     registrationNumber: string,
     nickName: string,
     defaultVehicle: boolean,
+    userId: string,
     createdAt: Date
   ) {
     this.vehicleId = vehicleId;
     this.registrationNumber = registrationNumber;
     this.nickName = nickName;
     this.defaultVehicle = defaultVehicle;
+    this.userId = userId;
     this.createdAt = createdAt;
   }
 
@@ -26,6 +28,7 @@ class Vehicle {
       "", //registrationNumber
       "", //nickName
       false, //defaultVehicle
+      "", //userId
       new Date() //createdAt
     );
   }

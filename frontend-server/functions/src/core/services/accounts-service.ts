@@ -11,6 +11,7 @@ class AccountsService {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   }
   private adminEmail: string = process.env.ADMIN_EMAIL;
+  private firecmsURL: string = process.env.FIRECMS_URL;
 
   async approveParkingOwner(uid: string): Promise<void> {
     const user = await admin.auth().getUser(uid);
@@ -44,7 +45,7 @@ class AccountsService {
           "Hi, Your account has been approved",
           "You can now access all your account and start serving your customers",
           "Get Started",
-          "http://localhost:5173/app/"
+          this.firecmsURL
         );
       } catch (emailError) {
         console.error(
@@ -61,7 +62,7 @@ class AccountsService {
           `Hi, There was an error approving user account ${user.email}`,
           "Kindly Investigate",
           "Admin Dashboard",
-          "http://localhost:5173/app/"
+          this.firecmsURL
         );
       } catch (emailError) {
         console.error("Failed to send error email:", emailError);
@@ -128,7 +129,7 @@ class AccountsService {
           `Hi, There was an error rejecting user account ${user.email}`,
           "Kindly Investigate",
           "Admin Dashboard",
-          "http://localhost:5173/app/"
+          this.firecmsURL
         );
       } catch (emailError) {
         console.error("Failed to send error email:", emailError);
@@ -181,10 +182,7 @@ class AccountsService {
         const admins = await admin.firestore().collection("admin").get();
         admins.forEach((admin) => {
           const data = admin.data();
-          this.sendApprovalEmail(
-            data.email,
-            "http://localhost:5173/app/"
-          ).catch((err) => {
+          this.sendApprovalEmail(data.email, this.firecmsURL).catch((err) => {
             throw new HttpResponseError(
               500,
               "EMAIL_SENDING_ERROR",
@@ -236,6 +234,7 @@ class AccountsService {
     const link: string = await admin
       .auth()
       .generateEmailVerificationLink(user.email);
+    console.log("link", link);
     this.sendVerificationMail(user, link).catch((err) => {
       throw new HttpResponseError(
         500,
@@ -324,13 +323,24 @@ class AccountsService {
   }
 
   async deleteUser(uid: string): Promise<void> {
-    await admin.auth().deleteUser(uid);
     //delete the user from the firestore
+    const user = await this.getUser(uid);
+
     await admin.firestore().collection("users").doc(uid).delete();
 
-    //delete the user from the role specific collection
-    const user = await this.getUser(uid);
-    await admin.firestore().collection(user.role).doc(uid).delete();
+    //delete the user from the role specific collection and vehicle (subcollection)
+    await admin
+      .firestore()
+      .recursiveDelete(admin.firestore().collection(user.role).doc(uid));
+    //send email to the user
+    await this.sendAccountDeletedEmail(user.email).catch((err) => {
+      throw new HttpResponseError(
+        500,
+        "EMAIL_SENDING_ERROR",
+        "Error sending email"
+      );
+    });
+    await admin.auth().deleteUser(uid);
   }
 
   sendVerificationMail = async (
@@ -365,6 +375,19 @@ class AccountsService {
       dynamic_template_data: {
         approvalLink: link,
       },
+    };
+
+    return await sgMail.send(msg);
+  };
+
+  sendAccountDeletedEmail = async (email: string): Promise<any> => {
+    const to: string = email;
+    const from: string = this.adminEmail;
+
+    const msg = {
+      to,
+      from,
+      template_id: "d-2ceed9922f274592a4fb3fecb7a39075",
     };
 
     return await sgMail.send(msg);

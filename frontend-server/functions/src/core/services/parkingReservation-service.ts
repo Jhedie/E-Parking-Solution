@@ -414,6 +414,29 @@ class ParkingReservationService {
       throw new Error("Reservation is already cancelled or completed.");
     }
 
+    // Check if cancellation is within 15 minutes of booking
+    const bookingTime = new Date(reservation.createdAt);
+    const cancellationTime = new Date();
+    const timeDiff =
+      (cancellationTime.getTime() - bookingTime.getTime()) / 60000; // difference in minutes
+
+    if (timeDiff <= 15) {
+      // Flag this reservation for a refund
+      await admin.firestore().collection("refunds").add({
+        reservationId: reservationId,
+        parkingLotId: lotId,
+        parkingSlotId: slotId,
+        ownerId: ownerId,
+        userId: reservation.userId,
+        amount: reservation.totalAmount,
+        status: "pending",
+        requestedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      //send email to the admin or owner
+      await this.sendRefundRequestedEmail(reservation, ownerId);
+    }
+
     // Decrement parking lot occupancy
     await this.decrementParkingLotOccupancy(ownerId, lotId);
 
@@ -503,6 +526,25 @@ class ParkingReservationService {
     await lotRef.update({
       Occupancy: admin.firestore.FieldValue.increment(-1),
     });
+  }
+
+  async reportWrongOccupant(
+    lotId: string,
+    slotId: string,
+    reservation: ParkingReservation,
+    registrationNumber: string
+  ): Promise<string> {
+    console.log(
+      "In the service",
+      lotId,
+      slotId,
+      reservation,
+      registrationNumber
+    );
+
+    //Search the driver table for the driv
+
+    return "Report sent successfully";
   }
 
   sendNewReservationCreatedEmail = async (
@@ -607,6 +649,25 @@ class ParkingReservationService {
         duration: duration,
         totalAmount: totalAmount,
         contactUsLink: `mailto:${this.adminEmail}`,
+      },
+    };
+
+    return await sgMail.send(msg);
+  };
+
+  sendRefundRequestedEmail = async (
+    reservation: ParkingReservation,
+    ownerId: string
+  ) => {
+    const to: string = reservation.userId;
+    const from: string = this.adminEmail;
+
+    const msg = {
+      to,
+      from,
+      template_id: "d-427f271d38054ff69d248ac1becb217e",
+      dynamic_template_data: {
+        signInUrl: `${this.firecmsURL}/signin`,
       },
     };
 

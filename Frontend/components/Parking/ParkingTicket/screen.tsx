@@ -1,12 +1,9 @@
-import {
-  ParkingStackNavigation,
-  ParkingStackParamList
-} from "@/(auth)/parking";
+import { ParkingStackNavigation } from "@/(auth)/parking";
 import { ReservationWithLot } from "@models/ReservationWithLot";
 import { useAuth } from "@providers/Authentication/AuthProvider";
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { RouteProp, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
-import React, { useState } from "react";
+import React from "react";
 import {
   Alert,
   AlertButton,
@@ -262,14 +259,34 @@ export const ParkingTicketScreen: React.FC<ParkingTicketScreenProps> = ({
             borderRadius={10}
             backgroundShadow="#fff"
             backgroundDarker="#fff"
-            backgroundColor="black"
+            backgroundColor="lightblue"
             onPress={handleChooseMapApp}
           >
-            <Text style={{ color: "white", fontWeight: "500" }}>
+            <Text style={{ color: "black", fontWeight: "500" }}>
               Navigate to Location
             </Text>
           </AwesomeButton>
         </View>
+        {reservation.parkingStatus !== "expired" && (
+          <View style={{}}>
+            <AwesomeButton
+              height={50}
+              width={300}
+              raiseLevel={1}
+              borderRadius={10}
+              backgroundShadow="#fff"
+              backgroundDarker="#fff"
+              backgroundColor="rgb(253 176 34)"
+              onPress={() => {
+                navigation.navigate("ArrivalScreen", { reservation });
+              }}
+            >
+              <Text style={{ color: "black", fontWeight: "500" }}>
+                Arrived?
+              </Text>
+            </AwesomeButton>
+          </View>
+        )}
       </View>
     </YStack>
   );

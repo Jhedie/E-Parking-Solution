@@ -90,28 +90,30 @@ const BookingCard = (props: BookingCardProps) => {
           marginTop: 10 * 0.5
         }}
       >
-        <TouchableOpacity
-          onPress={props.onClickHandler}
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 10,
-            backgroundColor: "white"
-          }}
-        >
-          <Text
-            numberOfLines={1}
+        {props.title1 !== "" && (
+          <TouchableOpacity
+            onPress={props.onClickHandler}
             style={{
-              fontSize: 16,
-              fontWeight: "600",
-              color: "#333",
-              overflow: "hidden"
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 10,
+              backgroundColor: "white"
             }}
           >
-            {props.title1}
-          </Text>
-        </TouchableOpacity>
+            <Text
+              numberOfLines={1}
+              style={{
+                fontSize: 16,
+                fontWeight: "600",
+                color: "#333",
+                overflow: "hidden"
+              }}
+            >
+              {props.title1}
+            </Text>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
           onPress={() => props.onViewTicketHandler()}
           style={{

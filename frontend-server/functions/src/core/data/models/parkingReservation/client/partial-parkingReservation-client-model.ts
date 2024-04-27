@@ -43,6 +43,18 @@ export class PartialParkingReservationClientModel {
         body[ParkingReservationClientModel.kModifiedAt]
       );
     }
+    if (
+      body[ParkingReservationClientModel.kStartNotificationSent] !== undefined
+    ) {
+      res.startNotificationSent =
+        body[ParkingReservationClientModel.kStartNotificationSent];
+    }
+    if (
+      body[ParkingReservationClientModel.kEndNotificationSent] !== undefined
+    ) {
+      res.endNotificationSent =
+        body[ParkingReservationClientModel.kEndNotificationSent];
+    }
 
     return res;
   }

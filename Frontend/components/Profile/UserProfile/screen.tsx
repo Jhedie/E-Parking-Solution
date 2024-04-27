@@ -1,16 +1,20 @@
 import { Vehicle } from "@models/Vehicle";
+import { useConfig } from "@providers/Config/ConfigProvider";
 import firestore from "@react-native-firebase/firestore";
 import { Car, Sun, User } from "@tamagui/lucide-icons";
+import axios from "axios";
+import * as Burnt from "burnt";
+import useToken from "hooks/useToken";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import AwesomeButton from "react-native-really-awesome-button";
 import { Avatar, ListItem, XStack, YGroup, YStack } from "tamagui";
 import { useAuth } from "../../../providers/Authentication/AuthProvider";
-
 const ProfileScreen = () => {
   const { user, signOut } = useAuth();
-
+  const token = useToken();
   const [defaultVehicle, setDefaultVehicle] = useState<Vehicle | null>(null);
+  const { BASE_URL } = useConfig();
 
   useEffect(() => {
     const fetchDefaultVehicle = async () => {
@@ -95,7 +99,7 @@ const ProfileScreen = () => {
           />
         </YGroup.Item>
       </YGroup>
-      <XStack>
+      <YStack>
         <View
           style={{
             alignItems: "center",
@@ -107,7 +111,28 @@ const ProfileScreen = () => {
           <AwesomeButton
             height={50}
             width={200}
-            onPress={() => signOut()}
+            onPress={async () => {
+              try {
+                await axios.delete(`${BASE_URL}/account/${user?.uid}`, {
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+                });
+                Burnt.toast({
+                  title: "Account deleted successfully",
+                  duration: 5000,
+                  preset: "done"
+                });
+                signOut();
+              } catch (error) {
+                Burnt.toast({
+                  title: "Failed to delete account",
+                  duration: 5,
+                  preset: "error"
+                });
+                console.error("Error deleting user account:", error);
+              }
+            }}
             raiseLevel={1}
             borderRadius={10}
             backgroundColor="black"
@@ -117,11 +142,43 @@ const ProfileScreen = () => {
               numberOfLines={1}
               style={{ overflow: "hidden", color: "white" }}
             >
+              Delete Account
+            </Text>
+          </AwesomeButton>
+        </View>
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 30,
+            marginTop: 30
+          }}
+        >
+          <AwesomeButton
+            height={50}
+            width={200}
+            onPress={() => {
+              Burnt.toast({
+                title: "Signed out",
+                duration: 5,
+                preset: "done"
+              });
+              signOut();
+            }}
+            raiseLevel={1}
+            borderRadius={10}
+            backgroundColor="rgb(253 176 34)"
+            backgroundShadow="black"
+          >
+            <Text
+              numberOfLines={1}
+              style={{ overflow: "hidden", color: "black" }}
+            >
               Sign Out
             </Text>
           </AwesomeButton>
         </View>
-      </XStack>
+      </YStack>
     </YStack>
   );
 };

@@ -21,6 +21,8 @@ class ParkingLotService {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   }
   private adminEmail: string = process.env.ADMIN_EMAIL;
+  private firecmsURL: string = process.env.FIRECMS_URL;
+
   private geoFirestore: geofirestore.GeoFirestore;
 
   private geocollection: geofirestore.GeoCollectionReference;
@@ -206,7 +208,7 @@ class ParkingLotService {
     // if parkinglot, parkingSlots and parkingRates are created successfully, inform admin via email
     await this.sendNewParkingLotCreatedEmail(
       this.adminEmail,
-      "http://localhost:5173/app/",
+      this.firecmsURL,
       ownerId
     );
     return ParkingLotFirestoreModel.fromDocumentData(
@@ -333,7 +335,7 @@ class ParkingLotService {
           "Your parking lot has been approved.",
           "Kindly click the link below to view your parking lot.",
           "View Parking Lot",
-          `http://localhost:5173/app/dashboard/${parkingLotId}`
+          `${this.firecmsURL}/app/dashboard/${parkingLotId}`
         );
       } catch (error) {
         console.log("error", error);

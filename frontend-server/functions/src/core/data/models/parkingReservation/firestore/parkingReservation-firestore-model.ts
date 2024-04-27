@@ -7,6 +7,7 @@ import Timestamp = firestore.Timestamp;
 export class ParkingReservationFirestoreModel extends ParkingReservation {
   static kReservationId = "reservationId";
   static kUserId = "userId";
+  static kUserEmail = "userEmail";
   static kSlotId = "slotId";
   static kLotId = "lotId";
   static kVehicleId = "vehicleId";
@@ -20,6 +21,8 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
   static kStripeCustomerId = "stripeCustomerId";
   static kModifiedAt = "modifiedAt";
   static kCreatedAt = "createdAt";
+  static kStartNotificationSent = "startNotificationSent";
+  static kEndNotificationSent = "endNotificationSent";
 
   /**
    * Creates an empty ParkingReservationFirestoreModel instance.
@@ -29,6 +32,7 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
     return new ParkingReservationFirestoreModel(
       "", // reservationId
       "", // userId
+      "", // userEmail
       "", // slotId
       "", // lotId
       "", // vehicleId
@@ -41,7 +45,9 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
       false, // checkedIn
       "", // stripeCustomerId
       new Date(), // modifiedAt
-      new Date() // createdAt
+      new Date(), // createdAt
+      false, // startNotificationSent
+      false // endNotificationSent
     );
   }
 
@@ -72,6 +78,7 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
       [ParkingReservationFirestoreModel.kReservationId]:
         reservationId ?? this.reservationId,
       [ParkingReservationFirestoreModel.kUserId]: this.userId,
+      [ParkingReservationFirestoreModel.kUserEmail]: this.userEmail,
       [ParkingReservationFirestoreModel.kSlotId]: this.slotId,
       [ParkingReservationFirestoreModel.kLotId]: this.lotId,
       [ParkingReservationFirestoreModel.kVehicleId]: this.vehicleId,
@@ -91,6 +98,10 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
         createdAt ?? this.modifiedAt,
       [ParkingReservationFirestoreModel.kCreatedAt]:
         createdAt ?? this.createdAt,
+      [ParkingReservationFirestoreModel.kStartNotificationSent]:
+        this.startNotificationSent,
+      [ParkingReservationFirestoreModel.kEndNotificationSent]:
+        this.endNotificationSent,
     };
 
     return data;
@@ -117,6 +128,7 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
     return new ParkingReservationFirestoreModel(
       data[ParkingReservationFirestoreModel.kReservationId],
       data[ParkingReservationFirestoreModel.kUserId],
+      data[ParkingReservationFirestoreModel.kUserEmail],
       data[ParkingReservationFirestoreModel.kSlotId],
       data[ParkingReservationFirestoreModel.kLotId],
       data[ParkingReservationFirestoreModel.kVehicleId],
@@ -129,7 +141,9 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
       data[ParkingReservationFirestoreModel.kCheckedIn],
       data[ParkingReservationFirestoreModel.kStripeCustomerId],
       handleTimestamp(data[ParkingReservationFirestoreModel.kModifiedAt]),
-      handleTimestamp(data[ParkingReservationFirestoreModel.kCreatedAt])
+      handleTimestamp(data[ParkingReservationFirestoreModel.kCreatedAt]),
+      data[ParkingReservationFirestoreModel.kStartNotificationSent],
+      data[ParkingReservationFirestoreModel.kEndNotificationSent]
     );
   }
 }

@@ -3,6 +3,7 @@ import React from "react";
 import AwesomeButton from "react-native-really-awesome-button";
 
 import { Vehicle } from "@models/Vehicle";
+import { useAuth } from "@providers/Authentication/AuthProvider";
 import { useConfig } from "@providers/Config/ConfigProvider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
@@ -29,7 +30,7 @@ export const AddVehicleScreen: React.FC<AddVehicleScreenProps> = ({
 }) => {
   const { BASE_URL } = useConfig();
   const queryClient = useQueryClient();
-
+  const { user } = useAuth();
   const token = useToken();
   const addVehicle = (newVehicle: Vehicle) => {
     return axios.post(`${BASE_URL}/vehicle`, newVehicle, {
@@ -96,44 +97,18 @@ export const AddVehicleScreen: React.FC<AddVehicleScreenProps> = ({
             values: Vehicle,
             { setSubmitting }: FormikHelpers<Vehicle>
           ) => {
-            addVehicleMutation(values, {
-              onSuccess: () => {
-                setSubmitting(false);
-              },
-              onError: (error) => {
-                console.error("Error adding vehicle", error);
-                setSubmitting(false);
+            addVehicleMutation(
+              { ...values, userId: user?.uid },
+              {
+                onSuccess: () => {
+                  setSubmitting(false);
+                },
+                onError: (error) => {
+                  console.error("Error adding vehicle", error);
+                  setSubmitting(false);
+                }
               }
-            });
-            //   axios
-            //     .post(`${BASE_URL}/vehicle`, values, {
-            //       headers: {
-            //         Authorization: `Bearer ${token}`,
-            //         "Content-Type": "application/json"
-            //       }
-            //     })
-            //     .then((response) => {
-            //       console.log("Vehicle added successfully", response.data);
-            //       Burnt.toast({
-            //         title: "Vehicle added successfully",
-            //         preset: "done",
-            //         duration: 5
-            //       });
-            //       queryClient.invalidateQueries({ queryKey: ["userVehicles"] });
-            //       navigation.goBack();
-            //     })
-            //     .catch((error) => {
-            //       Burnt.toast({
-            //         title: "Error adding vehicle",
-            //         preset: "error",
-            //         duration: 5
-            //       });
-            //       console.error("Error adding vehicle", error);
-            //     })
-            //     .finally(() => {
-            //       setSubmitting(false);
-            //     });
-            // }}
+            );
           }}
         >
           {({

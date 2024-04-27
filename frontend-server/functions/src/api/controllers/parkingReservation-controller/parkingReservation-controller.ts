@@ -63,6 +63,13 @@ export class ParkingReservationController implements Controller {
       this.extendParkingReservation.bind(this),
       ["driver"]
     );
+
+    //driver report wrong occupant
+    httpServer.post(
+      "/parkingReservations/report-wrong-occupant",
+      this.reportWrongOccupant.bind(this),
+      ["driver"]
+    );
   }
 
   private readonly createParkingReservation: RequestHandler = async (
@@ -369,6 +376,26 @@ export class ParkingReservationController implements Controller {
 
     res.status(201).send({
       message: "Reservation extended successfully",
+    });
+  };
+
+  private readonly reportWrongOccupant: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    console.log("Reporting wrong occupant...");
+    console.log("Request body", req.body);
+
+    const result = await parkingReservationService.reportWrongOccupant(
+      req.body.reservation.parkingLotDetails.LotId,
+      req.body.reservation.slotDetails.slotId,
+      req.body.reservation.reservationId,
+      req.body.registrationNumber
+    );
+
+    res.status(201).send({
+      message: result,
     });
   };
 }

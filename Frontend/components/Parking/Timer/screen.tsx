@@ -3,7 +3,7 @@ import { useAuth } from "@providers/Authentication/AuthProvider";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import dayjs from "dayjs";
 import { useCancelReservation } from "hooks/useCancelReservation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Text, View } from "react-native";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import AwesomeButton from "react-native-really-awesome-button";
@@ -47,6 +47,29 @@ export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
     );
   };
 
+  // Calculate the initial remaining time in seconds
+  const calculateTimeLeft = () => {
+    const now = dayjs();
+    const endTime = dayjs(reservation.endTime);
+    return endTime.diff(now, "seconds");
+  };
+
+  // State to manage the remaining time
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+  // Effect to update the time left every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const newTimeLeft = calculateTimeLeft();
+      if (newTimeLeft >= 0) {
+        setTimeLeft(newTimeLeft);
+      } else {
+        clearInterval(timer);
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
   return (
     <YStack flex={1}>
       <View
@@ -64,10 +87,7 @@ export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
               dayjs(reservation.startTime),
               "seconds"
             )}
-            initialRemainingTime={dayjs(reservation.endTime).diff(
-              dayjs(),
-              "seconds"
-            )} //get the difference between the end time and the current time
+            initialRemainingTime={timeLeft}
             colors="#232626"
             rotation="counterclockwise"
             strokeLinecap="round"
@@ -176,7 +196,11 @@ export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
                     textAlign: "right"
                   }}
                 >
-                  2 hours
+                  {dayjs(reservation.endTime).diff(
+                    dayjs(reservation.startTime),
+                    "hours"
+                  )}{" "}
+                  hour(s)
                 </Text>
               </View>
 

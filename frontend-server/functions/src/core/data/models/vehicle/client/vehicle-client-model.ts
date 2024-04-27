@@ -10,6 +10,7 @@ export class VehicleClientModel extends Vehicle {
   static kRegistrationNumber = "registrationNumber";
   static kNickName = "nickName";
   static kDefaultVehicle = "defaultVehicle";
+  static kUserId = "userId";
   static kCreatedAt = "createdAt";
 
   static fromEntity(entity: Vehicle): VehicleClientModel {
@@ -22,6 +23,7 @@ export class VehicleClientModel extends Vehicle {
       "", // registrationNumber
       "", // nickName
       false, // defaultVehicle
+      "", // userId
       new Date() // createdAt
     );
   }
@@ -37,6 +39,7 @@ export class VehicleClientModel extends Vehicle {
       body[this.kRegistrationNumber],
       body[this.kNickName],
       body[this.kDefaultVehicle],
+      body[this.kUserId],
       null
     );
   }
@@ -45,6 +48,7 @@ export class VehicleClientModel extends Vehicle {
     return {
       ...this.toBodyPublicVehicle(),
       [VehicleClientModel.kCreatedAt]: this.createdAt,
+      [VehicleClientModel.kUserId]: this.userId,
     };
   }
 

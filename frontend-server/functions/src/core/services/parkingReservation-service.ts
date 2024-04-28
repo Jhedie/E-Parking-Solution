@@ -5,6 +5,7 @@ import { PartialParkingReservationFirestoreModel } from "../data/models/parkingR
 import { Rate } from "../data/parkingLotFromForm";
 import { ParkingReservation } from "../data/parkingReservation";
 import FieldValue = firestore.FieldValue;
+import dayjs = require("dayjs");
 
 class ParkingReservationService {
   private adminEmail: string = process.env.ADMIN_EMAIL;
@@ -124,11 +125,11 @@ class ParkingReservationService {
         );
         console.log(
           "Reservation Start Time:",
-          new Date(reservation.startTime).toUTCString()
+          dayjs(reservation.startTime).format("YYYY-MM-DD HH:mm:ss")
         );
         console.log(
           "Reservation End Time:",
-          new Date(reservation.endTime).toUTCString()
+          dayjs(reservation.endTime).format("YYYY-MM-DD HH:mm:ss")
         );
         console.log("Total Amount:", reservation.totalAmount.toString());
         console.log("Reservation ID:", reservation.reservationId);
@@ -139,6 +140,7 @@ class ParkingReservationService {
         const formattedDuration = `${duration} ${rateType}${
           duration > 1 ? "s" : ""
         }`;
+
         admin
           .firestore()
           .collection("mail")
@@ -150,12 +152,12 @@ class ParkingReservationService {
                 parkingLotRef.data().LotName
               }</strong> is confirmed. Here are the details:<br>
               <ul>
-                <li><strong>Start Time:</strong> ${new Date(
+                <li><strong>Start:</strong> ${dayjs(
                   reservation.startTime
-                ).toTimeString()}</li>
-                <li><strong>End Time:</strong> ${new Date(
-                  reservation.endTime
-                ).toTimeString()}</li>
+                ).format("YYYY-MM-DD HH:mm:ss")}</li>
+                <li><strong>End:</strong> ${dayjs(reservation.endTime).format(
+                  "YYYY-MM-DD HH:mm:ss"
+                )}</li>
                 <li><strong>Duration:</strong> ${formattedDuration}</li>
                 <li><strong>Total Amount:</strong> ${reservation.totalAmount.toFixed(
                   2
@@ -286,12 +288,12 @@ class ParkingReservationService {
             html: `Your parking reservation at ${
               parkingLotRef.data().LotName
             } has been extended. Here are the updated details:<br>
-            <strong>Start Time:</strong> ${new Date(
-              extensionStartTime
-            ).toLocaleString()}<br>
-            <strong>End Time:</strong> ${new Date(
-              extensionEndTime
-            ).toLocaleString()}<br>
+            <strong>Start:</strong> ${dayjs(extensionStartTime).format(
+              "YYYY-MM-DD HH:mm:ss"
+            )}<br>
+            <strong>End:</strong> ${dayjs(extensionEndTime).format(
+              "YYYY-MM-DD HH:mm:ss"
+            )}<br>
             <strong>Duration:</strong> ${formattedDuration}<br>
             <strong>Total Amount:</strong> ${totalAmount.toFixed(2)}<br>
             <strong>Slot ID:</strong> ${slotId}<br>
@@ -437,12 +439,11 @@ class ParkingReservationService {
     const reservation = reservationSnapshot.data() as ParkingReservation;
 
     // Check if cancellation is within 15 minutes of booking
-    const bookingTime = new Date(reservation.createdAt);
+    const startTime = new Date(reservation.startTime.getSeconds() * 1000);
     const cancellationTime = new Date();
-    const timeDiff =
-      (cancellationTime.getTime() - bookingTime.getTime()) / 60000; // difference in minutes
+    const timeDiff = (cancellationTime.getTime() - startTime.getTime()) / 60000; // difference in minutes
 
-    if (timeDiff <= 15) {
+    if (timeDiff >= 15) {
       // Flag this reservation for a refund
       await admin.firestore().collection("refunds").add({
         reservationId: reservationId,
@@ -498,16 +499,19 @@ class ParkingReservationService {
         const parkingLotRef = await this.parkingLotsCollection(ownerId)
           .doc(lotId)
           .get();
-        // const slotRef = await this.parkingSlotsCollection(ownerId, lotId)
-        //   .doc(slotId)
-        //   .get();
+        const slotRef = await this.parkingSlotsCollection(ownerId, lotId)
+          .doc(slotId)
+          .get();
 
-        // //getting the last rate used
-        // const { duration, rateType } =
-        //   reservation.usedRates[reservation.usedRates.length - 1];
-        // const formattedDuration = `${duration} ${rateType}${
-        //   duration > 1 ? "s" : ""
-        // }`;
+        //getting the last rate used
+        const { duration, rateType } =
+          reservation.usedRates[reservation.usedRates.length - 1];
+        const formattedDuration = `${duration} ${rateType}${
+          duration > 1 ? "s" : ""
+        }`;
+        const slotPosition = `Row: ${slotRef.data().position.row}, Column: ${
+          slotRef.data().position.column
+        }`;
         admin
           .firestore()
           .collection("mail")
@@ -517,11 +521,13 @@ class ParkingReservationService {
               subject: "Your Reservation Cancellation",
               html: `Your reservation at ${
                 parkingLotRef.data().LotName
-              } has been cancelled. It was scheduled from ${new Date(
+              } has been cancelled. It was scheduled from ${dayjs(
                 reservation.startTime
-              ).toTimeString()} to ${new Date(
+              ).format("YYYY-MM-DD HH:mm:ss")} to ${dayjs(
                 reservation.endTime
-              ).toTimeString()}.`,
+              ).format("YYYY-MM-DD HH:mm:ss")}.<br><br>
+              <strong>Slot Position:</strong> ${slotPosition}<br>
+              <strong>Duration:</strong> ${formattedDuration}`,
             },
           })
           .then(() => {
@@ -570,37 +576,96 @@ class ParkingReservationService {
   async reportWrongOccupant(
     lotId: string,
     slotId: string,
-    reservation: ParkingReservation,
+    reservation,
     registrationNumber: string
   ): Promise<string> {
     console.log(
       "In the service",
       lotId,
       slotId,
-      reservation,
+      reservation.reservationId,
       registrationNumber
     );
+    // Get reporting user
+    const reportingUserRef = admin
+      .firestore()
+      .collection("users")
+      .doc(reservation.userId);
+
+    const reportingUser = await reportingUserRef.get();
+    console.log("Reporting user fetched:", reportingUser.data());
 
     // Search the driver collection for driver with registration Number
-    // const driverRef = admin
-    //   .firestore()
-    //   .collectionGroup("vehicles")
-    //   .where("registrationNumber", "==", registrationNumber)
-    //   .get();
-    //if driver is found inform the parking owner or admin
-    admin
+    console.log(
+      "Searching for driver with registration number:",
+      registrationNumber
+    );
+    const driverRef = await admin
       .firestore()
-      .collection("mail")
-      .add({
-        to: this.adminEmail,
-        message: {
-          subject: "Hello from Firebase!",
-          text: "A driver has reported wrong occupant",
-          html: "A driver has reported wrong occupant name ",
-        },
-      })
-      .then(() => console.log("Queued email for delivery!"));
+      .collectionGroup("vehicles")
+      .where("registrationNumber", "==", registrationNumber)
+      .get();
 
+    // If driver is found, inform the parking owner or admin
+    if (driverRef.docs.length > 0) {
+      const driverData = driverRef.docs[0].data();
+      console.log("Driver found:", driverData);
+      admin
+        .firestore()
+        .collection("mail")
+        .add({
+          to: this.adminEmail,
+          message: {
+            subject: "Report of Wrong Occupant in Parking Slot",
+            text: `A report has been filed for a wrong occupant in a parking slot. Details are as follows:\n
+                   Reporting User ID: ${reservation.userId}\n
+                   Reporting User Name: ${reportingUser.data().firstName} ${
+              reportingUser.data().lastName
+            }\n
+                   Vehicle Details: ${driverData.make} ${
+              driverData.model
+            } - Registration Number: ${registrationNumber}\n
+                   Reservation Start Time: ${dayjs(
+                     reservation.startTime
+                   ).format("YYYY-MM-DD HH:mm:ss")}\n
+                   Reservation End Time: ${dayjs(reservation.endTime).format(
+                     "YYYY-MM-DD HH:mm:ss"
+                   )}\n
+                   Parking Lot ID: ${reservation.parkingLotDetails.lotId}\n
+                   Parking Slot ID: ${reservation.slotId}`,
+            html: `<p>A report has been filed for a wrong occupant in a parking slot. Details are as follows:</p>
+                   <ul>
+                     <li>Reporting User ID: ${reservation.userId}</li>
+                     <li>Reporting User Name: ${
+                       reportingUser.data().firstName
+                     }</li>
+                     <li>Vehicle Details: ${driverData.make} ${
+              driverData.model
+            } - Registration Number: ${registrationNumber}</li>
+                     <li>Reservation Start Time: ${dayjs(
+                       reservation.startTime
+                     ).format("YYYY-MM-DD HH:mm:ss")}</li>
+                     <li>Reservation End Time: ${dayjs(
+                       reservation.endTime
+                     ).format("YYYY-MM-DD HH:mm:ss")}</li>
+                     <li>Parking Lot ID: ${
+                       reservation.parkingLotDetails.lotId
+                     }</li>
+                     <li>Parking Slot ID: ${reservation.slotId}</li>
+                   </ul>`,
+          },
+        })
+        .then(() => console.log("Queued email for delivery!"))
+        .catch((error) => {
+          console.error("Failed to queue email: ", error);
+        });
+    } else {
+      console.log(
+        "No driver found with the registration number:",
+        registrationNumber
+      );
+      return "No driver found with the registration number";
+    }
     return "Report sent successfully";
   }
 }

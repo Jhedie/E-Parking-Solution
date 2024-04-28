@@ -390,7 +390,7 @@ export class ParkingReservationController implements Controller {
     const result = await parkingReservationService.reportWrongOccupant(
       req.body.reservation.parkingLotDetails.LotId,
       req.body.reservation.slotDetails.slotId,
-      req.body.reservation.reservationId,
+      req.body.reservation,
       req.body.registrationNumber
     );
 

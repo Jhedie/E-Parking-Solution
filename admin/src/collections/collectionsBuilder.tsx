@@ -62,39 +62,6 @@ export const collectionsBuilder: EntityCollectionsBuilder = async ({
 
             name: "PhoneNumber",
           },
-          role: {
-            dataType: "string",
-            name: "Role",
-
-            enumValues: [
-              {
-                id: "admin",
-                label: "ADMIN",
-              },
-              {
-                id: "parkingOwner",
-                label: "PARKING LOT OWNER",
-              },
-              {
-                id: "driver",
-                label: "DRIVER",
-              },
-            ],
-          },
-          status: {
-            dataType: "string",
-            name: "Status",
-            enumValues: [
-              {
-                id: "approved",
-                label: "APPROVED",
-              },
-              {
-                id: "rejected",
-                label: "REJECTED",
-              },
-            ],
-          },
         },
         forceFilter: {
           uid: ["==", authController.user?.uid], // Use the dynamically set UID

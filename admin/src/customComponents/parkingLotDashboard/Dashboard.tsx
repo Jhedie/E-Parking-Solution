@@ -129,7 +129,7 @@ const Dashboard = () => {
             key={slot.id}
             onClick={() => handleSlotClick(slot)}
             className={`card shadow-xl m-4 flex flex-col items-center p-6 w-32 h-22 ${
-              slot.values.status === "Occupied"
+              slot.values.status === "Reserved"
                 ? "bg-red-500" // Occupied slots
                 : slot.values.status === "Available" &&
                   slot.values.type === "electric"

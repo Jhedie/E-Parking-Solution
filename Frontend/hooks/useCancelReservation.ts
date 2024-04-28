@@ -1,9 +1,8 @@
-import { useAuth } from "@providers/Authentication/AuthProvider"; // Adjust import based on your project structure
 import { useConfig } from "@providers/Config/ConfigProvider"; // Adjust import based on your project structure
 import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import * as Burnt from "burnt";
 import useToken from "./useToken";
-import axios from "axios";
 
 export const useCancelReservation = (navigation) => {
   const { BASE_URL } = useConfig();
@@ -35,7 +34,6 @@ export const useCancelReservation = (navigation) => {
         duration: 2,
         preset: "done"
       });
-      navigation.goBack();
     },
     onError: (error) => {
       console.error("Error cancelling booking:", error);

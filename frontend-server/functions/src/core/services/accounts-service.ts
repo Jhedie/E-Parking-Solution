@@ -4,12 +4,8 @@ import { UserRecord } from "firebase-admin/auth";
 import { UserFirestoreModel } from "../data/models/user/firestore/user-firestore-model";
 import { User } from "../data/user";
 import { HttpResponseError } from "../utils/http-response-error";
-const sgMail = require("@sendgrid/mail");
 
 class AccountsService {
-  constructor() {
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  }
   private adminEmail: string = process.env.ADMIN_EMAIL;
   private firecmsURL: string = process.env.FIRECMS_URL;
 
@@ -39,45 +35,29 @@ class AccountsService {
         .doc(uid)
         .update({ status: "approved" });
 
-      try {
-        await this.sendApprovalUpdateEmail(
-          user.email,
-          "Hi, Your account has been approved",
-          "You can now access all your account and start serving your customers",
-          "Get Started",
-          this.firecmsURL
-        );
-      } catch (emailError) {
-        console.error(
-          "Failed to send approval email, but account was approved:",
-          emailError
-        );
-      }
-    } catch (error) {
-      console.error("Error during the approval process:", error);
-      // Attempt to send a failure email if there was an error other than email sending
-      try {
-        await this.sendApprovalUpdateEmail(
-          this.adminEmail,
-          `Hi, There was an error approving user account ${user.email}`,
-          "Kindly Investigate",
-          "Admin Dashboard",
-          this.firecmsURL
-        );
-      } catch (emailError) {
-        console.error("Failed to send error email:", emailError);
-      }
-
-      // Rethrow the original error with a more specific message if possible
-      if (error instanceof Error) {
-        throw new HttpResponseError(404, error.name, error.message);
-      } else {
-        throw new HttpResponseError(
-          500,
-          "APPROVAL_PROCESS_ERROR",
-          "An error occurred during the approval process"
-        );
-      }
+      admin
+        .firestore()
+        .collection("mail")
+        .doc()
+        .set({
+          to: user.email,
+          message: {
+            subject: "Account Approval",
+            html: `Hello,<br>Your account has been successfully approved. You can now <a href="${this.firecmsURL}">access your account</a> and start serving your customers.`,
+          },
+        })
+        .then(() => {
+          console.log("Account approval email queued for sending.");
+        })
+        .catch((error) => {
+          console.error("Failed to queue account approval email: ", error);
+        });
+    } catch (err) {
+      throw new HttpResponseError(
+        500,
+        "Error approving account",
+        `Error approving account ${err}`
+      );
     }
   }
 
@@ -107,44 +87,29 @@ class AccountsService {
         .doc(uid)
         .update({ status: "rejected" });
 
-      try {
-        await this.sendApprovalUpdateEmail(
-          user.email,
-          "Hi, Your parking owner account application has been rejected",
-          "Kindly contact the team for more information",
-          "Contact Support",
-          `mailto:${this.adminEmail}`
-        );
-      } catch (emailError) {
-        console.error(
-          "Failed to send rejection email, but account was rejected:",
-          emailError
-        );
-      }
+      admin
+        .firestore()
+        .collection("mail")
+        .doc()
+        .set({
+          to: user.email,
+          message: {
+            subject: "Account Rejection",
+            html: `Hello,<br>Your parking owner account application has been rejected. Please <a href="mailto:${this.adminEmail}">contact the team</a> for more information.`,
+          },
+        })
+        .then(() => {
+          console.log("Account rejection email queued for sending.");
+        })
+        .catch((error) => {
+          console.error("Failed to queue account rejection email: ", error);
+        });
     } catch (error) {
-      console.error("Error during the rejection process:", error);
-      try {
-        await this.sendApprovalUpdateEmail(
-          this.adminEmail,
-          `Hi, There was an error rejecting user account ${user.email}`,
-          "Kindly Investigate",
-          "Admin Dashboard",
-          this.firecmsURL
-        );
-      } catch (emailError) {
-        console.error("Failed to send error email:", emailError);
-      }
-
-      // Rethrow the original error with a more specific message if possible
-      if (error instanceof Error) {
-        throw new HttpResponseError(404, error.name, error.message);
-      } else {
-        throw new HttpResponseError(
-          500,
-          "APPROVAL_PROCESS_ERROR",
-          "An error occurred during the approval process"
-        );
-      }
+      throw new HttpResponseError(
+        500,
+        "APPROVAL_PROCESS_ERROR",
+        `An error occurred during the approval process ${error}`
+      );
     }
   }
 
@@ -180,15 +145,31 @@ class AccountsService {
       if (user.role === "parkingOwner") {
         // inform the admins
         const admins = await admin.firestore().collection("admin").get();
-        admins.forEach((admin) => {
-          const data = admin.data();
-          this.sendApprovalEmail(data.email, this.firecmsURL).catch((err) => {
-            throw new HttpResponseError(
-              500,
-              "EMAIL_SENDING_ERROR",
-              "Error sending email"
-            );
-          });
+        admins.forEach((adminUser) => {
+          const data = adminUser.data();
+
+          admin
+            .firestore()
+            .collection("mail")
+            .doc()
+            .set({
+              to: data.email,
+              message: {
+                subject: "New Parking Owner Application",
+                html: `Hello,<br>There is a new parking owner application. Please <a href="${this.firecmsURL}">review the application</a> and approve or reject it.`,
+              },
+            })
+            .then(() => {
+              console.log(
+                "New parking owner application email queued for sending."
+              );
+            })
+            .catch((error) => {
+              console.error(
+                "Failed to queue new parking owner application email: ",
+                error
+              );
+            });
         });
       }
 
@@ -209,8 +190,6 @@ class AccountsService {
   }
 
   async sendVerificationEmail(email: string, token: string): Promise<any> {
-    console.log("email at sendVerificationEmail", email);
-    console.log("token at sendVerificationEmail", token);
     const user: UserRecord = await admin.auth().getUserByEmail(email);
 
     console.log("user", user);
@@ -234,14 +213,24 @@ class AccountsService {
     const link: string = await admin
       .auth()
       .generateEmailVerificationLink(user.email);
-    console.log("link", link);
-    this.sendVerificationMail(user, link).catch((err) => {
-      throw new HttpResponseError(
-        500,
-        "EMAIL_SENDING_ERROR",
-        "Error sending email"
-      );
-    });
+
+    admin
+      .firestore()
+      .collection("mail")
+      .doc()
+      .set({
+        to: user.email,
+        message: {
+          subject: "Verify Your Account",
+          html: `Hello ${user.displayName},<br>Please verify your account by clicking on the following link: <a href="${link}">Verify Account</a>`,
+        },
+      })
+      .then(() => {
+        console.log("Verification Email queued for sending.");
+      })
+      .catch((error) => {
+        console.error("Failed to queue email: ", error);
+      });
   }
 
   async generateCustomToken(uid: string): Promise<string> {
@@ -333,90 +322,21 @@ class AccountsService {
       .firestore()
       .recursiveDelete(admin.firestore().collection(user.role).doc(uid));
     //send email to the user
-    await this.sendAccountDeletedEmail(user.email).catch((err) => {
-      throw new HttpResponseError(
-        500,
-        "EMAIL_SENDING_ERROR",
-        "Error sending email"
-      );
-    });
+
+    await admin
+      .firestore()
+      .collection("mail")
+      .doc()
+      .set({
+        to: user.email,
+        message: {
+          subject: "Account Deletion Confirmation",
+          html: `Hello,<br>Your account has been successfully deleted. If this was a mistake, please contact our support.`,
+        },
+      });
+
     await admin.auth().deleteUser(uid);
   }
-
-  sendVerificationMail = async (
-    user: UserRecord,
-    link: string
-  ): Promise<any> => {
-    const to: string = user.email;
-    const from: string = this.adminEmail;
-
-    const msg = {
-      to,
-      from,
-      template_id: "d-f988b4d134f646cc846f64fdb4e37520",
-
-      dynamic_template_data: {
-        signedUpName: `${user.displayName}`,
-        verificationLink: link,
-      },
-    };
-
-    return await sgMail.send(msg);
-  };
-
-  sendApprovalEmail = async (email: string, link: string): Promise<any> => {
-    const to: string = email;
-    const from: string = this.adminEmail;
-
-    const msg = {
-      to,
-      from,
-      template_id: "d-d367c14a5d964e8c93d04419abbc16a0",
-      dynamic_template_data: {
-        approvalLink: link,
-      },
-    };
-
-    return await sgMail.send(msg);
-  };
-
-  sendAccountDeletedEmail = async (email: string): Promise<any> => {
-    const to: string = email;
-    const from: string = this.adminEmail;
-
-    const msg = {
-      to,
-      from,
-      template_id: "d-2ceed9922f274592a4fb3fecb7a39075",
-    };
-
-    return await sgMail.send(msg);
-  };
-
-  sendApprovalUpdateEmail = async (
-    email: string,
-    approvalMessage: string,
-    furtherInformation: string,
-    actionMessage: string,
-    link: string
-  ): Promise<any> => {
-    const to: string = email;
-    const from: string = this.adminEmail;
-
-    const msg = {
-      to,
-      from,
-      template_id: "d-47713f0267b84b8dab3ce0f14a6bb8a8",
-      dynamic_template_data: {
-        ApprovalMessage: approvalMessage,
-        FurtherInformation: furtherInformation,
-        ActionMessage: actionMessage,
-        updateLink: link,
-      },
-    };
-
-    return await sgMail.send(msg);
-  };
 }
 
 export const accountsService: AccountsService = new AccountsService();

@@ -5,12 +5,8 @@ import { PartialParkingReservationFirestoreModel } from "../data/models/parkingR
 import { Rate } from "../data/parkingLotFromForm";
 import { ParkingReservation } from "../data/parkingReservation";
 import FieldValue = firestore.FieldValue;
-const sgMail = require("@sendgrid/mail");
 
 class ParkingReservationService {
-  constructor() {
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  }
   private adminEmail: string = process.env.ADMIN_EMAIL;
   private firecmsURL: string = process.env.FIRECMS_URL;
 
@@ -143,26 +139,42 @@ class ParkingReservationService {
         const formattedDuration = `${duration} ${rateType}${
           duration > 1 ? "s" : ""
         }`;
-        await this.sendNewReservationCreatedEmail(
-          userEmail,
-          parkingLotRef.data().LotName,
-          parkingLotRef.data().Address.formattedAddress,
-          (
-            slotRef.data().position.row + slotRef.data().position.column
-          ).toString(),
-          new Date(reservation.startTime).toTimeString(),
-          new Date(reservation.endTime).toTimeString(),
-          formattedDuration,
-          reservation.totalAmount.toString(),
-          reservation.reservationId,
-          userRef.data().name
-        )
+        admin
+          .firestore()
+          .collection("mail")
+          .add({
+            to: reservation.userEmail,
+            message: {
+              subject: "Your Parking Reservation Details",
+              html: `Hello,<br>Your parking reservation at <strong>${
+                parkingLotRef.data().LotName
+              }</strong> is confirmed. Here are the details:<br>
+              <ul>
+                <li><strong>Start Time:</strong> ${new Date(
+                  reservation.startTime
+                ).toTimeString()}</li>
+                <li><strong>End Time:</strong> ${new Date(
+                  reservation.endTime
+                ).toTimeString()}</li>
+                <li><strong>Duration:</strong> ${formattedDuration}</li>
+                <li><strong>Total Amount:</strong> ${reservation.totalAmount.toFixed(
+                  2
+                )}</li>
+                <li><strong>Parking Lot Address:</strong> ${
+                  parkingLotRef.data().Address.formattedAddress
+                }</li>
+                <li><strong>Slot Position:</strong> Column ${
+                  slotRef.data().position.column
+                }, Row ${slotRef.data().position.row}</li>
+              </ul>
+              Thank you for choosing our service.`,
+            },
+          })
           .then(() => {
-            console.log("Email sent successfully");
+            console.log("Email queued for sending.");
           })
           .catch((error) => {
-            console.error("Error sending email: ", error);
-            throw new Error("Failed to send email.");
+            console.error("Failed to queue email: ", error);
           });
 
         return reservation;
@@ -263,26 +275,40 @@ class ParkingReservationService {
         duration > 1 ? "s" : ""
       }`;
 
-      await this.sendReservationUpdatedEmail(
-        userRef.data().email,
-        parkingLotRef.data().LotName,
-        parkingLotRef.data().Address.formattedAddress,
-        (
-          slotRef.data().position.row + slotRef.data().position.column
-        ).toString(),
-        new Date(extensionStartTime).toTimeString(),
-        new Date(extensionEndTime).toTimeString(),
-        formattedDuration,
-        totalAmount.toString(),
-        reservation.reservationId,
-        userRef.data().name
-      )
+      admin
+        .firestore()
+        .collection("mail")
+        .doc()
+        .set({
+          to: userRef.data().email,
+          message: {
+            subject: "Your Extended Reservation Details",
+            html: `Your parking reservation at ${
+              parkingLotRef.data().LotName
+            } has been extended. Here are the updated details:<br>
+            <strong>Start Time:</strong> ${new Date(
+              extensionStartTime
+            ).toLocaleString()}<br>
+            <strong>End Time:</strong> ${new Date(
+              extensionEndTime
+            ).toLocaleString()}<br>
+            <strong>Duration:</strong> ${formattedDuration}<br>
+            <strong>Total Amount:</strong> ${totalAmount.toFixed(2)}<br>
+            <strong>Slot ID:</strong> ${slotId}<br>
+            <strong>Slot Position:</strong> ${slotRef.data().position.row}${
+              slotRef.data().position.column
+            }<br>
+            <strong>Lot ID:</strong> ${lotId}<br>
+            <strong>Owner ID:</strong> ${ownerId}<br>
+            <strong>Reservation ID:</strong> ${reservationId}<br>
+            Please contact us if you have any questions regarding your reservation.`,
+          },
+        })
         .then(() => {
-          console.log("Email sent successfully");
+          console.log("Email queued for sending.");
         })
         .catch((error) => {
-          console.error("Error sending email: ", error);
-          throw new Error("Failed to send email.");
+          console.error("Failed to queue email: ", error);
         });
     });
   }
@@ -410,10 +436,6 @@ class ParkingReservationService {
 
     const reservation = reservationSnapshot.data() as ParkingReservation;
 
-    if (reservation.parkingStatus !== "active") {
-      throw new Error("Reservation is already cancelled or completed.");
-    }
-
     // Check if cancellation is within 15 minutes of booking
     const bookingTime = new Date(reservation.createdAt);
     const cancellationTime = new Date();
@@ -434,7 +456,23 @@ class ParkingReservationService {
       });
 
       //send email to the admin or owner
-      await this.sendRefundRequestedEmail(reservation, ownerId);
+      admin
+        .firestore()
+        .collection("mail")
+        .doc()
+        .set({
+          to: this.adminEmail,
+          message: {
+            subject: "Refund Request",
+            html: `A reservation has been cancelled and a refund has been requested. Please <a href="${this.firecmsURL}">review the details</a> and process the refund accordingly.`,
+          },
+        })
+        .then(() => {
+          console.log("Refund request email queued for sending.");
+        })
+        .catch((error) => {
+          console.error("Failed to queue refund request email: ", error);
+        });
     }
 
     // Decrement parking lot occupancy
@@ -460,36 +498,37 @@ class ParkingReservationService {
         const parkingLotRef = await this.parkingLotsCollection(ownerId)
           .doc(lotId)
           .get();
-        const slotRef = await this.parkingSlotsCollection(ownerId, lotId)
-          .doc(slotId)
-          .get();
+        // const slotRef = await this.parkingSlotsCollection(ownerId, lotId)
+        //   .doc(slotId)
+        //   .get();
 
-        //getting the last rate used
-        const { duration, rateType } =
-          reservation.usedRates[reservation.usedRates.length - 1];
-        const formattedDuration = `${duration} ${rateType}${
-          duration > 1 ? "s" : ""
-        }`;
-        await this.sendBookingCancelledEmail(
-          userRef.data().email,
-          parkingLotRef.data().LotName,
-          parkingLotRef.data().Address.formattedAddress,
-          (
-            slotRef.data().position.row + slotRef.data().position.column
-          ).toString(),
-          new Date(reservation.startTime).toTimeString(),
-          new Date(reservation.endTime).toTimeString(),
-          formattedDuration,
-          reservation.totalAmount.toString(),
-          reservation.reservationId,
-          userRef.data().name
-        )
+        // //getting the last rate used
+        // const { duration, rateType } =
+        //   reservation.usedRates[reservation.usedRates.length - 1];
+        // const formattedDuration = `${duration} ${rateType}${
+        //   duration > 1 ? "s" : ""
+        // }`;
+        admin
+          .firestore()
+          .collection("mail")
+          .add({
+            to: userRef.data().email,
+            message: {
+              subject: "Your Reservation Cancellation",
+              html: `Your reservation at ${
+                parkingLotRef.data().LotName
+              } has been cancelled. It was scheduled from ${new Date(
+                reservation.startTime
+              ).toTimeString()} to ${new Date(
+                reservation.endTime
+              ).toTimeString()}.`,
+            },
+          })
           .then(() => {
-            console.log("Email sent successfully");
+            console.log("Cancellation email queued for sending.");
           })
           .catch((error) => {
-            console.error("Error sending email: ", error);
-            throw new Error("Failed to send email.");
+            console.error("Failed to queue cancellation email: ", error);
           });
       });
   }
@@ -542,137 +581,28 @@ class ParkingReservationService {
       registrationNumber
     );
 
-    //Search the driver table for the driv
+    // Search the driver collection for driver with registration Number
+    // const driverRef = admin
+    //   .firestore()
+    //   .collectionGroup("vehicles")
+    //   .where("registrationNumber", "==", registrationNumber)
+    //   .get();
+    //if driver is found inform the parking owner or admin
+    admin
+      .firestore()
+      .collection("mail")
+      .add({
+        to: this.adminEmail,
+        message: {
+          subject: "Hello from Firebase!",
+          text: "A driver has reported wrong occupant",
+          html: "A driver has reported wrong occupant name ",
+        },
+      })
+      .then(() => console.log("Queued email for delivery!"));
 
     return "Report sent successfully";
   }
-
-  sendNewReservationCreatedEmail = async (
-    email: string,
-    parkingLotName: string,
-    parkingLotAddress: string,
-    slot: string,
-    startTime: string,
-    endTime: string,
-    duration: string,
-    totalAmount: string,
-    reservationId: string,
-    first_name: string
-  ): Promise<any> => {
-    const to: string = email;
-    const from: string = this.adminEmail;
-
-    const msg = {
-      to,
-      from,
-      template_id: "d-bc3362cc6b6740188596e0f13b314ab6",
-      dynamic_template_data: {
-        reservationId: reservationId,
-        first_name: first_name,
-        parkingLotName: parkingLotName,
-        Address: parkingLotAddress,
-        parkingSlot: slot,
-        startTime: startTime,
-        endTime: endTime,
-        duration: duration,
-        totalAmount: totalAmount,
-        contactUsLink: `mailto:${this.adminEmail}`,
-      },
-    };
-
-    return await sgMail.send(msg);
-  };
-
-  sendReservationUpdatedEmail = async (
-    email: string,
-    parkingLotName: string,
-    parkingLotAddress: string,
-    slot: string,
-    startTime: string,
-    endTime: string,
-    duration: string,
-    totalAmount: string,
-    reservationId: string,
-    first_name: string
-  ): Promise<any> => {
-    const to: string = email;
-    const from: string = this.adminEmail;
-
-    const msg = {
-      to,
-      from,
-      template_id: "d-230d2aac52664dc99c86222f424ca5a7",
-      dynamic_template_data: {
-        reservationId: reservationId,
-        first_name: first_name,
-        parkingLotName: parkingLotName,
-        Address: parkingLotAddress,
-        parkingSlot: slot,
-        startTime: startTime,
-        endTime: endTime,
-        duration: duration,
-        totalAmount: totalAmount,
-        contactUsLink: `mailto:${this.adminEmail}`,
-      },
-    };
-
-    return await sgMail.send(msg);
-  };
-
-  sendBookingCancelledEmail = async (
-    email: string,
-    parkingLotName: string,
-    parkingLotAddress: string,
-    slot: string,
-    startTime: string,
-    endTime: string,
-    duration: string,
-    totalAmount: string,
-    reservationId: string,
-    first_name: string
-  ) => {
-    const to: string = email;
-    const from: string = this.adminEmail;
-
-    const msg = {
-      to,
-      from,
-      template_id: "d-d0ee3f5512d5468484da90dd60f84f9e",
-      dynamic_template_data: {
-        reservationId: reservationId,
-        first_name: first_name,
-        parkingLotName: parkingLotName,
-        Address: parkingLotAddress,
-        parkingSlot: slot,
-        startTime: startTime,
-        endTime: endTime,
-        duration: duration,
-        totalAmount: totalAmount,
-        contactUsLink: `mailto:${this.adminEmail}`,
-      },
-    };
-
-    return await sgMail.send(msg);
-  };
-
-  sendRefundRequestedEmail = async (
-    reservation: ParkingReservation,
-    ownerId: string
-  ) => {
-    const to: string = reservation.userId;
-    const from: string = this.adminEmail;
-
-    const msg = {
-      to,
-      from,
-      template_id: "d-427f271d38054ff69d248ac1becb217e",
-      dynamic_template_data: {
-        signInUrl: `${this.firecmsURL}/signin`,
-      },
-    };
-
-    return await sgMail.send(msg);
-  };
 }
 
 export const parkingReservationService = new ParkingReservationService();

@@ -12,14 +12,10 @@ import { ParkingLotRate, ParkingLotRateType } from "../data/parkingLotRates";
 import { ParkingSlot, type } from "../data/parkingSlot";
 import { parkingLotRatesService } from "./parkingLotRates-service";
 import { parkingSlotService } from "./parkingSlot-service";
-const sgMail = require("@sendgrid/mail");
 
 import FieldValue = firestore.FieldValue;
 
 class ParkingLotService {
-  constructor() {
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  }
   private adminEmail: string = process.env.ADMIN_EMAIL;
   private firecmsURL: string = process.env.FIRECMS_URL;
 
@@ -206,11 +202,18 @@ class ParkingLotService {
     ]);
 
     // if parkinglot, parkingSlots and parkingRates are created successfully, inform admin via email
-    await this.sendNewParkingLotCreatedEmail(
-      this.adminEmail,
-      this.firecmsURL,
-      ownerId
-    );
+    admin
+      .firestore()
+      .collection("mail")
+      .doc()
+      .set({
+        to: this.adminEmail,
+        message: {
+          subject: `New parking lot created by ${ownerId}`,
+          html: `A new parking lot has been created. <a href="${this.firecmsURL}/app/dashboard/${parkingLotRef.id}">View Parking Lot</a>`,
+        },
+      });
+
     return ParkingLotFirestoreModel.fromDocumentData(
       (await parkingLotRef.get()).data()
     );
@@ -329,17 +332,24 @@ class ParkingLotService {
       //get the email of the parking lot owner
       const user = await admin.auth().getUser(ownerId);
       const email = user?.email;
-      try {
-        this.sendParkingLotApprovalOrRevocationEmail(
-          email,
-          "Your parking lot has been approved.",
-          "Kindly click the link below to view your parking lot.",
-          "View Parking Lot",
-          `${this.firecmsURL}/app/dashboard/${parkingLotId}`
-        );
-      } catch (error) {
-        console.log("error", error);
-      }
+
+      admin
+        .firestore()
+        .collection("mail")
+        .doc()
+        .set({
+          to: email,
+          message: {
+            subject: "Your parking lot has been approved.",
+            html: `Kindly click the link below to view your parking lot. <a href="${this.firecmsURL}/app/dashboard/${parkingLotId}">View Parking Lot</a>`,
+          },
+        })
+        .then(() => {
+          console.log("Email queued for sending.");
+        })
+        .catch((error) => {
+          console.error("Failed to queue email: ", error);
+        });
     } catch (error) {
       console.log("error", error);
     }
@@ -351,71 +361,29 @@ class ParkingLotService {
       await this.updateParkingLotById(ownerId, parkingLotId, {
         status: "Inactive",
       });
-
-      try {
-        //get the email of the parking lot owner
-        const user = await admin.auth().getUser(ownerId);
-        const email = user?.email;
-
-        this.sendParkingLotApprovalOrRevocationEmail(
-          email,
-          "Your parking lot has been deactivated.",
-          "Kindly contact the support for further information.",
-          "Contact support",
-          `mailto:${this.adminEmail}`
-        );
-      } catch (error) {
-        console.log("error", error);
-      }
+      const user = await admin.auth().getUser(ownerId);
+      const email = user?.email;
+      admin
+        .firestore()
+        .collection("mail")
+        .doc()
+        .set({
+          to: email,
+          message: {
+            subject: "Your parking lot has been deactivated.",
+            html: `Kindly contact the support for further information. <a href="mailto:${this.adminEmail}">Contact support</a>`,
+          },
+        })
+        .then(() => {
+          console.log("Email queued for sending.");
+        })
+        .catch((error) => {
+          console.error("Failed to queue email: ", error);
+        });
     } catch (error) {
-      console.log("error", error);
+      console.log("error revoking approval", error);
     }
   }
-
-  sendParkingLotApprovalOrRevocationEmail = async (
-    email: string,
-    message: string,
-    furtherInformation: string,
-    actionMessage: string,
-    link: string
-  ): Promise<any> => {
-    const to: string = email;
-    const from: string = this.adminEmail;
-
-    const msg = {
-      to,
-      from,
-      template_id: "d-47713f0267b84b8dab3ce0f14a6bb8a8",
-      dynamic_template_data: {
-        ApprovalMessage: message,
-        FurtherInformation: furtherInformation,
-        ActionMessage: actionMessage,
-        updateLink: link,
-      },
-    };
-
-    return await sgMail.send(msg);
-  };
-  sendNewParkingLotCreatedEmail = async (
-    email: string,
-    link: string,
-    ownerId: string
-  ): Promise<any> => {
-    const to: string = email;
-    const from: string = this.adminEmail;
-
-    const msg = {
-      to,
-      from,
-      template_id: "d-6b054d0e7234489b9ee0df574a387233",
-      dynamic_template_data: {
-        approvalLink: link,
-        ownerId: ownerId,
-      },
-    };
-
-    return await sgMail.send(msg);
-  };
 
   async deleteParkingLotById(
     ownerId: string,

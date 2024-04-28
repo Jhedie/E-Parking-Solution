@@ -82,8 +82,4 @@ typings/
 # Node.js dependency directory
 node_modules/
 
-
-sendgrid.env
-
-
 functions/src/scheduled-functions-WIP/

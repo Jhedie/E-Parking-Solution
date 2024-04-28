@@ -1,7 +1,5 @@
 import * as admin from "firebase-admin";
 import { onSchedule } from "firebase-functions/v2/scheduler";
-const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 //runs every minute
 exports.reservationStatusUpdater = onSchedule("* * * * *", async (event) => {
@@ -81,19 +79,29 @@ exports.reservationStatusUpdater = onSchedule("* * * * *", async (event) => {
     if (!data.startNotificationSent) {
       // Double-check to prevent race conditions
 
-      const msg = {
-        to: data.userEmail, // Assuming you store the user's email in the reservation document
-        from: adminEmail, // Your verified sender
-        subject: "Upcoming Reservation",
-        text: `Your parking reservation ${data.reservationId} will start in 15 minutes`,
-        html: `<strong>Your parking reservation ${data.reservationId} will start in 15 minutes</strong>`,
-      };
-      sgMail
-        .send(msg)
+      admin
+        .firestore()
+        .collection("mail")
+        .add({
+          to: data.userEmail,
+          message: {
+            subject: "Your Reservation Details",
+            html: `Your parking reservation starts in 15 minutes.<br><strong>Start Time:</strong> ${new Date(
+              data.startTime
+            ).toTimeString()}<br><strong>End Time:</strong> ${new Date(
+              data.endTime
+            ).toTimeString()}<br><strong>Duration:</strong> ${
+              data.duration
+            }<br><strong>Total Amount:</strong> ${data.totalAmount.toString()}`,
+          },
+        })
         .then(() => {
+          console.log("Start notification email queued for sending.");
           batch.update(doc.ref, { startNotificationSent: true }); // Mark as notified
         })
-        .catch((error) => console.error(error));
+        .catch((error) => {
+          console.error("Failed to queue start notification email: ", error);
+        });
     }
   });
 
@@ -111,24 +119,59 @@ exports.reservationStatusUpdater = onSchedule("* * * * *", async (event) => {
   endNotificationsSnapshot.forEach((doc) => {
     const data = doc.data();
     if (!data.endNotificationSent) {
-      const msg = {
-        to: data.userEmail,
-        from: adminEmail,
-        subject: "Ending Soon",
-        text: `Your parking reservation ${data.reservationId} will end in 15 minutes`,
-        html: `<strong>Your parking reservation ${data.reservationId} will end in 15 minutes</strong>`,
-      };
-      sgMail
-        .send(msg)
-        .then(() => {
-          batch.update(doc.ref, { endNotificationSent: true }); // Mark as notified
+      admin
+        .firestore()
+        .collection("mail")
+        .add({
+          to: data.userEmail,
+          message: {
+            subject: "Your Reservation is Ending Soon",
+            html: `Your parking reservation is ending in 15 minutes.<br><strong>End Time:</strong> ${new Date(
+              data.endTime
+            ).toTimeString()}<br>Please ensure you vacate the parking spot on time to avoid any penalties.`,
+          },
         })
-        .catch((error) => console.error(error));
+        .then(() => {
+          console.log("End notification email queued for sending.");
+          batch.update(doc.ref, { endNotificationSent: true }); // Mark as end notified
+        })
+        .catch((error) => {
+          console.error("Failed to queue end notification email: ", error);
+        });
     }
   });
 
+  //update the occupancy levels of all parking lots
   await updateOccupancyLevels();
 
+  //check for overstayed reservations
+  const overstayedReservations = await reservationsRef
+    .where("endTime", "<", now)
+    .where("checkedIn", "==", true)
+    .where("overStayedHandled", "==", false)
+    .get();
+
+  overstayedReservations.forEach((doc) => {
+    const data = doc.data();
+
+    admin
+      .firestore()
+      .collection("mail")
+      .add({
+        to: data.userEmail,
+        message: {
+          subject: "Overstaying Alert",
+          html: `<strong>Your parking reservation ${data.reservationId} has expired. Please vacate the slot.</strong>`,
+        },
+      })
+      .then(() => {
+        console.log("Overstay alert email queued for sending.");
+        batch.update(doc.ref, { overstayHandled: true }); // Mark the overstay as handled
+      })
+      .catch((error) => {
+        console.error("Failed to queue overstay alert email: ", error);
+      });
+  });
   // Commit all updates
   await batch.commit();
 });
@@ -155,7 +198,11 @@ async function updateOccupancyLevels() {
       .where("endTime", ">=", now);
 
     const activeReservationsSnapshot = await reservationsRef.get();
-    const activeCount = activeReservationsSnapshot.size;
+    //get unique reservations
+    const uniqueReservations = new Set(
+      activeReservationsSnapshot.docs.map((doc) => doc.data().reservationId)
+    );
+    const activeCount = uniqueReservations.size;
 
     // Update the parking lot document with the new occupancy count
     lotDoc.ref.update({

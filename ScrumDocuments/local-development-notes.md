@@ -330,3 +330,6 @@ https://firebase.google.com/docs/firestore/security/rules-query
 
 Firebase query limitations:
 https://stackoverflow.com/questions/52065946/firestore-compound-query-with
+
+Fixing email issue for firebase email extension:
+https://stackoverflow.com/questions/74456677/trigger-email-firebase-extension-invalid-login-535-5-7-8-username-and-passwor

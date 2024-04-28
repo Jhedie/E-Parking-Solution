@@ -105,7 +105,12 @@ const Dashboard = () => {
   };
 
   const handleSlotClick = (slot: ParkingSlotData) => {
-    alert(slot.values.status);
+    alert(
+      `slotPosition: ${slot.values.position.row} ${slot.values.position.column}
+      slotType: ${slot.values.type}
+      slotReservations: ${slot.reservations.length}
+      `
+    );
   };
 
   const [showSubmissionModal, setShowSubmissionModal] = useState(false);
@@ -130,7 +135,7 @@ const Dashboard = () => {
                   slot.values.type === "electric"
                 ? "bg-green-500" // Electric slots that are available
                 : slot.values.status === "Available" &&
-                  slot.values.type === "Disabled"
+                  slot.values.type === "disabled"
                 ? "bg-blue-500" // Disabled slots that are available
                 : slot.values.status === "Reserved"
                 ? "bg-yellow-500" // Reserved slots
@@ -252,12 +257,16 @@ const Dashboard = () => {
                 <span className="ml-2">Available</span>
               </div>
             </div>
+
             {showSubmissionModal && (
               <Modal
                 open={showSubmissionModal}
                 onClose={() => setShowSubmissionModal(false)}
               >
-                <div className="text-center"></div>
+                <div className="text-center">
+                  {/* <p>Total Reservations: {parkingLot.slots..length}</p>
+                  <p>Slot Type: {selectedSlot.type}</p> */}
+                </div>
               </Modal>
             )}
           </div>

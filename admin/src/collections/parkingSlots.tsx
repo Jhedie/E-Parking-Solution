@@ -1,4 +1,4 @@
-import { buildCollection, buildEntityCallbacks } from "@firecms/core";
+import { buildCollection } from "@firecms/core";
 import { ParkingReservationCollection } from "./parkingReservations";
 
 export type ParkingSlots = {
@@ -11,34 +11,6 @@ export type ParkingSlots = {
   };
   createdAt?: Date;
 };
-
-// const parkingSlotCallbacks = buildEntityCallbacks<ParkingSlots>({
-//   onPreSave: async (entitySaveProps) => {
-//     console.log("Creating parking slot", entitySaveProps);
-//     //current row and column
-//     const row = entitySaveProps.values.position?.row;
-//     const column = entitySaveProps.values.position?.column;
-
-//     const parkingLotsPath = entitySaveProps.resolvedPath;
-
-//     const positionExists = await entitySaveProps.context.dataSource
-//       .fetchCollection({ path: parkingLotsPath })
-//       .then((parkingSlots) => {
-//         console.log("parkingSlots", parkingSlots);
-//         return parkingSlots.some(
-//           (parkingSlot) =>
-//             parkingSlot.values.position?.row === row &&
-//             parkingSlot.values.position?.column === column
-//         );
-//       });
-
-//     if (positionExists) {
-//       throw new Error("Position is already occupied");
-//     }
-
-//     return entitySaveProps.values;
-//   },
-// });
 
 export const ParkingSlotsCollection = buildCollection<ParkingSlots>({
   id: "parkingSlots",
@@ -53,7 +25,6 @@ export const ParkingSlotsCollection = buildCollection<ParkingSlots>({
   }),
   editable: true,
   inlineEditing: true,
-  // callbacks: parkingSlotCallbacks,
   properties: {
     slotId: {
       dataType: "string",

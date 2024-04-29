@@ -18,23 +18,22 @@ exports.sendNotifications = onSchedule("*/2 * * * *", async (event) => {
     .where("startTime", "<=", fifteenMinutesLater)
     .where("startNotificationSent", "==", false)
     .get();
-  startNotificationsSnapshot.forEach((doc) => {
+
+  const startPromises = startNotificationsSnapshot.docs.map((doc) => {
     const data = doc.data();
     if (data && !data.startNotificationSent) {
-      admin
+      return admin
         .firestore()
         .collection("mail")
         .add({
           to: data.userEmail,
           message: {
             subject: "Your Reservation Details",
-            html: `Your parking reservation starts in 15 minutes.<br><strong>Start Time:</strong> ${new Date(
-              data.startTime.seconds * 1000
-            ).toISOString()}<br><strong>End Time:</strong> ${dayjs(
+            html: `Your parking reservation starts soon.<br><strong>Start Time:</strong> ${dayjs(
+              new Date(data.startTime.seconds * 1000).toISOString()
+            ).format("h:mm A")}<br><strong>End Time:</strong> ${dayjs(
               new Date(data.endTime.seconds * 1000).toISOString()
-            ).format("h:mm A")}<br><strong>Duration:</strong> ${
-              data.duration
-            }<br><strong>Total Amount:</strong> ${data.totalAmount.toString()}`,
+            ).format("h:mm A")}`,
           },
         })
         .then(() => {
@@ -44,6 +43,7 @@ exports.sendNotifications = onSchedule("*/2 * * * *", async (event) => {
           console.error("Error sending start notification:", error);
         });
     }
+    return null;
   });
 
   // Send end notifications
@@ -51,17 +51,17 @@ exports.sendNotifications = onSchedule("*/2 * * * *", async (event) => {
     .where("endTime", "<=", fifteenMinutesLater)
     .where("endNotificationSent", "==", false)
     .get();
-  endNotificationsSnapshot.forEach((doc) => {
+  const endPromises = endNotificationsSnapshot.docs.map((doc) => {
     const data = doc.data();
     if (data && !data.endNotificationSent) {
-      admin
+      return admin
         .firestore()
         .collection("mail")
         .add({
           to: data.userEmail,
           message: {
-            subject: "Your Reservation is Ending Soon",
-            html: `Your parking reservation is ending in 15 minutes.<br><strong>End Time:</strong> ${dayjs(
+            subject: "Your Reservation is Ends Soon",
+            html: `Your parking reservation is ending soon.<br><strong>End Time:</strong> ${dayjs(
               new Date(data.endTime.seconds * 1000).toISOString()
             ).format(
               "h:mm A"
@@ -75,7 +75,10 @@ exports.sendNotifications = onSchedule("*/2 * * * *", async (event) => {
           console.error("Error sending end notification:", error);
         });
     }
+    return null;
   });
+
+  await Promise.all([...startPromises, ...endPromises]);
 
   await batch.commit();
 });

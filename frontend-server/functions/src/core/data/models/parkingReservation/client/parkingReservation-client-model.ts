@@ -55,7 +55,8 @@ export class ParkingReservationClientModel extends ParkingReservation {
     body: any,
     userId: string,
     slotId: string,
-    lotId: string
+    lotId: string,
+    isNewReplacementReservation?: boolean
   ): ParkingReservationClientModel {
     this._validate(body);
 
@@ -77,7 +78,7 @@ export class ParkingReservationClientModel extends ParkingReservation {
       body[this.kStripeCustomerId],
       new Date(), // modifiedAt
       new Date(), // createdAt
-      false, // startNotificationSent
+      isNewReplacementReservation ? true : false, // startNotificationSent
       false // endNotificationSent
     );
   }
@@ -111,7 +112,8 @@ export class ParkingReservationClientModel extends ParkingReservation {
         this.startNotificationSent,
       [ParkingReservationClientModel.kEndNotificationSent]:
         this.endNotificationSent,
-      [ParkingReservationClientModel.kOverStayedHandled]: this.overStayedHandled,
+      [ParkingReservationClientModel.kOverStayedHandled]:
+        this.overStayedHandled,
     };
   }
 }

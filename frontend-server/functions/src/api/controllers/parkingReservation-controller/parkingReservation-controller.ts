@@ -70,6 +70,12 @@ export class ParkingReservationController implements Controller {
       this.reportWrongOccupant.bind(this),
       ["driver"]
     );
+
+    httpServer.post(
+      "/parkingReservations/assign-new/:parkingLotId/:parkingSlotId",
+      this.assignNewParkingReservation.bind(this),
+      ["driver"]
+    );
   }
 
   private readonly createParkingReservation: RequestHandler = async (
@@ -397,5 +403,48 @@ export class ParkingReservationController implements Controller {
     res.status(201).send({
       message: result,
     });
+  };
+
+  private readonly assignNewParkingReservation: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    console.log("Assigning new parking reservation...");
+    const parkingReservationDataInput: ParkingReservation =
+      ParkingReservationClientModel.validate(
+        req.body,
+        req.auth.uid,
+        req.params.parkingSlotId,
+        req.params.parkingLotId,
+        true
+      );
+
+    console.log(
+      "parkingReservationDataInput validated",
+      parkingReservationDataInput
+    );
+    const createdReservation =
+      await parkingReservationService.createParkingReservation(
+        req.params.parkingLotId,
+        req.params.parkingSlotId,
+        parkingReservationDataInput,
+        true
+      );
+
+    //delete old reservation
+    console.log(
+      `Deleting old reservation in ${req.params.parkingLotId} with slotId ${req.body.oldSlotId} and reservationId ${req.body.oldReservationId}`
+    );
+    await parkingReservationService.deleteParkingReservation(
+      req.params.parkingLotId,
+      req.body.oldSlotId,
+      req.body.oldReservationId
+    );
+    const output =
+      ParkingReservationClientModel.fromEntity(
+        createdReservation
+      ).toBodyFullReservation();
+    res.status(201).send(output);
   };
 }

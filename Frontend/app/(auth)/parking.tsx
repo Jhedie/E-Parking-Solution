@@ -1,3 +1,4 @@
+import { NewSlotSelectionScreen } from "@components/Parking/Arrival/newSlotSelection/screen";
 import { ReportOccupiedSlotScreen } from "@components/Parking/Arrival/reportOccupiedSlot/screen";
 import { ArrivalScreen } from "@components/Parking/Arrival/screen";
 import { ExtendParkingScreen } from "@components/Parking/ExtendParking/screen";
@@ -42,6 +43,9 @@ export type ParkingStackParamList = {
     reservation: ReservationWithLot;
   };
   ReportOccupiedSlotScreen: {
+    reservation: ReservationWithLot;
+  };
+  NewSlotSelectionScreen: {
     reservation: ReservationWithLot;
   };
 };
@@ -94,6 +98,15 @@ export default function Screen() {
         options={{
           headerShown: true,
           headerTitle: "Report Occupied Slot"
+        }}
+      />
+      {/* New Slot Selection */}
+      <ParkingScreenStack.Screen
+        name="NewSlotSelectionScreen"
+        component={NewSlotSelectionScreen}
+        options={{
+          headerShown: true,
+          headerTitle: "New Slot Selection"
         }}
       />
     </ParkingScreenStack.Navigator>

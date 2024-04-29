@@ -60,10 +60,7 @@ export default function LandingPage() {
               <div className="display bg-white">
                 <div className="artboard artboard-demo phone-4">
                   <div>
-                    <img
-                      src="../../public/slotsDashboardImage.jpeg"
-                      alt="Parking App"
-                    />
+                    <img src="/slotsDashboardImage.jpeg" alt="Parking App" />
                   </div>
                 </div>
               </div>
@@ -73,7 +70,7 @@ export default function LandingPage() {
               <div className="display bg-white">
                 <div className="artboard artboard-demo phone-4">
                   <div>
-                    <img src="/public/parkingMap.jpeg" alt="Parking App" />
+                    <img src="/parkingMap.jpeg" alt="Parking App" />
                   </div>
                 </div>
               </div>

@@ -56,7 +56,8 @@ class ParkingReservationService {
   async createParkingReservation(
     lotId: string,
     slotId: string,
-    reservation: ParkingReservation
+    reservation: ParkingReservation,
+    isNewReplacementReservation?: boolean
   ): Promise<ParkingReservation> {
     let ownerId: string = await this.getParkingOwner(lotId);
 
@@ -140,17 +141,55 @@ class ParkingReservationService {
         const formattedDuration = `${duration} ${rateType}${
           duration > 1 ? "s" : ""
         }`;
-
-        admin
-          .firestore()
-          .collection("mail")
-          .add({
-            to: reservation.userEmail,
-            message: {
-              subject: "Your Parking Reservation Details",
-              html: `Hello,<br>Your parking reservation at <strong>${
-                parkingLotRef.data().LotName
-              }</strong> is confirmed. Here are the details:<br>
+        if (isNewReplacementReservation) {
+          // send different kind of email saying that their slot has been changed and these are their details
+          admin
+            .firestore()
+            .collection("mail")
+            .add({
+              to: reservation.userEmail,
+              message: {
+                subject: "Update to Your Parking Reservation",
+                html: `Hello,<br>Your parking reservation slot has been changed. Here are the new details:<br>
+                <ul>
+                  <li><strong>New Slot Position:</strong> Column ${
+                    slotRef.data().position.column
+                  }, Row ${slotRef.data().position.row}</li>
+                  <li><strong>Parking Lot:</strong> ${
+                    parkingLotRef.data().LotName
+                  }</li>
+                  <li><strong>Start Time:</strong> ${dayjs(
+                    reservation.startTime
+                  ).format("YYYY-MM-DD HH:mm:ss")}</li>
+                  <li><strong>End Time:</strong> ${dayjs(
+                    reservation.endTime
+                  ).format("YYYY-MM-DD HH:mm:ss")}</li>
+                  <li><strong>Duration:</strong> ${formattedDuration}</li>
+                  <li><strong>Total Amount:</strong> ${reservation.totalAmount.toFixed(
+                    2
+                  )}</li>
+                </ul>
+                Please contact support if you did not request this change.<br>
+                Thank you for using our service.`,
+              },
+            })
+            .then(() => {
+              console.log("Email queued for sending.");
+            })
+            .catch((error) => {
+              console.error("Failed to queue email: ", error);
+            });
+        } else {
+          admin
+            .firestore()
+            .collection("mail")
+            .add({
+              to: reservation.userEmail,
+              message: {
+                subject: "Your Parking Reservation Details",
+                html: `Hello,<br>Your parking reservation at <strong>${
+                  parkingLotRef.data().LotName
+                }</strong> is confirmed. Here are the details:<br>
               <ul>
                 <li><strong>Start:</strong> ${dayjs(
                   reservation.startTime
@@ -170,14 +209,15 @@ class ParkingReservationService {
                 }, Row ${slotRef.data().position.row}</li>
               </ul>
               Thank you for choosing our service.`,
-            },
-          })
-          .then(() => {
-            console.log("Email queued for sending.");
-          })
-          .catch((error) => {
-            console.error("Failed to queue email: ", error);
-          });
+              },
+            })
+            .then(() => {
+              console.log("Email queued for sending.");
+            })
+            .catch((error) => {
+              console.error("Failed to queue email: ", error);
+            });
+        }
 
         return reservation;
       })
@@ -391,7 +431,9 @@ class ParkingReservationService {
     await reservationRef.delete();
 
     // Delete reservation from top level collection
-    this.parkingReservationsTopLevelCollection().doc(reservationId).delete();
+    await this.parkingReservationsTopLevelCollection()
+      .doc(reservationId)
+      .delete();
 
     // Decrement parking lot occupancy
     await this.decrementParkingLotOccupancy(ownerId, lotId);
@@ -418,6 +460,51 @@ class ParkingReservationService {
     return reservations;
   }
 
+  async deleteParkingReservation(
+    lotId: string,
+    slotId: string,
+    reservationId: string
+  ): Promise<void> {
+    console.log("In the service, deleting old reservation");
+    const ownerId: string = await this.getParkingOwner(lotId);
+    const reservationRef = this.parkingReservationDoc(
+      ownerId,
+      lotId,
+      slotId,
+      reservationId
+    );
+
+    const reservationSnapshot = await reservationRef.get();
+
+    if (!reservationSnapshot.exists) {
+      throw new Error("Reservation does not exist.");
+    }
+
+    // Decrement parking lot occupancy
+    await this.decrementParkingLotOccupancy(ownerId, lotId);
+
+    console.log("Starting transaction to delete reservation");
+    await admin
+      .firestore()
+      .runTransaction(async (transaction) => {
+        console.log("Deleting reservation from parkingSlotsCollection");
+        transaction.delete(reservationRef);
+
+        console.log(
+          "Deleting reservation from parkingReservationsTopLevelCollection"
+        );
+        transaction.delete(
+          this.parkingReservationsTopLevelCollection().doc(reservationId)
+        );
+      })
+      .then(() => {
+        console.log("Transaction successfully committed");
+      })
+      .catch((error) => {
+        console.error("Transaction failed: ", error);
+      });
+  }
+
   async cancelParkingReservation(
     lotId: string,
     slotId: string,
@@ -439,9 +526,15 @@ class ParkingReservationService {
     const reservation = reservationSnapshot.data() as ParkingReservation;
 
     // Check if cancellation is within 15 minutes of booking
-    const startTime = new Date(reservation.startTime.getSeconds() * 1000);
-    const cancellationTime = new Date();
-    const timeDiff = (cancellationTime.getTime() - startTime.getTime()) / 60000; // difference in minutes
+    // Assuming reservation.startTime could be a Firestore Timestamp or a standard JavaScript timestamp
+    // Check if cancellation is at least 15 minutes before the reservation starts
+    const startTime =
+      reservation.startTime instanceof admin.firestore.Timestamp
+        ? reservation.startTime.toMillis()
+        : new Date(reservation.startTime).getTime();
+
+    const cancellationTime = new Date().getTime();
+    const timeDiff = (startTime - cancellationTime) / 60000; // Difference in minutes
 
     if (timeDiff >= 15) {
       // Flag this reservation for a refund
@@ -455,6 +548,18 @@ class ParkingReservationService {
         status: "pending",
         requestedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
+      admin
+        .firestore()
+        .collection("mail")
+        .add({
+          to: reservation.userEmail,
+          message: {
+            subject: "Parking Reservation Refund",
+            html: `Hello,<br>
+            Your parking reservation cancellation is successful, and a refund will be processed shortly.<br>
+            Thank you for choosing our service.`,
+          },
+        });
 
       //send email to the admin or owner
       admin
@@ -473,6 +578,23 @@ class ParkingReservationService {
         })
         .catch((error) => {
           console.error("Failed to queue refund request email: ", error);
+        });
+    } else {
+      // Handle the case where the cancellation is too late for a refund
+      console.log("Cancellation too late for a refund");
+
+      // Notify the user via email that their cancellation was too late for a refund
+      admin
+        .firestore()
+        .collection("mail")
+        .add({
+          to: reservation.userEmail,
+          message: {
+            subject: "Parking Reservation Cancellation",
+            html: `Hello,<br>
+            Your parking reservation cancellation was successful, but it did not qualify for a refund as cancellation was done less than 15 minutes before the reservation start time.<br>
+            Thank you for choosing our service.`,
+          },
         });
     }
 
@@ -600,15 +722,18 @@ class ParkingReservationService {
       "Searching for driver with registration number:",
       registrationNumber
     );
-    const driverRef = await admin
-      .firestore()
-      .collectionGroup("vehicles")
-      .where("registrationNumber", "==", registrationNumber)
-      .get();
 
+    const driverRef = await admin.firestore().collectionGroup("vehicles").get();
+
+    const filteredDocs = driverRef.docs.filter((doc) => {
+      console.log("doc", doc.data());
+      return doc.data().registrationNumber === registrationNumber;
+    });
     // If driver is found, inform the parking owner or admin
-    if (driverRef.docs.length > 0) {
-      const driverData = driverRef.docs[0].data();
+    if (filteredDocs.length === 0) {
+      throw new Error("No driver found with that registration number");
+    } else {
+      const driverData = filteredDocs[0].data();
       console.log("Driver found:", driverData);
       admin
         .firestore()
@@ -619,12 +744,9 @@ class ParkingReservationService {
             subject: "Report of Wrong Occupant in Parking Slot",
             text: `A report has been filed for a wrong occupant in a parking slot. Details are as follows:\n
                    Reporting User ID: ${reservation.userId}\n
-                   Reporting User Name: ${reportingUser.data().firstName} ${
-              reportingUser.data().lastName
+                   Reporting User Name: ${reportingUser.data().firstName}
             }\n
-                   Vehicle Details: ${driverData.make} ${
-              driverData.model
-            } - Registration Number: ${registrationNumber}\n
+                   Vehicle Registration Number: ${registrationNumber}\n
                    Reservation Start Time: ${dayjs(
                      reservation.startTime
                    ).format("YYYY-MM-DD HH:mm:ss")}\n
@@ -649,7 +771,7 @@ class ParkingReservationService {
                        reservation.endTime
                      ).format("YYYY-MM-DD HH:mm:ss")}</li>
                      <li>Parking Lot ID: ${
-                       reservation.parkingLotDetails.lotId
+                       reservation.parkingLotDetails.LotId
                      }</li>
                      <li>Parking Slot ID: ${reservation.slotId}</li>
                    </ul>`,
@@ -659,13 +781,8 @@ class ParkingReservationService {
         .catch((error) => {
           console.error("Failed to queue email: ", error);
         });
-    } else {
-      console.log(
-        "No driver found with the registration number:",
-        registrationNumber
-      );
-      return "No driver found with the registration number";
     }
+
     return "Report sent successfully";
   }
 }

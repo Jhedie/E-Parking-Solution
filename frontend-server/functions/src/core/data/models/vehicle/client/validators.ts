@@ -30,13 +30,13 @@ async function checkRegistrationNumberUniqueness(
   number: string
 ): Promise<boolean> {
   try {
-    const querySnapshot = await admin
-      .firestore()
-      .collectionGroup("vehicles")
-      .where("registrationNumber", "==", number)
-      .where("role", "==", "driver")
-      .get();
-    return querySnapshot.empty;
+    const driverRef = await admin.firestore().collectionGroup("vehicles").get();
+
+    const filteredDocs = driverRef.docs.filter((doc) => {
+      console.log("doc", doc.data());
+      return doc.data().registrationNumber === number;
+    });
+    return filteredDocs.length === 0;
   } catch (error) {
     console.error("Error checking registration number uniqueness:", error);
     throw new Error(

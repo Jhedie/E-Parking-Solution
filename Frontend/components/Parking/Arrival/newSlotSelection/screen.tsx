@@ -1,34 +1,27 @@
+import { ParkingStackNavigation } from "@/(auth)/parking";
 import { AntDesign, FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { BookingConfirmationDetailsForNewReservation } from "@models/BookingConfirmationDetails";
+import { ParkingSlot } from "@models/ParkingSlot";
+import { ReservationWithLot } from "@models/ReservationWithLot";
+import { useConfig } from "@providers/Config/ConfigProvider";
 import firestore from "@react-native-firebase/firestore";
 import { RouteProp, useRoute } from "@react-navigation/native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-
-import AwesomeButton from "react-native-really-awesome-button";
-import { YStack } from "tamagui";
-import { StackNavigation } from "../../../app/(auth)/home";
-
-import { BookingDetails } from "@models/BookingDetails";
-import { ParkingLot } from "@models/ParkingLot";
-import { Rate } from "@models/ParkingLotRate";
-import { ParkingSlot } from "@models/ParkingSlot";
-import { Vehicle } from "@models/Vehicle";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import * as Burnt from "burnt";
 import { useFocusEffect } from "expo-router";
 import useToken from "hooks/useToken";
 import { debounce } from "lodash";
-interface SelectSlotScreenProps {
-  navigation: StackNavigation;
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import AwesomeButton from "react-native-really-awesome-button";
+import { YStack } from "tamagui";
+interface NewSlotSelectionScreenProps {
+  navigation: ParkingStackNavigation;
 }
 
-type RouteParams = {
-  SelectSlotScreen: {
-    parkingLot: ParkingLot;
-    vehicle: Vehicle;
-    bookingDetails: BookingDetails;
-    selectedRate: Rate;
-  };
+export type RouteParams = {
+  reservation: ReservationWithLot;
 };
 
 const debouncedSelectAndToast = debounce(
@@ -71,29 +64,33 @@ const debouncedSelectAndToast = debounce(
   2000
 );
 
-export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
+export const NewSlotSelectionScreen: React.FC<NewSlotSelectionScreenProps> = ({
   navigation
 }) => {
   const [selectedParkingSlot, setSelectedParkingSlot] = useState<
     ParkingSlot | undefined
   >(undefined);
-  const route = useRoute<RouteProp<RouteParams, "SelectSlotScreen">>();
-  const token = useToken();
+  const route = useRoute<RouteProp<RouteParams, "reservation">>();
+  const reservation = route.params["reservation"] as ReservationWithLot;
 
-  const chosenStartTime = route.params.bookingDetails.startDateTime;
-  const chosenEndTime = route.params.bookingDetails.endDateTime;
+  const token = useToken();
+  const { BASE_URL } = useConfig();
+
+  const chosenStartTime = reservation.startTime;
+  const chosenEndTime = reservation.endTime;
+
   const [slots, setSlots] = useState<ParkingSlot[]>([]);
   useFocusEffect(
     useCallback(() => {
-      console.log("Parking Lot", route.params.parkingLot);
-      if (!token || !route.params.parkingLot.LotId) return;
+      console.log("Parking Lot", reservation.parkingLotDetails);
+      if (!token || !reservation.parkingLotDetails.LotId) return;
 
       console.log("SelectSlotScreen mounted");
       const unsubscribeFns: (() => void)[] = []; // To store unsubscribe functions
 
       // Fetch all slots
       const slotsRef = firestore().collection(
-        `parkingOwner/${route.params.parkingLot.OwnerId}/parkingLots/${route.params.parkingLot.LotId}/parkingSlots`
+        `parkingOwner/${reservation.parkingLotDetails.OwnerId}/parkingLots/${reservation.parkingLotDetails.LotId}/parkingSlots`
       );
 
       slotsRef.get().then((slotsSnapshot) => {
@@ -112,7 +109,7 @@ export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
         fetchedSlots.forEach((slot) => {
           const reservationsRef = firestore()
             .collection(
-              `parkingOwner/${route.params.parkingLot.OwnerId}/parkingLots/${route.params.parkingLot.LotId}/parkingSlots/${slot.slotId}/parkingReservations`
+              `parkingOwner/${reservation.parkingLotDetails.OwnerId}/parkingLots/${reservation.parkingLotDetails.LotId}/parkingSlots/${slot.slotId}/parkingReservations`
             )
             .where(
               "endTime",
@@ -304,6 +301,31 @@ export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
       }
     });
   }, [slots]);
+  const postBookingDetails = async (bookingDetails) => {
+    const response = await axios.post(
+      `${BASE_URL}/parkingReservations/assign-new/${reservation.parkingLotDetails.LotId}/${selectedParkingSlot?.slotId}`,
+      bookingDetails,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    return response.data;
+  };
+  const [isProcessingBooking, setIsProcessingBooking] = useState(false);
+  const mutation = useMutation({
+    mutationFn: postBookingDetails,
+    onSuccess: () => {
+      setIsProcessingBooking(false);
+      navigation.navigate("ParkingTopTabsNavigator");
+    },
+    onError: (error) => {
+      console.error("Error posting booking details:", error);
+      setIsProcessingBooking(false);
+      navigation.goBack();
+    }
+  });
 
   return (
     <YStack
@@ -312,184 +334,204 @@ export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
       alignItems="center"
       justifyContent="center"
     >
-      <ScrollView>
+      {isProcessingBooking ? (
         <View>
-          <Text
-            style={{ fontSize: 16, fontWeight: "500", textAlign: "center" }}
-          >
-            Slot availabilities for the selected time. Go back to view others.
-          </Text>
+          <Text>Processing booking...</Text>
         </View>
-        <View
-          style={{
-            padding: 10,
-            borderRadius: 10,
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center"
-          }}
-        >
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            ref={scrollViewRef}
+      ) : (
+        <ScrollView>
+          <View>
+            <Text
+              style={{ fontSize: 16, fontWeight: "500", textAlign: "center" }}
+            >
+              Please select a new parking slot for the selected time.
+            </Text>
+          </View>
+          <View
+            style={{
+              padding: 10,
+              borderRadius: 10,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center"
+            }}
           >
-            <View
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              horizontal
+              ref={scrollViewRef}
+            >
+              <View
+                style={{
+                  padding: 10,
+                  borderRadius: 10,
+                  flexDirection: "row",
+                  marginHorizontal: 20
+                }}
+              >
+                {/* Dynamically generate parking spots based on row positions */}
+                {columns.map((row, index) => (
+                  <View
+                    key={index}
+                    style={{
+                      flexDirection: "row",
+                      borderColor: "black"
+                    }}
+                  >
+                    {generateParkingSlots(row)}
+                    {index !== columns.length - 1 && (
+                      <View
+                        style={{
+                          flex: 2
+                        }}
+                      >
+                        <View
+                          style={{
+                            justifyContent: "center",
+                            alignSelf: "center",
+                            alignItems: "center",
+                            paddingHorizontal: 10 * 0.5,
+                            width: 60,
+                            height: 25,
+                            borderRadius: 4,
+                            backgroundColor: "lightgrey"
+                          }}
+                        >
+                          <Text
+                            numberOfLines={1}
+                            style={{ overflow: "hidden" }}
+                          >
+                            Entry
+                          </Text>
+                        </View>
+
+                        <View
+                          style={{
+                            flex: 1,
+                            marginTop: 10 * 0.5,
+                            marginBottom: 10 * 0.5,
+                            borderLeftWidth: 1,
+                            alignSelf: "center",
+                            borderLeftColor: "lightgrey"
+                          }}
+                        />
+                        <View
+                          style={{
+                            justifyContent: "center",
+                            alignSelf: "center",
+                            alignItems: "center",
+                            paddingHorizontal: 10 * 0.5,
+                            width: 60,
+                            height: 25,
+                            borderRadius: 4,
+                            backgroundColor: "lightgrey"
+                          }}
+                        >
+                          <Text
+                            numberOfLines={1}
+                            style={{ overflow: "hidden" }}
+                          >
+                            Exit
+                          </Text>
+                        </View>
+                      </View>
+                    )}
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
+          <View
+            style={{
+              alignSelf: "center",
+              justifyContent: "center",
+              alignItems: "center",
+              marginVertical: 20,
+              padding: 10,
+              borderWidth: 2,
+              borderColor: "rgb(253 176 34)",
+              borderRadius: 10,
+              backgroundColor: "white",
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 2
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+              elevation: 5
+            }}
+          >
+            <Text
               style={{
-                padding: 10,
-                borderRadius: 10,
-                flexDirection: "row",
-                marginHorizontal: 20
+                fontSize: 18,
+                fontWeight: "bold",
+                color: "rgb(253 176 34)"
               }}
             >
-              {/* Dynamically generate parking spots based on row positions */}
-              {columns.map((row, index) => (
-                <View
-                  key={index}
-                  style={{
-                    flexDirection: "row",
-                    borderColor: "black"
-                  }}
-                >
-                  {generateParkingSlots(row)}
-                  {index !== columns.length - 1 && (
-                    <View
-                      style={{
-                        flex: 2
-                      }}
-                    >
-                      <View
-                        style={{
-                          justifyContent: "center",
-                          alignSelf: "center",
-                          alignItems: "center",
-                          paddingHorizontal: 10 * 0.5,
-                          width: 60,
-                          height: 25,
-                          borderRadius: 4,
-                          backgroundColor: "lightgrey"
-                        }}
-                      >
-                        <Text
-                          numberOfLines={1}
-                          style={{ overflow: "hidden" }}
-                        >
-                          Entry
-                        </Text>
-                      </View>
+              Selected Slot
+            </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                color: "black",
+                marginTop: 5
+              }}
+            >
+              {selectedParkingSlot
+                ? `Row: ${selectedParkingSlot.position.row}, Column: ${selectedParkingSlot.position.column}`
+                : "None"}
+            </Text>
+          </View>
 
-                      <View
-                        style={{
-                          flex: 1,
-                          marginTop: 10 * 0.5,
-                          marginBottom: 10 * 0.5,
-                          borderLeftWidth: 1,
-                          alignSelf: "center",
-                          borderLeftColor: "lightgrey"
-                        }}
-                      />
-                      <View
-                        style={{
-                          justifyContent: "center",
-                          alignSelf: "center",
-                          alignItems: "center",
-                          paddingHorizontal: 10 * 0.5,
-                          width: 60,
-                          height: 25,
-                          borderRadius: 4,
-                          backgroundColor: "lightgrey"
-                        }}
-                      >
-                        <Text
-                          numberOfLines={1}
-                          style={{ overflow: "hidden" }}
-                        >
-                          Exit
-                        </Text>
-                      </View>
-                    </View>
-                  )}
-                </View>
-              ))}
-            </View>
-          </ScrollView>
-        </View>
-        <View
-          style={{
-            alignSelf: "center",
-            justifyContent: "center",
-            alignItems: "center",
-            marginVertical: 20,
-            padding: 10,
-            borderWidth: 2,
-            borderColor: "rgb(253 176 34)",
-            borderRadius: 10,
-            backgroundColor: "white",
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 2
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5
-          }}
-        >
-          <Text
+          <View
             style={{
-              fontSize: 18,
-              fontWeight: "bold",
-              color: "rgb(253 176 34)"
+              margin: 10 * 2,
+              alignItems: "center",
+              justifyContent: "center"
             }}
           >
-            Selected Slot
-          </Text>
-          <Text
-            style={{
-              fontSize: 16,
-              color: "black",
-              marginTop: 5
-            }}
-          >
-            {selectedParkingSlot
-              ? `Row: ${selectedParkingSlot.position.row}, Column: ${selectedParkingSlot.position.column}`
-              : "None"}
-          </Text>
-        </View>
-
-        <View
-          style={{
-            margin: 10 * 2,
-            alignItems: "center"
-          }}
-        >
-          <AwesomeButton
-            height={50}
-            width={200}
-            onPress={() => {
-              if (selectedParkingSlot) {
-                navigation.navigate("BookingConfirmationScreen", {
-                  parkingLot: route.params.parkingLot,
-                  parkingSlot: selectedParkingSlot,
-                  vehicle: route.params.vehicle,
-                  bookingDetails: route.params.bookingDetails,
-                  selectedRate: route.params.selectedRate
-                });
-              } else {
-                alert("Please select a parking slot");
-              }
-            }}
-            raiseLevel={1}
-            borderRadius={10}
-            backgroundShadow="#fff"
-            backgroundDarker="#fff"
-            backgroundColor="rgb(253 176 34)"
-          >
-            <Text style={{ color: "black", fontWeight: "500" }}>Next</Text>
-          </AwesomeButton>
-        </View>
-      </ScrollView>
+            <AwesomeButton
+              height={50}
+              width={200}
+              onPress={() => {
+                if (selectedParkingSlot) {
+                  const bookingConfirmationDetails: BookingConfirmationDetailsForNewReservation =
+                    {
+                      userId: reservation.userId,
+                      userEmail: reservation.userEmail,
+                      slotId: selectedParkingSlot.slotId,
+                      lotId: reservation.parkingLotDetails.LotId ?? "",
+                      vehicleId: reservation.vehicleDetails.vehicleId ?? "",
+                      startTime: chosenStartTime,
+                      endTime: chosenEndTime,
+                      usedRates: reservation.usedRates,
+                      totalAmount: reservation.totalAmount,
+                      parkingStatus: "active",
+                      paymentStatus: "completed",
+                      stripeCustomerId: reservation.stripeCustomerId,
+                      oldReservationId: reservation.reservationId,
+                      oldSlotId: reservation.slotDetails.slotId
+                    };
+                  mutation.mutate(bookingConfirmationDetails);
+                } else {
+                  alert("Please select a parking slot");
+                }
+              }}
+              raiseLevel={1}
+              borderRadius={10}
+              backgroundShadow="#fff"
+              backgroundDarker="#fff"
+              backgroundColor="rgb(253 176 34)"
+            >
+              <Text style={{ color: "black", fontWeight: "500" }}>
+                Confirm Slot
+              </Text>
+            </AwesomeButton>
+          </View>
+        </ScrollView>
+      )}
     </YStack>
   );
 };

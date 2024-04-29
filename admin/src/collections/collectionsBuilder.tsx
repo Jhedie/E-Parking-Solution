@@ -6,6 +6,7 @@ import { ParkingLotCollection } from "./parkingLots";
 import { parkingLotsTopLevelCollection } from "./parkingLotsTopLevel";
 import { ParkingOwnerCollection } from "./parkingOwners";
 import { ParkingReservationCollection } from "./parkingReservations";
+import { RefundsCollection } from "./refunds";
 import { UserCollection } from "./users";
 
 export const collectionsBuilder: EntityCollectionsBuilder = async ({
@@ -78,5 +79,6 @@ export const collectionsBuilder: EntityCollectionsBuilder = async ({
     ParkingOwnerCollection,
     parkingLotsTopLevelCollection,
     DbChangesCollection,
+    RefundsCollection,
   ];
 };

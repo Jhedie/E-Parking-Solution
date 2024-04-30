@@ -33,6 +33,14 @@ export class PartialParkingReservationFirestoreModel {
           res[ParkingReservationFirestoreModel.kEndTime] =
             firestore.Timestamp.fromDate(new Date(partialReservation.endTime));
         }
+        if (partialReservation.checkedIn !== undefined) {
+          res[ParkingReservationFirestoreModel.kCheckedIn] =
+            partialReservation.checkedIn;
+        }
+        if (partialReservation.checkedOut !== undefined) {
+          res[ParkingReservationFirestoreModel.kCheckedOut] =
+            partialReservation.checkedOut;
+        }
 
         if (partialReservation.usedRates !== undefined) {
           res[ParkingReservationFirestoreModel.kUsedRates] =

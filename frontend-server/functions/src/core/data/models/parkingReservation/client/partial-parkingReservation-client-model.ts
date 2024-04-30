@@ -37,6 +37,9 @@ export class PartialParkingReservationClientModel {
     if (body[ParkingReservationClientModel.kCheckedIn] !== undefined) {
       res.checkedIn = body[ParkingReservationClientModel.kCheckedIn];
     }
+    if (body[ParkingReservationClientModel.kCheckedOut] !== undefined) {
+      res.checkedOut = body[ParkingReservationClientModel.kCheckedOut];
+    }
 
     if (body[ParkingReservationClientModel.kModifiedAt] !== undefined) {
       res.modifiedAt = new Date(

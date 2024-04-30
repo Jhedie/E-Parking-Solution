@@ -18,6 +18,7 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
   static kParkingStatus = "parkingStatus";
   static kPaymentStatus = "paymentStatus";
   static kCheckedIn = "checkedIn";
+  static kCheckedOut = "checkedOut";
   static kOverStayedHandled = "overStayedHandled";
   static kStripeCustomerId = "stripeCustomerId";
   static kModifiedAt = "modifiedAt";
@@ -44,6 +45,7 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
       null, // parkingStatus
       null, // paymentStatus
       false, // checkedIn
+      false, // checkedOut
       false, // overStayedHandled
       "", // stripeCustomerId
       new Date(), // modifiedAt
@@ -94,6 +96,7 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
       [ParkingReservationFirestoreModel.kParkingStatus]: this.parkingStatus,
       [ParkingReservationFirestoreModel.kPaymentStatus]: this.paymentStatus,
       [ParkingReservationFirestoreModel.kCheckedIn]: this.checkedIn,
+      [ParkingReservationFirestoreModel.kCheckedOut]: this.checkedOut,
       [ParkingReservationFirestoreModel.kOverStayedHandled]: this.overStayedHandled,
       [ParkingReservationFirestoreModel.kStripeCustomerId]:
         this.stripeCustomerId,
@@ -142,6 +145,7 @@ export class ParkingReservationFirestoreModel extends ParkingReservation {
       data[ParkingReservationFirestoreModel.kParkingStatus],
       data[ParkingReservationFirestoreModel.kPaymentStatus],
       data[ParkingReservationFirestoreModel.kCheckedIn],
+      data[ParkingReservationFirestoreModel.kCheckedOut],
       data[ParkingReservationFirestoreModel.kOverStayedHandled],
       data[ParkingReservationFirestoreModel.kStripeCustomerId],
       handleTimestamp(data[ParkingReservationFirestoreModel.kModifiedAt]),

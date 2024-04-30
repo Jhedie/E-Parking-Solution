@@ -785,6 +785,64 @@ class ParkingReservationService {
 
     return "Report sent successfully";
   }
+
+  async chargeOverstay(
+    lotId: string,
+    slotId: string,
+    reservationId: string
+  ): Promise<void> {
+    console.log("Charging for overstay...");
+    // get the reservation details
+    const reservation = await this.getParkingReservationById(
+      lotId,
+      slotId,
+      reservationId
+    );
+
+    // send email to the user about the overstay charge
+    const userRef = await admin
+      .firestore()
+      .collection("users")
+      .doc(reservation.userId)
+      .get();
+
+    if (userRef.exists) {
+      const userData = userRef.data();
+      const emailContent = `
+      <p>Dear ${userData.firstName},</p>
+      <p>You have been charged for overstaying your parking reservation.</p>
+      <ul>
+        <li>Reservation ID: ${reservation.reservationId}</li>
+        <li>Parking Lot ID: ${reservation.lotId}</li>
+        <li>Parking Slot ID: ${reservation.slotId}</li>
+        <li>Vehicle ID: ${reservation.vehicleId}</li>
+        <li>Start Time: ${reservation.startTime}</li>
+        <li>End Time: ${reservation.endTime}</li>
+        <li>Total Amount: ${reservation.totalAmount}</li>
+      </ul>
+      <p>Please contact support if you believe this is an error.</p>
+      <p>Best regards,</p>
+      <p>Parking Management Team</p>
+    `;
+
+      admin
+        .firestore()
+        .collection("emails")
+        .add({
+          to: userData.email,
+          message: {
+            subject: "Overstay Charge Notification",
+            html: emailContent,
+          },
+        })
+        .then(() => console.log("Overstay charge email sent to user."))
+        .catch((error) =>
+          console.error("Failed to send overstay charge email: ", error)
+        );
+    } else {
+      console.error("User data not found for user ID: ", reservation.userId);
+    }
+  }
 }
 
 export const parkingReservationService = new ParkingReservationService();

@@ -1,8 +1,10 @@
+import dayjs from "dayjs";
 import * as admin from "firebase-admin";
 import { onSchedule } from "firebase-functions/v2/scheduler";
 
 exports.updateReservationStatuses = onSchedule("* * * * *", async (event) => {
   const now = admin.firestore.Timestamp.now();
+  const adminEmail = process.env.ADMIN_EMAIL;
   const reservationsRef = admin
     .firestore()
     .collectionGroup("parkingReservations");
@@ -24,7 +26,7 @@ exports.updateReservationStatuses = onSchedule("* * * * *", async (event) => {
   const noShowReservationsSnapshot = await reservationsRef
     .where("startTime", "<", now)
     .where("checkedIn", "==", false)
-    .where("parkingStatus", "==", "pending")
+    .where("parkingStatus", "==", "active")
     .get();
   noShowReservationsSnapshot.forEach((doc) => {
     const data = doc.data();
@@ -44,6 +46,59 @@ exports.updateReservationStatuses = onSchedule("* * * * *", async (event) => {
     if (data && data.parkingStatus !== "active") {
       batch.update(doc.ref, { parkingStatus: "active" });
     }
+  });
+
+  // Handle overstayed reservations (Checked In but not Checked Out)
+  const overstayedReservationsSnapshot = await reservationsRef
+    .where("endTime", "<", now)
+    .where("checkedIn", "==", true)
+    .where("checkedOut", "==", false)
+    .where("overStayedHandled", "==", false)
+    .get();
+  overstayedReservationsSnapshot.forEach((doc) => {
+    const data = doc.data();
+    if (data) {
+      batch.update(doc.ref, {
+        parkingStatus: "overstayed",
+        overStayedHandled: true,
+      });
+    }
+    //inform the user via email that they have overstayed
+    admin
+      .firestore()
+      .collection("mail")
+      .add({
+        to: data.userEmail,
+        message: {
+          subject: "Alert: You Have Overstayed Your Reservation",
+          html: `You have overstayed your parking reservation.<br><strong>End Time:</strong> ${dayjs(
+            new Date(data.endTime.seconds * 1000).toISOString()
+          ).format(
+            "h:mm A"
+          )}<br>Please vacate the parking spot immediately to avoid further penalties.`,
+        },
+      })
+      .then(() => {
+        batch.update(doc.ref, { endNotificationSent: true });
+        // Notify admin about the overstayed reservation
+        admin
+          .firestore()
+          .collection("mail")
+          .add({
+            to: adminEmail,
+            message: {
+              subject: "Overstayed Reservation Alert",
+              html: `User with email ${
+                data.userEmail
+              } has overstayed their reservation.<br><strong>End Time:</strong> ${dayjs(
+                new Date(data.endTime.seconds * 1000).toISOString()
+              ).format("h:mm A")}`,
+            },
+          });
+      })
+      .catch((error) => {
+        console.error("Error sending overstayed notification:", error);
+      });
   });
 
   await batch.commit();

@@ -14,6 +14,7 @@ export class ParkingReservationClientModel extends ParkingReservation {
   static kParkingStatus = "parkingStatus";
   static kPaymentStatus = "paymentStatus";
   static kCheckedIn = "checkedIn";
+  static kCheckedOut = "checkedOut";
   static kOverStayedHandled = "overStayedHandled";
   static kStripeCustomerId = "stripeCustomerId";
   static kModifiedAt = "modifiedAt";
@@ -40,6 +41,7 @@ export class ParkingReservationClientModel extends ParkingReservation {
       null, // parkingStatus
       null, // paymentStatus
       false, // checkedIn
+      false, // checkedOut
       false, // overStayedHandled
       "", // stripeCustomerId
       new Date(), // modifiedAt
@@ -74,6 +76,7 @@ export class ParkingReservationClientModel extends ParkingReservation {
       body[this.kParkingStatus],
       body[this.kPaymentStatus],
       false, // checkedIn
+      false, // checkedOut
       false, // overStayedHandled
       body[this.kStripeCustomerId],
       new Date(), // modifiedAt
@@ -98,6 +101,7 @@ export class ParkingReservationClientModel extends ParkingReservation {
       [ParkingReservationClientModel.kParkingStatus]: this.parkingStatus,
       [ParkingReservationClientModel.kPaymentStatus]: this.paymentStatus,
       [ParkingReservationClientModel.kCheckedIn]: this.checkedIn,
+      [ParkingReservationClientModel.kCheckedOut]: this.checkedOut,
     };
   }
 

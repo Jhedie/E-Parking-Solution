@@ -76,6 +76,13 @@ export class ParkingReservationController implements Controller {
       this.assignNewParkingReservation.bind(this),
       ["driver"]
     );
+
+    // admin charge for overstaying
+    httpServer.post(
+      "/parkingReservations/charge-overstay/:parkingLotId/:parkingSlotId/:reservationId",
+      this.chargeOverstay.bind(this),
+      ["admin"]
+    );
   }
 
   private readonly createParkingReservation: RequestHandler = async (
@@ -446,5 +453,19 @@ export class ParkingReservationController implements Controller {
         createdReservation
       ).toBodyFullReservation();
     res.status(201).send(output);
+  };
+
+  private readonly chargeOverstay: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    console.log("Charging for overstay...");
+
+    parkingReservationService.chargeOverstay(
+      req.params.parkingLotId,
+      req.params.parkingSlotId,
+      req.params.reservationId
+    );
   };
 }

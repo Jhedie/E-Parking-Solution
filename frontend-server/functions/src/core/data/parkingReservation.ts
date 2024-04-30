@@ -7,6 +7,7 @@ export type ParkingStatus =
   | "expired"
   | "pending"
   | "no show"
+  | "overstayed"
   | null;
 
 export type PaymentStatus = "completed" | "failed" | "refunded";
@@ -25,6 +26,7 @@ class ParkingReservation {
   public readonly parkingStatus: ParkingStatus;
   public readonly paymentStatus: PaymentStatus;
   public readonly checkedIn: boolean;
+  public readonly checkedOut: boolean;
   public readonly overStayedHandled: boolean;
   public readonly stripeCustomerId: string;
   public readonly modifiedAt: Date;
@@ -46,6 +48,7 @@ class ParkingReservation {
     parkingStatus: ParkingStatus,
     paymentStatus: PaymentStatus,
     checkedIn: boolean,
+    checkedOut: boolean,
     overStayedHandled: boolean,
     stripeCustomerId: string,
     modifiedAt: Date,
@@ -66,6 +69,7 @@ class ParkingReservation {
     this.parkingStatus = parkingStatus;
     this.paymentStatus = paymentStatus;
     this.checkedIn = checkedIn;
+    this.checkedOut = checkedOut;
     this.overStayedHandled = overStayedHandled;
     this.stripeCustomerId = stripeCustomerId;
     this.modifiedAt = modifiedAt;
@@ -89,6 +93,7 @@ class ParkingReservation {
       null, // parkingStatus
       null, // paymentStatus
       false, // checkedIn
+      false, // checkedOut
       false, // overStayedHandled
       "", // stripeCustomerId
       new Date(), // modifiedAt

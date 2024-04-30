@@ -7,6 +7,7 @@ export type ParkingStatus =
   | "expired"
   | "pending"
   | "no show"
+  | "overstayed"
   | null;
 
 export type PaymentStatus = "completed" | "failed" | "refunded";

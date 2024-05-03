@@ -116,7 +116,6 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
     }
     try {
       const response = await Geocoder.from(searchBox);
-      console.log("response", response.results);
       const { lat, lng } = response.results[0].geometry.location;
       setMarkerPosition({
         latitude: lat,

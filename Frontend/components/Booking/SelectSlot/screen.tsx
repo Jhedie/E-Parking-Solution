@@ -106,7 +106,6 @@ export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
           };
         }) as ParkingSlot[];
 
-        console.log("Fetched slots", fetchedSlots);
         setSlots(fetchedSlots);
         // Set up listeners for reservations on each slot
         fetchedSlots.forEach((slot) => {

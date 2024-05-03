@@ -16,6 +16,12 @@ Welcome to the **E-parking solution**, a cloud-based system designed to improve 
 
 ## Installation
 
+The environment setup is divided into three main parts: setting up the server, setting up the React Native frontend, and setting up the FireCMS app.
+
+The environment variables for the server are stored in a `.env` file in the `server/functions` directory.
+The environment variables for the React Native frontend are stored in a `.env` file in the `Frontend` directory.
+The environment variables for the FireCMS app are stored in a `.env` file in the `admin` directory.
+
 ### Setting up the Server
 
 1. **Install Firebase CLI:**
@@ -23,22 +29,30 @@ Welcome to the **E-parking solution**, a cloud-based system designed to improve 
    npm install -g firebase-tools
    ```
 2. **Clone the repository:**
+
    ```bash
    git clone [REPOSITORY_URL]
-   ```
-3. **Navigate to the functions directory and set up environment variables:**
-   Create a `.env` file in the `functions` directory and populate it with the necessary environment variables as specified in the repository documentation.
 
-4. **Install dependencies and deploy to Firebase:**
+   cd jea22
+   ```
+
+3. **Install dependencies and deploy to Firebase:**
+
    ```bash
+   cd server/functions
+
    npm install
+
    firebase deploy
    ```
 
 ### Setting up the React Native Frontend
 
-1. **Set up environment variables:**
-   Add the necessary environment variables at the root of the project as specified in the repository documentation.
+1. **Navigate to the mobile directory:**
+
+   ```bash
+   cd jea22/Frontend
+   ```
 
 2. **Install dependencies:**
 
@@ -46,28 +60,18 @@ Welcome to the **E-parking solution**, a cloud-based system designed to improve 
    npm install
    ```
 
-3. **Set up Firebase configuration files:**
-
-   - **Android:** Download `google-services.json` from Firebase and place it in the `android/app` directory.
-   - **iOS:** Download `GoogleService-Info.plist` from Firebase and place it in the `ios` directory.
-
-4. **Run the app in the simulator:**
-   Download the latest build for the simulator from `application-2ad6b8cd-bdec-42a4-8f22-274bf746dfa3.ipa` and install it.
-   - **Android:**
-     ```bash
-     npx expo run:android
-     ```
-   - **iOS:**
-     ```bash
-     npx expo run:ios
-     ```
+3. **Run the app in the simulator:**
+   Install the provided iOS build.
+   ```bash
+   npx expo start --dev-client
+   ```
 
 ### Setting up FireCMS App
 
 1. **Navigate to the FireCMS directory and install dependencies:**
 
    ```bash
-   cd [REPO_NAME]/firecms
+   cd jea22/admin
    yarn install
    ```
 
@@ -82,10 +86,15 @@ Welcome to the **E-parking solution**, a cloud-based system designed to improve 
 
 ### User Roles and Credentials
 
-- **Admin:** Set up admin credentials in Firebase Authentication and Firestore with appropriate roles.
-- **Super User:** Similar setup as admin but with fewer privileges.
-- **Parking Owner:** Ensure they have permissions to manage their parking lots.
-- **Driver:** Basic user role that allows booking and managing reservations.
+For test purposes, the following user roles and credentials are provided:
+
+- **Admin Credentials:**
+  - **Email:** jeddiahawuku12@gmail.com
+  - **Password:** password123?
+- **Parking Owner:** jedidiahawuku12@gmail.com
+  - **Password:** password123?
+- **Driver:** jedidiahawuku12@yahoo.com
+  - **Password:** password123?
 
 ## Conclusion
 

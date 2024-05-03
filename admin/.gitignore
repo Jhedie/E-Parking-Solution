@@ -1,7 +1,7 @@
 node_modules
-.env
+# .env
 .env.template
-firebase-config.ts
+# firebase-config.ts
 
 # Firebase deploy
 build/

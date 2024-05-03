@@ -1,150 +1,92 @@
-# E - Parking Solution
+# E-Parking Solution Setup Guide
 
-### App Screens:
+## Introduction
 
-<details>
-<summary>Authentication</summary>
-  <img src="Frontend/docs/app-screens/authentication/welcome.png" alt="welcome" width="100"/>
-  <img src="Frontend/docs/app-screens/authentication/signup-screen.png"
-  alt="sign-up" width="100"/>
-  <img src="Frontend/docs/app-screens/authentication/signin-screen.png" alt="sign-in" width="100"/>
-  <img src="Frontend/docs/app-screens/authentication/resetPassword.png" alt="resetPassword" width="100"/>
-</details>
-<details>
-<summary>Onboarding</summary>
-  <img src="Frontend/docs/app-screens/onBoarding/welcome-to-e-parky.png" alt="Onboarding screen 1" width="100"/>
-  <img src="Frontend/docs/app-screens/onBoarding/welcome-screen-2.png" alt="Onboarding screen 2" width="100"/>
-  <img src="Frontend/docs/app-screens/onBoarding/welcome-screen-3.png" alt="Onboarding screen 3" width="100"/>
-  <img src="Frontend/docs/app-screens/onBoarding/welcome-screen-4.png" alt="Onboarding screen 4" width="100"/>
-  <img src="Frontend/docs/app-screens/onBoarding/welcome-with-sign-in.png" alt="Onboarding screen 3" width="100"/>
-</details>
-<details>
-<summary>Map</summary>
-  <img src="Frontend/docs/app-screens/map/MapV1.png" alt="Map V1" width="100"/>
-  <img src="Frontend/docs/app-screens/map/MapV2.png" alt="Map V2" width="100"/>
-</details>
-<details>
-<summary>Parking Details</summary>
-  <img src="Frontend/docs/app-screens/parkingDetails/parkingDetails.png" alt="Parking Details" width="100"/>
-  <img src="Frontend/docs/app-screens/parkingDetails/parkingDetailsV2.png" alt="Parking Details V2" width="100"/>
-</details>
-<details>
-<summary>Booking Details</summary>
-  <img src="Frontend/docs/app-screens/bookingDetails/bookingDetailsV1.png" alt="Booking Details" width="100"/>
-  <img src="Frontend/docs/app-screens/bookingDetails/bookingDetailsV2.png" alt="Booking Details V2" width="100"/>
-</details>
-<details>
-<summary>Parking Slots</summary>
-  <img src="Frontend/docs/app-screens/parkingSlots/slotsV1.png" alt="Parking Slots" width="100"/>
-</details>
-<details>
-<summary>Vehicle Select</summary>
-  <img src="Frontend/docs/app-screens/vehicle/VehicleSelectV1.png" alt="Vehicle Select" width="100"/>
-  <img src="Frontend/docs/app-screens/vehicle/vehicleSelectV2.png" alt="Vehicle Select V2" width="100"/>
-  <img src="Frontend/docs/app-screens/vehicle/addVehicle.png" alt="Vehicle Select V3" width="100"/>
-</details>
-<details>
-<summary>Profile</summary>
-  <img src="Frontend/docs/app-screens/profile/Profile.png" alt="Profile" width="100"/>
-  <img src="Frontend/docs/app-screens/profile/ProfileV2.png" alt="Profile V2" width="100"/>
-</details>
-<details>
-<summary>Booking Confirmation</summary>
-  <img src="Frontend/docs/app-screens/bookingConfirmation/bookingConfirmation.png" alt="Booking Confirmation" width="100"/>
-  <img src="Frontend/docs/app-screens/bookingConfirmation/bookingSuccess.png" alt="Booking Confirmation V2" width="100"/>
-  <img src="Frontend/docs/app-screens/bookingConfirmation/ParkingTicket.png" alt="Booking Confirmation V3" width="100"/>
-</details>
-<details>
-<summary>Payment</summary>
-  <img src="Frontend/docs/app-screens/payment/paymentStripe.png" alt="Payment" width="100"/>
-</details>
-<details>
-<summary>Parking Session</summary>
-  <img src="Frontend/docs/app-screens/parkingSession/Parking.png" alt="Parking Session" width="100"/>
-  <img src="Frontend/docs/app-screens/parkingSession/ParkingV2.png" alt="Parking Session V3" width="100"/>
-  <img src="Frontend/docs/app-screens/parkingSession/parkingHistory.png" alt="Parking Session V2" width="100"/>
-  <img src="Frontend/docs/app-screens/parkingSession/ViewTicket.png" alt="Parking Session V4" width="100"/>
-  <img src="Frontend/docs/app-screens/parkingSession/Timer.png" alt="Parking Session V5" width="100"/>
-</details>
+Welcome to the **E-parking solution**, a cloud-based system designed to improve parking management efficiency. Traditional parking inefficiencies—like excessive search times, traffic congestion, and environmental impact—are tackled with real-time updates, online reservations, automated payments, and dynamic slot allocation. The system uses Firebase and a React-based FireCMS for administration, while drivers interact through a React Native mobile application with backend support from Express JS. This setup guide will cover everything needed to get the system up and running.
 
-## Information about this repository
+## Requirements
 
-This is the repository that you are going to use **individually** for developing your project. Please use the resources provided in the module to learn about **plagiarism** and how plagiarism awareness can foster your learning.
+- Node.js (LTS version)
+- Firebase CLI
+- Git
+- React Native CLI
+- Android Studio (for Android development)
+- Xcode (for iOS development)
+- Simulator for iOS or Android for testing purposes
 
-Regarding the use of this repository, once a feature (or part of it) is developed and **working** or parts of your system are integrated and **working**, define a commit and push it to the remote repository. You may find yourself making a commit after a productive hour of work (or even after 20 minutes!), for example. Choose commit message wisely and be concise.
+## Installation
 
-Please choose the structure of the contents of this repository that suits the needs of your project but do indicate in this file where the main software artefacts are located.
+### Setting up the Server
 
-# How to run the project
+1. **Install Firebase CLI:**
+   ```bash
+   npm install -g firebase-tools
+   ```
+2. **Clone the repository:**
+   ```bash
+   git clone [REPOSITORY_URL]
+   ```
+3. **Navigate to the functions directory and set up environment variables:**
+   Create a `.env` file in the `functions` directory and populate it with the necessary environment variables as specified in the repository documentation.
 
-### Setting up a firebase project
+4. **Install dependencies and deploy to Firebase:**
+   ```bash
+   npm install
+   firebase deploy
+   ```
 
-1. Create a firebase project
-2. Enable Firestore,
-3. Enable Authentication
-4. Enable Functions
-5. Enable Hosting
-6. Enable Storage
-7. Create a service account and download the json file
-8. Add the json file to the functions folder
+### Setting up the React Native Frontend
 
-### Setting up Server
+1. **Set up environment variables:**
+   Add the necessary environment variables at the root of the project as specified in the repository documentation.
 
-1. firebase cli
-2. clone repo
-3. Add env variables to functions/.env
-4. `cd functions`
-5. run `npm install`
-6. run firebase deploy
+2. **Install dependencies:**
 
-### Setting up react Native App
+   ```bash
+   npm install
+   ```
 
-1. Clone repo
-2. Add env variables to the root of the project
-3. run `npm install`
-4. Download google-services.json from firebase and add it to the android/app folder
-5. Download the GoogleService-Info.plist from firebase and add it to the ios folder
-6. run
+3. **Set up Firebase configuration files:**
+
+   - **Android:** Download `google-services.json` from Firebase and place it in the `android/app` directory.
+   - **iOS:** Download `GoogleService-Info.plist` from Firebase and place it in the `ios` directory.
+
+4. **Run the app in the simulator:**
+   Download the latest build for the simulator from `application-2ad6b8cd-bdec-42a4-8f22-274bf746dfa3.ipa` and install it.
+   - **Android:**
+     ```bash
+     npx expo run:android
+     ```
+   - **iOS:**
+     ```bash
+     npx expo run:ios
+     ```
 
 ### Setting up FireCMS App
 
-### Setting up User Accounts
+1. **Navigate to the FireCMS directory and install dependencies:**
 
-#### Super User
+   ```bash
+   cd [REPO_NAME]/firecms
+   yarn install
+   ```
 
-An admin needs to created serving as a superuser. They would manage all parking Owners
+2. **Run the FireCMS app:**
 
-This can be done using the post man collection with the body
+   ```bash
+   yarn dev
+   ```
 
-    {
-    "name":"Jedidiah Awuku",
-    "role":"admin",
-    "email": "jeddiahawuku12@gmail.com",
-    "password": "password123?",
-    "phoneNumber": "0774839242",
-    "adminKey": "parkAdminSecretKey123"
-    }
+3. **Access the FireCMS panel:**
+   Open your browser and navigate to the URL provided in the terminal after running the start command.
 
-#### Parking Owner
+### User Roles and Credentials
 
-Parking Owners are created via the website(this is hosted using firebase hosting):
-Website Link: `https://e-parking-app-b22cb.web.app/`
+- **Admin:** Set up admin credentials in Firebase Authentication and Firestore with appropriate roles.
+- **Super User:** Similar setup as admin but with fewer privileges.
+- **Parking Owner:** Ensure they have permissions to manage their parking lots.
+- **Driver:** Basic user role that allows booking and managing reservations.
 
-#### Driver
+## Conclusion
 
-Drivers are created through the react native app
-
-Setting up Dynamic Templates through sendGrid
-
-### Setting up SendGrid for Email Notifications
-
-Need an API key from sendGrid
-
-Create a dynamic template for:
-
-1.  New parking Owner
-2.  User verification
-3.  Parking owner approval/rejection
-4.  ParkingLot Approval/Rejection
-
-### Setting up Stripe for Payment Integration
+This README provides all the necessary steps to successfully set up and run the E-Parking solution. Ensure all environment variables and Firebase configurations are correctly set up for smooth operations.

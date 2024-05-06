@@ -53,15 +53,15 @@ export const ParkingReservationCollection = buildCollection<ParkingReservation>(
         (context.authController.user as any)?.reloadUserInfo?.customAttributes
       ).admin;
 
-      const isApproved = JSON.parse(
-        (context.authController.user as any)?.reloadUserInfo?.customAttributes
-      ).approved;
+      // const isApproved = JSON.parse(
+      //   (context.authController.user as any)?.reloadUserInfo?.customAttributes
+      // ).approved;
 
-      console.log(
-        JSON.parse(
-          (context.authController.user as any)?.reloadUserInfo?.customAttributes
-        )
-      );
+      // console.log(
+      //   JSON.parse(
+      //     (context.authController.user as any)?.reloadUserInfo?.customAttributes
+      //   )
+      // );
 
       return (
         <>
@@ -233,7 +233,6 @@ export const ParkingReservationCollection = buildCollection<ParkingReservation>(
           required: true,
         },
       },
-
       endTime: {
         dataType: "date",
         name: "EndTime",

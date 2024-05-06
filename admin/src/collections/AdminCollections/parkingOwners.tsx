@@ -216,6 +216,10 @@ export const ParkingOwnerCollection = buildCollection<Owner>({
           id: "rejected",
           label: "REJECTED",
         },
+        {
+          id: "pending",
+          label: "PENDING",
+        },
       ],
       validation: {
         required: true,

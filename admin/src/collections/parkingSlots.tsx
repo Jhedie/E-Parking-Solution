@@ -23,6 +23,7 @@ export const ParkingSlotsCollection = buildCollection<ParkingSlots>({
     create: true,
     delete: true,
   }),
+
   editable: true,
   inlineEditing: true,
   properties: {

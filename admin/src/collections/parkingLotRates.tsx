@@ -35,7 +35,6 @@ export const ParkingLotRatesCollection = buildCollection<ParkingLotRates>({
         required: true,
       },
     },
-
     duration: {
       dataType: "number",
       name: "Duration",

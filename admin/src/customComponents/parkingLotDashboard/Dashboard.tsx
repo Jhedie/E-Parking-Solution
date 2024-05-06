@@ -1,8 +1,8 @@
 import { useFireCMSContext } from "@firecms/core";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { ParkingLot } from "../../collections/AdminCollections/parkingLots";
 import { ParkingLotRates } from "../../collections/parkingLotRates";
-import { ParkingLot } from "../../collections/parkingLots";
 import { ParkingReservation } from "../../collections/parkingReservations";
 import { ParkingSlots } from "../../collections/parkingSlots";
 import Modal from "../../helpers/Modal";
@@ -211,7 +211,7 @@ const Dashboard = () => {
               <button
                 className="btn mt-2 bg-red-300 hover:bg-red-500"
                 onClick={() => {
-                  navigate(`/app/c/parkingOwner/${parkingLot.id}`);
+                  navigate("/app/c/parkingLots/");
                 }}
               >
                 Manage
@@ -271,128 +271,184 @@ const Dashboard = () => {
             )}
           </div>
         );
-      // case "reservations":
-      // return (
-      //   <div>
-      //     <div className="text-2xl font-bold m-10">Parking reservations</div>
-      //     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-      //       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-      //         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-      //           <tr>
-      //             <th scope="col" className="px-6 py-3">
-      //               Reservation ID
-      //             </th>
-      //             <th scope="col" className="px-6 py-3">
-      //               User ID
-      //             </th>
-      //             <th scope="col" className="px-6 py-3">
-      //               Slot ID
-      //             </th>
-      //             <th scope="col" className="px-6 py-3">
-      //               Lot ID
-      //             </th>
-      //             <th scope="col" className="px-6 py-3">
-      //               Start Time
-      //             </th>
-      //             <th scope="col" className="px-6 py-3">
-      //               End Time
-      //             </th>
-      //             <th scope="col" className="px-6 py-3">
-      //               Status
-      //             </th>
+      case "reservations":
+        return (
+          <div>
+            <div className="text-2xl font-bold m-10">Parking reservations</div>
+            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+              <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    {/* <th scope="col" className="px-6 py-3">
+                      Select
+                    </th> */}
+                    <th scope="col" className="px-6 py-3">
+                      Reservation ID
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      User ID
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Slot ID
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Lot ID
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Start Time
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      End Time
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Status
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Total Amount
+                    </th>
+                    {/* <th scope="col" className="px-6 py-3">
+                      Actions
+                    </th> */}
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* If there are no slots or all slots are empty first */}
+                  {parkingLot.slots.length === 0 ||
+                  parkingLot.slots.every(
+                    (slot) => slot.reservations.length === 0
+                  ) ? (
+                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                      <td colSpan={111} className="px-6 py-4 text-center">
+                        No slots available
+                      </td>
+                    </tr>
+                  ) : (
+                    parkingLot.slots.map((slot) =>
+                      slot.reservations.map((reservation, index) => (
+                        <tr
+                          key={index}
+                          className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                        >
+                          {/* <td className="w-4 p-4">
+                            <div className="flex items-center">
+                              <input
+                                id={`checkbox-${reservation.id}`}
+                                type="checkbox"
+                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                              />
+                              <label
+                                htmlFor={`checkbox-${reservation.id}`}
+                                className="sr-only"
+                              >
+                                checkbox
+                              </label>
+                            </div>
+                          </td> */}
+                          <td
+                            scope="row"
+                            className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                          >
+                            {reservation.id}
+                          </td>
+                          <td className="px-6 py-4">
+                            {reservation.values.userId}
+                          </td>
+                          <td className="px-6 py-4">
+                            {reservation.values.slotId}
+                          </td>
+                          <td className="px-6 py-4">
+                            {reservation.values.lotId}
+                          </td>
+                          <td className="px-6 py-4">
+                            {reservation.values.startTime.toLocaleString()}
+                          </td>
+                          <td className="px-6 py-4">
+                            {reservation.values.endTime.toLocaleString()}
+                          </td>
+                          <td className="px-6 py-4">
+                            {reservation.values.parkingStatus}
+                          </td>
 
-      //             <th scope="col" className="px-6 py-3">
-      //               Total Amount
-      //             </th>
-      //             <th scope="col" className="px-6 py-3">
-      //               Actions
-      //             </th>
-      //           </tr>
-      //         </thead>
-      //         <tbody>
-      //           {/* If there are no slots or all slots are empty first */}
-      //           {parkingLot.slots.length === 0 ||
-      //           parkingLot.slots.every(
-      //             (slot) => slot.reservations.length === 0
-      //           ) ? (
-      //             <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-      //               <td colSpan={111} className="px-6 py-4 text-center">
-      //                 No slots available
-      //               </td>
-      //             </tr>
-      //           ) : (
-      //             parkingLot.slots.map((slot) =>
-      //               slot.reservations.map((reservation, index) => (
-      //                 <tr
-      //                   key={index}
-      //                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-      //                 >
-      //                   <td className="w-4 p-4">
-      //                     <div className="flex items-center">
-      //                       <input
-      //                         id={`checkbox-${reservation.id}`}
-      //                         type="checkbox"
-      //                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-      //                       />
-      //                       <label
-      //                         htmlFor={`checkbox-${reservation.id}`}
-      //                         className="sr-only"
-      //                       >
-      //                         checkbox
-      //                       </label>
-      //                     </div>
-      //                   </td>
-      //                   <th
-      //                     scope="row"
-      //                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-      //                   >
-      //                     {reservation.id}
-      //                   </th>
-      //                   <td className="px-6 py-4">
-      //                     {reservation.values.userId}
-      //                   </td>
-      //                   <td className="px-6 py-4">
-      //                     {reservation.values.slotId}
-      //                   </td>
-      //                   <td className="px-6 py-4">
-      //                     {reservation.values.lotId}
-      //                   </td>
-      //                   <td className="px-6 py-4">
-      //                     {reservation.values.startTime.toLocaleString()}
-      //                   </td>
-      //                   <td className="px-6 py-4">
-      //                     {reservation.values.endTime.toLocaleString()}
-      //                   </td>
-      //                   <td className="px-6 py-4">
-      //                     {reservation.values.parkingStatus}
-      //                   </td>
+                          <td className="px-6 py-4">
+                            {reservation.values.totalAmount}
+                          </td>
+                          {/* <td className="flex items-center px-6 py-4">
+                            <a
+                              href="#"
+                              className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                            >
+                              Edit
+                            </a>
+                            <a
+                              href="#"
+                              className="font-medium text-red-600 dark:text-red-500 hover:underline ms-3"
+                            >
+                              Remove
+                            </a>
+                          </td> */}
+                        </tr>
+                      ))
+                    )
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      case "parkedVehicles":
+        return (
+          <div>
+            <div className="text-2xl font-bold m-10">Parked Vehicles</div>
+            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+              <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    <th scope="col" className="px-6 py-3">
+                      Vehicle ID
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Driver Email
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(() => {
+                    const activeReservations = parkingLot.slots
+                      .flatMap((slot) => slot.reservations)
+                      .filter(
+                        (reservation) =>
+                          reservation.values.parkingStatus === "active"
+                      );
 
-      //                   <td className="px-6 py-4">
-      //                     {reservation.values.totalAmount}
-      //                   </td>
-      //                   <td className="flex items-center px-6 py-4">
-      //                     <a
-      //                       href="#"
-      //                       className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-      //                     >
-      //                       Edit
-      //                     </a>
-      //                     <a
-      //                       href="#"
-      //                       className="font-medium text-red-600 dark:text-red-500 hover:underline ms-3"
-      //                     >
-      //                       Remove
-      //                     </a>
-      //                   </td>
-      //                 </tr>
-      //               ))
-      //             )
-      //           )}
-      //         </tbody>
-      //       </table>
-      //     </div>
-      //   </div>
-      // );
+                    if (activeReservations.length === 0) {
+                      return (
+                        <tr>
+                          <td colSpan={2} className="px-6 py-4 text-center">
+                            No current reservations.
+                          </td>
+                        </tr>
+                      );
+                    }
+
+                    return activeReservations.map((reservation, index) => (
+                      <tr
+                        key={index}
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                      >
+                        <td className="px-6 py-4">
+                          {reservation.values.vehicleId}
+                        </td>
+                        <td className="px-6 py-4">
+                          {reservation.values.userEmail}
+                        </td>
+                      </tr>
+                    ));
+                  })()}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
       case "information":
         return (
           <div className="space-y-4 m-10">
@@ -592,7 +648,7 @@ const Dashboard = () => {
                       Slots
                     </button>
                   </li>
-                  {/* <li className="mr-2" role="presentation">
+                  <li className="mr-2" role="presentation">
                     <button
                       className={`inline-block p-4 rounded-t-lg ${
                         activeTab === "reservations"
@@ -603,7 +659,19 @@ const Dashboard = () => {
                     >
                       Parking Reservations
                     </button>
-                  </li> */}
+                  </li>
+                  <li className="mr-2" role="presentation">
+                    <button
+                      className={`inline-block p-4 rounded-t-lg ${
+                        activeTab === "parkedVehicles"
+                          ? "text-blue-700 border-b-2 border-blue-700"
+                          : "hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+                      }`}
+                      onClick={() => setActiveTab("parkedVehicles")}
+                    >
+                      Parked Vehicles
+                    </button>
+                  </li>
                   <li className="mr-2" role="presentation">
                     <button
                       className={`inline-block p-4 rounded-t-lg ${

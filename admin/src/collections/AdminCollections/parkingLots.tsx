@@ -1,13 +1,8 @@
-import {
-  CollectionActionsProps,
-  EntityCallbacks,
-  EntityOnFetchProps,
-  buildCollection,
-} from "@firecms/core";
+import { CollectionActionsProps, buildCollection } from "@firecms/core";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { ParkingLotRatesCollection } from "./parkingLotRates";
-import { ParkingSlotsCollection } from "./parkingSlots";
+import { ParkingLotRatesCollection } from "../parkingLotRates";
+import { ParkingSlotsCollection } from "../parkingSlots";
 
 export type Address = {
   streetNumber: string;

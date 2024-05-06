@@ -78,7 +78,7 @@ export default function LandingPage() {
           </div>
         ) : (
           <div className="flex justify-center  scale-75">
-            <img src="/public/qr_code_ios_download.png" alt="Barcode" />
+            <img src="/qr_code_ios_download.png" alt="Barcode" />
           </div>
         )}
       </div>

@@ -27,7 +27,7 @@ import { ReservationProvider } from "@providers/Reservation/ReservationProvider"
 import { focusManager } from "@tanstack/react-query";
 import type { AppStateStatus } from "react-native";
 import { AppState, Platform } from "react-native";
-
+import React from "react";
 SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
@@ -80,7 +80,7 @@ export default function Layout() {
       <ConfigProvider>
         <StripeProvider
           publishableKey="pk_test_51OlYLWB1AMLkBmu1BFmgWiauMWOF8ceITmtOaLoEKq9lfLPk6aTfSUlBPDVBtPEgHWqSCuuMMwSfrs88Gud7LQ4k00IBlTIko7"
-          merchantIdentifier="merchant.com.jhedie.frontend"
+          merchantIdentifier="merchant.com.jhedie.eparkyApp"
         >
           <QueryClientProvider client={queryClient}>
             <TamaguiProvider config={config}>

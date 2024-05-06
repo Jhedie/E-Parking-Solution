@@ -70,7 +70,7 @@ export const WelcomeScreen: React.FC = () => {
       </YStack>
 
       {/* //TODO: To be remove */}
-      {/* <View>
+      <View>
         <AwesomeButton
           height={50}
           width={200}
@@ -93,7 +93,7 @@ export const WelcomeScreen: React.FC = () => {
             Reset OnBoarding
           </Text>
         </AwesomeButton>
-      </View> */}
+      </View>
 
       {/* <Button
         onPress={() => {

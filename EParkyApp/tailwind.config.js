@@ -5,7 +5,7 @@ module.exports = {
     "./pages/**/*.{js,ts,jsx,tsx,md,mdx}",
     // "./pages/docs/**/*.{js,ts,jsx,tsx,md,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,md,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,md,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,md,mdx}"
     // "./<custom directory>/**/*.{js,jsx,ts,tsx}", //  use this line to add another directory
   ],
   theme: {
@@ -22,10 +22,10 @@ module.exports = {
           600: "#DC6803",
           700: "#B54708",
           800: "#93370D",
-          900: "#7A2E0E",
-        },
+          900: "#7A2E0E"
+        }
       }
-    },
+    }
   },
-  plugins: [],
-}
+  plugins: []
+};

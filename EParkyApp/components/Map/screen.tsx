@@ -459,7 +459,6 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
             strokeWidth={2} // Border width
           />
         </MapView>
-
         <View
           style={{
             position: "absolute",
@@ -552,7 +551,6 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
             </View>
           </LinearGradient>
         </View>
-
         <View style={{ position: "absolute", bottom: 0, right: 0 }}>
           {isMarkerVisible && (
             <View

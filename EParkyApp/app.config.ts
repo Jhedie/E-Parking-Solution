@@ -5,8 +5,8 @@ dotenv.config();
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: "Frontend",
-  slug: "frontend",
+  name: "E-Parky",
+  slug: "e-parky",
 
   extra: {
     ...config.extra,

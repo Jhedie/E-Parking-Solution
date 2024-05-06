@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Frontend",
-    "slug": "frontend",
+    "name": "EParkyApp",
+    "slug": "eparkyApp",
     "version": "2.0.0",
     "owner": "jhedie",
     "scheme": "e-parking-app",
@@ -16,7 +16,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.jhedie.frontend",
+      "bundleIdentifier": "com.jhedie.eparkyApp",
       "googleServicesFile": "./GoogleService-Info.plist",
       "config": {
         "googleMapsApiKey": ""
@@ -31,13 +31,12 @@
       }
     },
     "android": {
-      "package": "com.jhedie.frontend",
+      "package": "com.jhedie.eparkyApp",
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.FOREGROUND_SERVICE"
       ],
-      "googleServicesFile": "./google-services.json",
       "config": {
         "googleMaps": {
           "apiKey": ""
@@ -66,7 +65,7 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow Frontend to use your location."
+          "locationAlwaysAndWhenInUsePermission": "Allow eparkyApp to use your location."
         }
       ],
       "@react-native-firebase/app",
@@ -76,7 +75,7 @@
       [
         "@stripe/stripe-react-native",
         {
-          "merchantIdentifier": "merchant.com.jhedie.frontend",
+          "merchantIdentifier": "merchant.com.jhedie.eparkyApp",
           "enableGooglePay": true
         }
       ]

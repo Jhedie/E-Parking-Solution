@@ -537,7 +537,6 @@ class ParkingReservationService {
     const timeDiff = (cancellationTime - startTimeMillis) / 60000; // Difference in minutes
 
     if (Math.abs(timeDiff) <= 15) {
-
       admin
         .firestore()
         .collection("mail")
@@ -885,6 +884,35 @@ class ParkingReservationService {
         );
     } else {
       console.error("User data not found for user ID: ", reservation.userId);
+    }
+  }
+  async checkIfAnyReservationMadeInSlot(
+    ownerId: string,
+    lotId: string,
+    slotId: string
+  ): Promise<boolean> {
+    try {
+      const now = new Date();
+      const reservationsSnapshot = await admin
+        .firestore()
+        .collectionGroup("parkingReservations")
+        .where("ownerId", "==", ownerId)
+        .where("lotId", "==", lotId)
+        .where("slotId", "==", slotId)
+        .where("parkingStatus", "in", ["active", "pending"])
+        .where("endTime", ">", now) // Ensure the reservation end time is in the future
+        .get();
+
+      if (reservationsSnapshot.empty) {
+        console.log("No active or pending reservations found for the slot.");
+        return false; // Slot is available
+      } else {
+        console.log("Active or pending reservation found for the slot.");
+        return true; // Slot is not available
+      }
+    } catch (error) {
+      console.error("Error checking reservations:", error);
+      throw new Error("Failed to check reservations due to an error.");
     }
   }
 }

@@ -51,7 +51,6 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
   const [openBookingSuccessModal, setOpenBookingSuccessModal] =
     React.useState(false);
   const successBookingModalClose = () => setOpenBookingSuccessModal(false);
-
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   const [loading, setLoading] = useState(false);
   const [customer, setCustomer] = useState<string>("");
@@ -153,7 +152,41 @@ const BookingConfirmationScreen: React.FC<BookingConfirmationScreenProps> = ({
       navigation.goBack();
     }
   });
+
+  const checkSlotAvailability = async () => {
+    try {
+      setIsProcessingBooking(true);
+      const response = await axios.get(
+        `${BASE_URL}/parkingReservations/check-if-any-reservation-made-in-slot/${parkingLot.LotId}/${parkingSlot.slotId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      setIsProcessingBooking(false);
+      console.log("response*", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error checking slot availability:", error);
+      setIsProcessingBooking(false);
+      Alert.alert(
+        "Error",
+        "Failed to check slot availability. Please try again."
+      );
+      navigation.goBack();
+    }
+  };
+
   const openPaymentSheet = async () => {
+    const isReserved = await checkSlotAvailability();
+    console.log("isReserved", isReserved);
+    if (isReserved.isReserved) {
+      Alert.alert("Slot Unavailable", "Please select another slot.");
+      navigation.goBack();
+      return;
+    }
+
     const { error } = await presentPaymentSheet();
 
     if (error) {

@@ -83,7 +83,28 @@ export class ParkingReservationController implements Controller {
       this.chargeOverstay.bind(this),
       ["admin"]
     );
+
+    httpServer.get(
+      "/parkingReservations/check-if-any-reservation-made-in-slot/:parkingLotId/:parkingSlotId",
+      this.checkIfAnyReservationMadeInSlot.bind(this),
+      ["admin", "driver", "parkingOwner"]
+    );
   }
+
+  private readonly checkIfAnyReservationMadeInSlot: RequestHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { parkingLotId, parkingSlotId } = req.params;
+    const isReserved =
+      await parkingReservationService.checkIfAnyReservationMadeInSlot(
+        req.auth.uid,
+        parkingLotId,
+        parkingSlotId
+      );
+    res.send({ isReserved });
+  };
 
   private readonly createParkingReservation: RequestHandler = async (
     req: Request,

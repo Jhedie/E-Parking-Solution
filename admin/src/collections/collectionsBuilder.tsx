@@ -1,23 +1,16 @@
 import {
   EntityCollection,
   EntityCollectionsBuilder,
-  EntityOnFetchProps,
   buildCollection,
-  buildEntityCallbacks,
   buildProperty,
 } from "@firecms/core";
 import { AdminCollection } from "./AdminCollections/admins";
 import { DbChangesCollection } from "./AdminCollections/dbchanges";
 import { DriverCollection } from "./AdminCollections/driver";
-import { ParkingLot } from "./AdminCollections/parkingLots";
 import { ParkingOwnerCollection } from "./AdminCollections/parkingOwners";
-import { RefundsCollection } from "./AdminCollections/refunds";
+import { ReservationHistoryCollection } from "./AdminCollections/reservationHistory";
 import { UserCollection } from "./AdminCollections/users";
-import {
-  ParkingReservation,
-  ParkingReservationCollection,
-} from "./parkingReservations";
-import { ParkingSlots } from "./parkingSlots";
+import { ParkingReservationCollection } from "./parkingReservations";
 
 export const collectionsBuilder: EntityCollectionsBuilder = async ({
   user,
@@ -37,170 +30,6 @@ export const collectionsBuilder: EntityCollectionsBuilder = async ({
       return false; // Default to false in case of parsing error
     }
   })();
-
-  const allParkingReservations: EntityCollection = buildCollection({
-    id: "parkingReservations",
-    name: "ParkingReservations",
-    path: "parkingReservations",
-    editable: true,
-    icon: "book_online",
-    group: "Parking",
-    collectionGroup: true,
-
-    properties: {
-      userId: {
-        dataType: "string",
-        name: "UserId",
-        validation: {
-          required: true,
-        },
-      },
-      checkedIn: {
-        dataType: "boolean",
-        name: "CheckedIn",
-        validation: {
-          required: true,
-        },
-      },
-      checkedOut: {
-        dataType: "boolean",
-        name: "CheckedOut",
-        validation: {
-          required: true,
-        },
-      },
-      overStayedHandled: {
-        dataType: "boolean",
-        name: "OverStayedHandled",
-        validation: {
-          required: true,
-        },
-      },
-      paymentStatus: {
-        dataType: "string",
-        name: "PaymentStatus",
-        validation: {
-          required: true,
-        },
-        enumValues: [
-          {
-            id: "completed",
-            label: "Completed",
-          },
-          {
-            id: "failed",
-            label: "Failed",
-          },
-          {
-            id: "refunded",
-            label: "Refunded",
-          },
-        ],
-      },
-      userEmail: {
-        dataType: "string",
-        name: "UserEmail",
-        validation: {
-          required: true,
-        },
-      },
-      parkingStatus: {
-        dataType: "string",
-        name: "Role",
-        validation: {
-          required: true,
-        },
-        enumValues: [
-          {
-            id: "expired",
-            label: "Expired",
-            color: "red",
-          },
-          {
-            id: "active",
-            label: "Active",
-            color: "green",
-          },
-          {
-            id: "pending",
-            label: "Pending",
-            color: "yellow",
-          },
-        ],
-      },
-      slotId: {
-        dataType: "string",
-        name: "SlotId",
-        validation: {
-          required: true,
-        },
-      },
-      lotId: {
-        dataType: "string",
-        name: "LotId",
-        validation: {
-          required: true,
-        },
-      },
-      vehicleId: {
-        dataType: "string",
-        name: "VehicleId",
-        validation: {
-          required: true,
-        },
-      },
-      totalAmount: {
-        dataType: "number",
-        name: "TotalAmount",
-        validation: {
-          required: true,
-        },
-      },
-      endTime: {
-        dataType: "date",
-        name: "EndTime",
-        validation: {
-          required: true,
-        },
-      },
-      startTime: buildProperty({
-        dataType: "date",
-        name: "Expiry date",
-        mode: "date",
-      }),
-      usedRates: {
-        dataType: "array",
-        name: "UsedRates",
-        of: {
-          dataType: "map",
-          properties: {
-            rateId: {
-              dataType: "string",
-              name: "RateId",
-              validation: {
-                required: true,
-              },
-            },
-            rate: {
-              dataType: "number",
-              name: "Rate",
-              validation: {
-                required: true,
-              },
-            },
-
-            duration: {
-              dataType: "number",
-              name: "Duration",
-              validation: {
-                required: true,
-              },
-            },
-          },
-        },
-      },
-    },
-  });
 
   const parkingReservationSubcollection: EntityCollection = buildCollection({
     id: "parkingReservations",
@@ -268,7 +97,7 @@ export const collectionsBuilder: EntityCollectionsBuilder = async ({
       },
       parkingStatus: {
         dataType: "string",
-        name: "Role",
+        name: "ParkingStatus",
         validation: {
           required: true,
         },
@@ -287,6 +116,16 @@ export const collectionsBuilder: EntityCollectionsBuilder = async ({
             id: "pending",
             label: "Pending",
             color: "yellow",
+          },
+          {
+            id: "cancelled",
+            label: "Cancelled",
+            color: "red",
+          },
+          {
+            id: "no show",
+            label: "No Show",
+            color: "red",
           },
         ],
       },
@@ -671,6 +510,6 @@ export const collectionsBuilder: EntityCollectionsBuilder = async ({
     DriverCollection,
     ParkingOwnerCollection,
     DbChangesCollection,
-    RefundsCollection,
+    ReservationHistoryCollection,
   ];
 };

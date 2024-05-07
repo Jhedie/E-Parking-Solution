@@ -24,7 +24,7 @@ exports.updateReservationStatuses = onSchedule("* * * * *", async (event) => {
 
   // Handle no show reservations
   const noShowReservationsSnapshot = await reservationsRef
-    .where("startTime", "<", now)
+    .where("endTime", "<", now) // Check if the reservation end time has passed
     .where("checkedIn", "==", false)
     .where("parkingStatus", "==", "active")
     .get();

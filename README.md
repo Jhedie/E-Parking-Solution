@@ -24,69 +24,74 @@ The environment variables for the FireCMS app are stored in a `.env` file in the
 
 ### Setting up the Server
 
-1. **Install Firebase CLI:**
-   ```bash
-   npm install -g firebase-tools
-   ```
-2. **Clone the repository:**
+**Clone the repository:**
 
-   ```bash
-   git clone [REPOSITORY_URL]
+```bash
+git clone [REPOSITORY_URL]
 
-   cd jea22
-   ```
-
-3. **Install dependencies and deploy to Firebase:**
-
-   ```bash
-   cd server/functions
-
-   npm install
-
-   firebase deploy
-   ```
+cd jea22
+```
 
 ### Setting up the React Native Frontend
 
-1. **Navigate to the mobile directory:**
+**Navigate to the mobile directory:**
 
-   ```bash
-   cd jea22/Frontend
-   ```
+```bash
+cd jea22/Frontend
+```
 
-2. **Install dependencies:**
+**Install dependencies:**
 
-   ```bash
-   npm install
-   ```
+```bash
+yarn install
+```
 
-3. **Run the app in the simulator:**
-   Install the provided iOS build.
-   ```bash
-   npx expo start --dev-client
-   ```
+**Run the app in the simulator:**
+Install the provided iOS build.
+
+```bash
+npx expo start --dev-client
+```
 
 ### Setting up FireCMS App
 
-1. **Navigate to the FireCMS directory and install dependencies:**
+**Navigate to the FireCMS directory and install dependencies:**
 
-   ```bash
-   cd jea22/admin
-   yarn install
-   ```
+```bash
+cd jea22/admin
+yarn install
+```
 
-2. **Run the FireCMS app:**
+**Run the FireCMS app:**
 
-   ```bash
-   yarn dev
-   ```
+```bash
+yarn dev
+```
 
-3. **Access the FireCMS panel:**
-   Open your browser and navigate to the URL provided in the terminal after running the start command.
+**Access the FireCMS panel:**
+Open your browser and navigate to the URL provided in the terminal after running the start command.
 
 ### User Roles and Credentials
 
 For test purposes, the following user roles and credentials are provided:
+You may create your admin user by running the command below to access notifications.
+
+```bash
+curl --location 'https://api-b7mr63u4xa-uc.a.run.app/account/admin' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "name":"Your Name",
+    "role":"admin",
+    "email": "your email",
+    "password": "your password",
+    "phoneNumber": "your phone number",
+    "adminKey": "parkAdminSecretKey123"
+}
+'
+```
+
+In the .env file, set the `ADMIN_EMAIL` to `your email`.
+This will allow you receive emails as the admin user
 
 - **Admin Credentials:**
   - **Email:** jeddiahawuku12@gmail.com
@@ -95,7 +100,3 @@ For test purposes, the following user roles and credentials are provided:
   - **Password:** password123?
 - **Driver:** jedidiahawuku12@yahoo.com
   - **Password:** password123?
-
-## Conclusion
-
-This README provides all the necessary steps to successfully set up and run the E-Parking solution. Ensure all environment variables and Firebase configurations are correctly set up for smooth operations.

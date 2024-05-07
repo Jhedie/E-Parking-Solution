@@ -299,7 +299,7 @@ export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
         setTimeout(() => {
           // Scroll back, but not to the very beginning. Adjust the x value as needed.
           scrollViewRef.current?.scrollTo({ x: 10, animated: true });
-        }, 1000); // Delay the scroll back to simulate a slower scroll
+        }, 200); // Delay the scroll back to simulate a slower scroll
       }
     });
   }, [slots]);

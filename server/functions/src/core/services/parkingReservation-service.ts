@@ -523,20 +523,20 @@ class ParkingReservationService {
       throw new Error("Reservation does not exist.");
     }
 
-    const reservation = reservationSnapshot.data() as ParkingReservation;
+    const reservation = reservationSnapshot.data();
 
     // Check if cancellation is within 15 minutes of booking
     // Assuming reservation.startTime could be a Firestore Timestamp or a standard JavaScript timestamp
-    // Check if cancellation is at least 15 minutes before the reservation starts
-    const startTime =
+    // Check if cancellation is at least 15 minutes before or after the reservation starts
+    const startTimeMillis =
       reservation.startTime instanceof admin.firestore.Timestamp
         ? reservation.startTime.toMillis()
         : new Date(reservation.startTime).getTime();
 
     const cancellationTime = new Date().getTime();
-    const timeDiff = (startTime - cancellationTime) / 60000; // Difference in minutes
+    const timeDiff = (cancellationTime - startTimeMillis) / 60000; // Difference in minutes
 
-    if (timeDiff >= 15) {
+    if (Math.abs(timeDiff) <= 15) {
       // Flag this reservation for a refund
       await admin.firestore().collection("refunds").add({
         reservationId: reservationId,
@@ -548,6 +548,7 @@ class ParkingReservationService {
         status: "pending",
         requestedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
+
       admin
         .firestore()
         .collection("mail")
@@ -579,6 +580,13 @@ class ParkingReservationService {
         .catch((error) => {
           console.error("Failed to queue refund request email: ", error);
         });
+
+      this.logReservationHistory(
+        reservationId,
+        "cancelled_with_refund",
+        reservation,
+        ownerId
+      );
     } else {
       // Handle the case where the cancellation is too late for a refund
       console.log("Cancellation too late for a refund");
@@ -596,6 +604,12 @@ class ParkingReservationService {
             Thank you for choosing our service.`,
           },
         });
+      this.logReservationHistory(
+        reservationId,
+        "cancelled_no_refund",
+        reservation,
+        ownerId
+      );
     }
 
     // Decrement parking lot occupancy
@@ -625,6 +639,18 @@ class ParkingReservationService {
           .doc(slotId)
           .get();
 
+        // Convert Firestore Timestamps to JavaScript Date objects
+        const startTimeDate = reservation.startTime.toDate();
+        const endTimeDate = reservation.endTime?.toDate();
+
+        // Format dates using dayjs
+        const formattedStartTime = dayjs(startTimeDate).format(
+          "YYYY-MM-DD HH:mm:ss"
+        );
+        const formattedEndTime = dayjs(endTimeDate).format(
+          "YYYY-MM-DD HH:mm:ss"
+        );
+
         //getting the last rate used
         const { duration, rateType } =
           reservation.usedRates[reservation.usedRates.length - 1];
@@ -643,11 +669,7 @@ class ParkingReservationService {
               subject: "Your Reservation Cancellation",
               html: `Your reservation at ${
                 parkingLotRef.data().LotName
-              } has been cancelled. It was scheduled from ${dayjs(
-                reservation.startTime
-              ).format("YYYY-MM-DD HH:mm:ss")} to ${dayjs(
-                reservation.endTime
-              ).format("YYYY-MM-DD HH:mm:ss")}.<br><br>
+              } has been cancelled. It was scheduled from ${formattedStartTime} to ${formattedEndTime}.<br><br>
               <strong>Slot Position:</strong> ${slotPosition}<br>
               <strong>Duration:</strong> ${formattedDuration}`,
             },
@@ -659,6 +681,39 @@ class ParkingReservationService {
             console.error("Failed to queue cancellation email: ", error);
           });
       });
+  }
+
+  private async logReservationHistory(
+    reservationId: string,
+    status: string,
+    reservationData: any,
+    ownerId: string
+  ): Promise<void> {
+    const historyRef = admin.firestore().collection("reservationHistory");
+    const historyDocRef = await historyRef.add({
+      historyId: historyRef.doc().id,
+      reservationId: reservationId,
+      cancellationStatus: status,
+      historyTimestamp: admin.firestore.FieldValue.serverTimestamp(),
+      ownerId: ownerId,
+      userId: reservationData.userId,
+      userEmail: reservationData.userEmail,
+      slotId: reservationData.slotId,
+      lotId: reservationData.lotId,
+      vehicleId: reservationData.vehicleId,
+      startTime: reservationData.startTime,
+      endTime: reservationData.endTime,
+      usedRates: reservationData.usedRates,
+      totalAmount: reservationData.totalAmount,
+      parkingStatus: reservationData.parkingStatus,
+      paymentStatus: reservationData.paymentStatus,
+      checkedIn: reservationData.checkedIn,
+      checkedOut: reservationData.checkedOut,
+      overStayedHandled: reservationData.overStayedHandled,
+      reservationModifiedAt: reservationData.modifiedAt,
+      reservationCreatedAt: reservationData.createdAt,
+    });
+    console.log(`History record added with ID: ${historyDocRef.id}`);
   }
 
   private async getParkingOwner(lotId: string): Promise<string> {

@@ -52,11 +52,13 @@ const debouncedSelectAndToast = debounce(
     console.log("Available slots", availableSlots);
 
     if (availableSlots.length > 0) {
-      const firstAvailableSlot = availableSlots[0];
-      setSelectedParkingSlot(firstAvailableSlot);
+      const randomIndex = Math.floor(Math.random() * availableSlots.length);
+
+      const randomAvailableSlot = availableSlots[randomIndex];
+      setSelectedParkingSlot(randomAvailableSlot);
       Burnt.toast({
         title: "Parking slot selected",
-        message: `Selected spot ${firstAvailableSlot.position.row}${firstAvailableSlot.position.column}`,
+        message: `Selected spot ${randomAvailableSlot.position.row}${randomAvailableSlot.position.column}`,
         preset: "done",
         duration: 5
       });
@@ -288,22 +290,6 @@ export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
     };
   }, [slots]); // Depend on `slots`
 
-  useEffect(() => {
-    if (slots.length === 0) return;
-    // Wait for the initial render to complete
-    requestAnimationFrame(() => {
-      // Check if the ScrollView is currently in view
-      if (scrollViewRef.current) {
-        // Animate the ScrollView to scroll a small distance to indicate swiping action
-        scrollViewRef.current.scrollTo({ x: 1000, animated: true }); // Scroll further to make it slower
-        setTimeout(() => {
-          // Scroll back, but not to the very beginning. Adjust the x value as needed.
-          scrollViewRef.current?.scrollTo({ x: 10, animated: true });
-        }, 200); // Delay the scroll back to simulate a slower scroll
-      }
-    });
-  }, [slots]);
-
   return (
     <YStack
       flex={1}
@@ -330,7 +316,7 @@ export const SelectSlotScreen: React.FC<SelectSlotScreenProps> = ({
         >
           <ScrollView
             showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
+            showsHorizontalScrollIndicator={true}
             horizontal
             ref={scrollViewRef}
           >

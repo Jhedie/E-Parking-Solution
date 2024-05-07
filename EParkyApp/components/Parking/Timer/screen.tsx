@@ -70,6 +70,7 @@ export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
 
     return () => clearInterval(timer);
   }, []);
+
   return (
     <YStack flex={1}>
       <View
@@ -136,7 +137,7 @@ export const TimerScreen: React.FC<TimerScreenProps> = ({ navigation }) => {
               backgroundColor: "white",
               borderRadius: 10,
               width: "100%",
-              paddingHorizontal: 10 * 2,
+              // paddingHorizontal: 10 * 2,
               flexDirection: "row",
               justifyContent: "space-between",
               padding: 15,

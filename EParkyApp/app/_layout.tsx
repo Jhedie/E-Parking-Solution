@@ -25,9 +25,9 @@ import config from "../tamagui.config";
 
 import { ReservationProvider } from "@providers/Reservation/ReservationProvider";
 import { focusManager } from "@tanstack/react-query";
+import React from "react";
 import type { AppStateStatus } from "react-native";
 import { AppState, Platform } from "react-native";
-import React from "react";
 SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {

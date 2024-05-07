@@ -537,17 +537,6 @@ class ParkingReservationService {
     const timeDiff = (cancellationTime - startTimeMillis) / 60000; // Difference in minutes
 
     if (Math.abs(timeDiff) <= 15) {
-      // Flag this reservation for a refund
-      await admin.firestore().collection("refunds").add({
-        reservationId: reservationId,
-        parkingLotId: lotId,
-        parkingSlotId: slotId,
-        ownerId: ownerId,
-        userId: reservation.userId,
-        amount: reservation.totalAmount,
-        status: "pending",
-        requestedAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
 
       admin
         .firestore()

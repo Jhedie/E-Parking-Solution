@@ -332,6 +332,9 @@ export const collectionsBuilder: EntityCollectionsBuilder = async ({
     icon: "local_parking",
     editable: true,
     group: "Parking",
+    permissions: {
+      create: isAdmin,
+    },
     subcollections: [parkingLotRatesSubcollection, parkingSlotSubcollection],
     properties: {
       LotName: {

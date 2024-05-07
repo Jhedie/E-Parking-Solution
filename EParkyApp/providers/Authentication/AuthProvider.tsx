@@ -55,7 +55,6 @@ export const useAuth = () => {
   return context;
 };
 
-
 async function getOnboardingStatus(): Promise<boolean> {
   const onboarded = await storage.getItem("onboarding");
   console.log(onboarded, "onboarded");

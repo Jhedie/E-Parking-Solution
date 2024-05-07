@@ -388,9 +388,11 @@ export class ParkingLotController implements Controller {
       parseFloat(lon as string),
       parseFloat(radius as string)
     );
-    const outputList = parkingLots.map((parkingLot) =>
-      ParkingLotClientModel.fromEntity(parkingLot).toBodyFullParkingLot()
-    );
+    const outputList = parkingLots
+      .filter((parkingLot) => parkingLot.status === "Active") // Filter out inactive parking lots
+      .map((parkingLot) =>
+        ParkingLotClientModel.fromEntity(parkingLot).toBodyFullParkingLot()
+      );
     res.send({
       parkingLots: outputList,
     });

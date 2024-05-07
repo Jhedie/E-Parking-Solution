@@ -175,9 +175,10 @@ export default function MultiStepCreateParkingLotForm() {
       toast.error("No images to upload");
       return [];
     }
-    const generateFileName = (index: number) =>
-      `${userName}/parkingLots/parkingLotPhoto_${index}.jpg`;
-
+    const generateFileName = (index: number) => {
+      const timestamp = new Date().getTime(); // Get current timestamp
+      return `${userName}/parkingLots/parkingLotPhoto_${timestamp}_${index}.jpg`;
+    };
     try {
       const uploadPromises = images.map(async (image, index) => {
         const fileName = generateFileName(index);

@@ -712,7 +712,8 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
                         >
                           {`Slots Available: ${
                             parkingLot?.Capacity - parkingLot?.Occupancy
-                          }`}
+                          }`}{" "}
+                          / {parkingLot?.Capacity}
                         </Text>
                       </View>
                     </View>

@@ -16,10 +16,16 @@ Welcome to the **E-parking solution**, a cloud-based system designed to improve 
 
 ## Installation
 
-The environment setup is divided into three main parts: setting up the server, setting up the React Native frontend, and setting up the FireCMS app.
+Download the `iosSimilatorBuildFile.tar.gz` from the root directory and install on simulator by dragging the file to the simulator.
+
+The environment setup is divided into two parts: setting up the Admin site and setting up the React Native app.
+
+The server is a cloud function and has already been deployed and therefore no setup is required.
 
 The environment variables for the server are stored in a `.env` file in the `server/functions` directory.
+
 The environment variables for the React Native frontend are stored in a `.env` file in the `Frontend` directory.
+
 The environment variables for the FireCMS app are stored in a `.env` file in the `admin` directory.
 
 ### Setting up the Server
@@ -50,7 +56,7 @@ yarn install
 Install the provided iOS build.
 
 ```bash
-npx expo start --dev-client
+npx expo start --no-dev --minify
 ```
 
 ### Setting up FireCMS App

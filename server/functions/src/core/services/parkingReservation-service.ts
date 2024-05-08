@@ -801,12 +801,8 @@ class ParkingReservationService {
             html: `<p>A report has been filed for a wrong occupant in a parking slot. Details are as follows:</p>
                    <ul>
                      <li>Reporting User ID: ${reservation.userId}</li>
-                     <li>Reporting User Name: ${
-                       reportingUser.data().firstName
-                     }</li>
-                     <li>Vehicle Details: ${driverData.make} ${
-              driverData.model
-            } - Registration Number: ${registrationNumber}</li>
+                     <li>Reporting User Name: ${reportingUser.data().name}</li>
+                     <li>Registration Number: ${registrationNumber}</li>
                      <li>Reservation Start Time: ${dayjs(
                        reservation.startTime
                      ).format("YYYY-MM-DD HH:mm:ss")}</li>

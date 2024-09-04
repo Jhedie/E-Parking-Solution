@@ -66,10 +66,10 @@ node_modules/
 ################
 
 # dotenv environment variables file
-# .env
+.env
 
 
-# e-parking-app-b22cb-firebase-adminsdk-d5yi5-fb98f59c3c.json
+e-parking-app-b22cb-firebase-adminsdk-d5yi5-fb98f59c3c.json
 
 
 

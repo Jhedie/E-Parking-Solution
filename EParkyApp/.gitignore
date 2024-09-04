@@ -33,9 +33,9 @@ release.config.js
 .github
 
 #Uncomment the below to start eas build
-# .env
-# google-services.json
-# GoogleService-Info.plist
-# app.json
+.env
+google-services.json
+GoogleService-Info.plist
+app.json
 ```
 

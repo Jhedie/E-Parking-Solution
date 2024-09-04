@@ -167,7 +167,9 @@ const Dashboard = () => {
               </div>
               <div className="card bg-white shadow-xl p-4 flex-1">
                 <h3 className="font-semibold text-lg">Available slots</h3>
-                <p className="text-xl font-bold">{parkingLot?.slots.length}</p>
+                <p className="text-xl font-bold">
+                  {parkingLot?.slots.length - parkingLot?.values?.Occupancy}
+                </p>
               </div>
               <div className="card bg-white shadow-xl p-4 flex-1">
                 <h3 className="font-semibold text-lg">Occupied slots</h3>
